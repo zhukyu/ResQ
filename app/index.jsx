@@ -7,7 +7,7 @@ export default function App() {
         <View className="flex-1 items-center justify-center bg-white">
             <Text className="text-3xl font-pblack">ResQ</Text>
             <StatusBar style="auto" />
-            <Link href="/home">go to Home</Link>
+            <Link href="/request">go to Home</Link>
         </View>
     );
 }

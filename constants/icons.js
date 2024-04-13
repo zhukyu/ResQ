@@ -11,6 +11,10 @@ import logout from "../assets/icons/logout.png";
 import eyeHide from "../assets/icons/eye-hide.png";
 import eye from "../assets/icons/eye.png";
 import play from "../assets/icons/play.png";
+import lifebuoy from "../assets/icons/lifebuoy.png";
+import gps from "../assets/icons/gps.png";
+import notification from "../assets/icons/notification.png";
+import chat from "../assets/icons/chat.png";
 
 export default {
     play,
@@ -26,4 +30,8 @@ export default {
     logout,
     eyeHide,
     eye,
+    lifebuoy,
+    gps,
+    notification,
+    chat,
 };

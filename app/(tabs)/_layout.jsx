@@ -3,19 +3,36 @@ import { Tabs, Redirect } from 'expo-router'
 
 import { icons } from '../../constants'
 
-const TabIcon = ({ icon, color, name, focused }) => {
+const TabIcon = ({ icon, color, name, focused, customClass }) => {
 
     return (
-        <View className="items-center justify-center gap-1">
+        <View className={`items-center justify-center gap-1`}>
             <Image
                 source={icon}
                 resizeMode="contain"
                 tintColor={color}
-                className={`w-6 h-6`}
+                className={customClass ? `${customClass}` : `w-6 h-6`}
             />
             <Text className={`text-xs font-pregular  ${focused ? 'color-primary' : ''}`}>
                 {name}
             </Text>
+        </View>
+    )
+}
+
+const MiddleIcon = ({ icon, color, name, focused }) => {
+
+    return (
+        <View className={`absolute bottom-7`}>
+            <Image
+                source={icon}
+                resizeMode="contain"
+                tintColor={color}
+                className={`w-16 h-16`}
+            />
+            {/* <Text className={`text-xs font-pregular  ${focused ? 'color-primary' : ''}`}>
+                {name}
+            </Text> */}
         </View>
     )
 }
@@ -37,15 +54,15 @@ const TabsLayout = () => {
                 }}
             >
                 <Tabs.Screen
-                    name="home"
+                    name="request"
                     options={{
-                        title: "Home",
+                        title: "Requests",
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
-                                icon={icons.home}
+                                icon={icons.lifebuoy}
                                 color={color}
-                                name="Home"
+                                name="Requests"
                                 focused={focused}
                             />
                         )
@@ -53,15 +70,15 @@ const TabsLayout = () => {
                 />
 
                 <Tabs.Screen
-                    name="bookmark"
+                    name="map"
                     options={{
-                        title: "Bookmark",
+                        title: "Maps",
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
-                                icon={icons.bookmark}
+                                icon={icons.gps}
                                 color={color}
-                                name="Bookmark"
+                                name="Maps"
                                 focused={focused}
                             />
                         )
@@ -74,7 +91,7 @@ const TabsLayout = () => {
                         title: "Create",
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
-                            <TabIcon
+                            <MiddleIcon
                                 icon={icons.plus}
                                 color={color}
                                 name="Create"
@@ -85,15 +102,31 @@ const TabsLayout = () => {
                 />
 
                 <Tabs.Screen
-                    name="profile"
+                    name="chat"
                     options={{
-                        title: "Profle",
+                        title: "Chat",
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
-                                icon={icons.profile}
+                                icon={icons.chat}
                                 color={color}
-                                name="Profle"
+                                name="Chat"
+                                focused={focused}
+                            />
+                        )
+                    }}
+                />
+
+                <Tabs.Screen
+                    name="inbox"
+                    options={{
+                        title: "Inbox",
+                        headerShown: false,
+                        tabBarIcon: ({ color, focused }) => (
+                            <TabIcon
+                                icon={icons.notification}
+                                color={color}
+                                name="Inbox"
                                 focused={focused}
                             />
                         )
