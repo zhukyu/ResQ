@@ -1,50 +1,60 @@
-import { Image, Text, View } from 'react-native'
+import { Image, Platform, Text, TouchableOpacity, View, Animated } from 'react-native'
 import { Tabs, Redirect } from 'expo-router'
 
 import { icons } from '../../constants'
+import { useRef } from 'react'
 
-const TabIcon = ({ icon, color, name, focused, customClass }) => {
+const TabIcon = ({ icon, iconFocused, color, name, focused, customClass }) => {
 
     return (
         <View className={`items-center justify-center gap-1`}>
             <Image
-                source={icon}
+                source={focused ? iconFocused : icon}
                 resizeMode="contain"
                 tintColor={color}
                 className={customClass ? `${customClass}` : `w-6 h-6`}
             />
-            <Text className={`text-xs font-pregular  ${focused ? 'color-primary' : ''}`}>
+            <Text className={`text-xs font-pregular  ${focused ? 'color-primary' : 'text-[#AAAAAA]'}`}>
                 {name}
             </Text>
         </View>
     )
 }
 
-const MiddleIcon = ({ icon, color, name, focused }) => {
+const EmptyIcon = ({ icon, color, name, focused }) => {
 
     return (
-        <View className={`absolute bottom-7`}>
-            <Image
-                source={icon}
-                resizeMode="contain"
-                tintColor={color}
-                className={`w-16 h-16`}
-            />
-            {/* <Text className={`text-xs font-pregular  ${focused ? 'color-primary' : ''}`}>
-                {name}
-            </Text> */}
-        </View>
+        <TouchableOpacity
+            onPress={() => console.log('hehe boi')}
+        >
+            <View style={{
+                width: 65,
+                height: 65,
+                backgroundColor: 'red',
+                borderRadius: 60,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginBottom: Platform.OS == "android" ? 40 : 30
+            }}>
+                <Image source={icon} style={{
+                    width: 22,
+                    height: 22,
+                    tintColor: 'white',
+                }}></Image>
+            </View>
+        </TouchableOpacity>
     )
 }
 
 const TabsLayout = () => {
+
     return (
         <>
             <Tabs
                 screenOptions={{
                     tabBarShowLabel: false,
                     tabBarActiveTintColor: '#F73334',
-                    tabBarInactiveTintColor: '#8E8E93',
+                    tabBarInactiveTintColor: '#AAAAAA',
                     tabBarStyle: {
                         height: 60,
                         backgroundColor: '#fff',
@@ -60,7 +70,8 @@ const TabsLayout = () => {
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
-                                icon={icons.lifebuoy}
+                                icon={icons.lifebuoyOutlined}
+                                iconFocused={icons.lifebuoyFilled}
                                 color={color}
                                 name="Requests"
                                 focused={focused}
@@ -76,7 +87,8 @@ const TabsLayout = () => {
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
-                                icon={icons.gps}
+                                icon={icons.mapsOutlined}
+                                iconFocused={icons.mapsFilled}
                                 color={color}
                                 name="Maps"
                                 focused={focused}
@@ -91,14 +103,19 @@ const TabsLayout = () => {
                         title: "Create",
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
-                            <MiddleIcon
+                            <EmptyIcon
                                 icon={icons.plus}
-                                color={color}
+                                color="#fff"
                                 name="Create"
                                 focused={focused}
                             />
                         )
                     }}
+                    listeners={({ navigation, route }) => ({
+                        tabPress: e => {
+                            e.preventDefault();
+                        }
+                    })}
                 />
 
                 <Tabs.Screen
@@ -108,7 +125,8 @@ const TabsLayout = () => {
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
-                                icon={icons.chat}
+                                icon={icons.chatOutlined}
+                                iconFocused={icons.chatFilled}
                                 color={color}
                                 name="Chat"
                                 focused={focused}
@@ -124,7 +142,8 @@ const TabsLayout = () => {
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
-                                icon={icons.notification}
+                                icon={icons.notificationOutlined}
+                                iconFocused={icons.notificationFilled}
                                 color={color}
                                 name="Inbox"
                                 focused={focused}

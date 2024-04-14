@@ -20,15 +20,25 @@ const RootLayout = () => {
     })
 
     useEffect(() => {
-        if(error) throw error;
+        if (error) throw error;
 
-        if(fontsLoaded) SplashScreen.hideAsync();
+        if (fontsLoaded) SplashScreen.hideAsync();
     }, [fontsLoaded, error])
 
-    if(!fontsLoaded && !error) return null;
+    if (!fontsLoaded && !error) return null;
 
     return (
-        <Stack>
+        <Stack
+            screenOptions={{
+                headerStyle: {
+                    backgroundColor: '#F73334',
+                },
+                headerTintColor: '#fff',
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                },
+            }}
+        >
             <Stack.Screen name="index" options={{ headerShown: false }} />
         </Stack>
     )

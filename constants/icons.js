@@ -1,37 +1,23 @@
-import bookmark from "../assets/icons/bookmark.png";
-import home from "../assets/icons/home.png";
 import plus from "../assets/icons/plus.png";
-import profile from "../assets/icons/profile.png";
-import leftArrow from "../assets/icons/left-arrow.png";
-import menu from "../assets/icons/menu.png";
-import search from "../assets/icons/search.png";
-import upload from "../assets/icons/upload.png";
-import rightArrow from "../assets/icons/right-arrow.png";
-import logout from "../assets/icons/logout.png";
-import eyeHide from "../assets/icons/eye-hide.png";
-import eye from "../assets/icons/eye.png";
-import play from "../assets/icons/play.png";
-import lifebuoy from "../assets/icons/lifebuoy.png";
-import gps from "../assets/icons/gps.png";
-import notification from "../assets/icons/notification.png";
-import chat from "../assets/icons/chat.png";
+import lifebuoyFilled from "../assets/icons/lifebuoy_filled.png";
+import lifebuoyOutlined from "../assets/icons/lifebuoy_outlined.png";
+import mapsOutlined from "../assets/icons/maps_outlined.png";
+import mapsFilled from "../assets/icons/maps_filled.png";
+import notificationOutlined from "../assets/icons/notification_outlined.png";
+import notificationFilled from "../assets/icons/notification_filled.png";
+import chatOutlined from "../assets/icons/chat_outlined.png";
+import chatFilled from "../assets/icons/chat_filled.png";
+import resqlogo from "../assets/icons/resqlogo.svg";
 
 export default {
-    play,
-    bookmark,
-    home,
     plus,
-    profile,
-    leftArrow,
-    menu,
-    search,
-    upload,
-    rightArrow,
-    logout,
-    eyeHide,
-    eye,
-    lifebuoy,
-    gps,
-    notification,
-    chat,
+    lifebuoyFilled,
+    lifebuoyOutlined,
+    mapsOutlined,
+    mapsFilled,
+    notificationOutlined,
+    notificationFilled,
+    chatOutlined,
+    chatFilled,
+    resqlogo,
 };
