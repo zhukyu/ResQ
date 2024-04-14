@@ -8,6 +8,8 @@ import notificationFilled from "../assets/icons/notification_filled.png";
 import chatOutlined from "../assets/icons/chat_outlined.png";
 import chatFilled from "../assets/icons/chat_filled.png";
 import resqlogo from "../assets/icons/resqlogo.svg";
+import eye from "../assets/icons/eye.png";
+import eyeHide from "../assets/icons/eye-hide.png";
 
 export default {
     plus,
@@ -20,4 +22,6 @@ export default {
     chatOutlined,
     chatFilled,
     resqlogo,
+    eye,
+    eyeHide,
 };

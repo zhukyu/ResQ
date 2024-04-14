@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import { Slot, SplashScreen, Stack } from 'expo-router'
 import { useFonts } from 'expo-font'
 import { useEffect } from 'react'
+import GlobalProvider from '../context/GlobalProvider';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -17,6 +18,7 @@ const RootLayout = () => {
         "Poppins-Regular": require("../assets/fonts/Poppins-Regular.ttf"),
         "Poppins-SemiBold": require("../assets/fonts/Poppins-SemiBold.ttf"),
         "Poppins-Thin": require("../assets/fonts/Poppins-Thin.ttf"),
+        "Archivo-Bold": require("../assets/fonts/Archivo-Bold.ttf"),
     })
 
     useEffect(() => {
@@ -28,19 +30,23 @@ const RootLayout = () => {
     if (!fontsLoaded && !error) return null;
 
     return (
-        <Stack
-            screenOptions={{
-                headerStyle: {
-                    backgroundColor: '#F73334',
-                },
-                headerTintColor: '#fff',
-                headerTitleStyle: {
-                    fontWeight: 'bold',
-                },
-            }}
-        >
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-        </Stack>
+        <GlobalProvider>
+            <Stack
+                screenOptions={{
+                    headerStyle: {
+                        backgroundColor: '#F73334',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }}
+            >
+                <Stack.Screen name="index" options={{ headerShown: false, animation: 'ios' }} />
+                <Stack.Screen name="(auth)" options={{ headerShown: false, animation: 'flip' }} />
+                <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
+            </Stack>
+        </GlobalProvider>
     )
 }
 
