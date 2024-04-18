@@ -3,6 +3,8 @@ import { Slot, SplashScreen, Stack } from 'expo-router'
 import { useFonts } from 'expo-font'
 import { useEffect } from 'react'
 import GlobalProvider from '../context/GlobalProvider';
+import Toast from 'react-native-toast-message';
+import Header from '../components/Header';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -44,8 +46,13 @@ const RootLayout = () => {
             >
                 <Stack.Screen name="index" options={{ headerShown: false, animation: 'ios' }} />
                 <Stack.Screen name="(auth)" options={{ headerShown: false, animation: 'flip' }} />
-                <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
+                <Stack.Screen name="(tabs)" options={{
+                    animation: 'fade',
+                    headerTitle: (props) => <Header {...props} />,
+                    headerRight: (props) => <View className="flex flex-row items-center rounded-full border border-white w-10 h-10"></View>
+                }} />
             </Stack>
+            <Toast />
         </GlobalProvider>
     )
 }

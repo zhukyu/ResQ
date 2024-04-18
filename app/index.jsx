@@ -6,12 +6,62 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { images } from '../constants';
 import CustomButton from '../components/CustomButton';
 import { useGlobalContext } from '../context/GlobalProvider';
+import Toast from 'react-native-toast-message';
+import { useEffect } from 'react';
+import { getCurrentUser } from '../lib/appwrite';
+import axiosInstance from '../lib/AxiosInstance';
 
 export default function App() {
-    const {isLoading, isLoggedIn} = useGlobalContext();
+    const {
+        isLoading,
+        isLoggedIn,
+        setIsLoggedIn,
+        setUser,
+        setIsLoading,
+        setExpirationTime
+    } = useGlobalContext();
 
-    if (!isLoading && isLoggedIn) return <Redirect href='/request' />
-    else if (!isLoading && !isLoggedIn) return <Redirect href='/sign-in' />
+    const handleGetCurrentUser = async () => {
+        const res = await getCurrentUser()
+        // wait for logo screen
+        // await new Promise(resolve => setTimeout(resolve, 2000));
+
+        return res
+    }
+
+    useEffect(() => {
+        handleGetCurrentUser()
+            .then((res) => {
+                if (res) {
+                    console.log("current user", res);
+                    setIsLoggedIn(true)
+                    setUser(res)
+
+                    // set timer for refresh access token
+                    const expiration = new Date(new Date().getTime() + 15 * 1000)
+                    setExpirationTime(expiration)
+                }
+                else {
+                    setIsLoggedIn(false)
+                    setUser(null)
+                }
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+            .finally(() => {
+                setIsLoading(false)
+            })
+    }, [])
+
+    useEffect(() => {
+        if (!isLoading && isLoggedIn) {
+            router.replace('/request')
+        }
+        else if (!isLoading && !isLoggedIn) {
+            router.replace('/sign-in')
+        }
+    }, [isLoading, isLoggedIn])
 
     return (
         <SafeAreaView className="bg-white h-full">

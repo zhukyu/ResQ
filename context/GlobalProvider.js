@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { getCurrentUser } from "../lib/appwrite";
+import { refreshAccessToken } from "../lib/appwrite";
+import Toast from "react-native-toast-message";
 
 const GlobalContext = createContext();
 export const useGlobalContext = () => useContext(GlobalContext);
@@ -8,26 +9,54 @@ const GlobalProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     const [user, setUser] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
+    const [toast, setToast] = useState(null)
+    const [expirationTime, setExpirationTime] = useState(null)
+
+    const handleRefreshAccessToken = () => {
+        refreshAccessToken().then((accessToken) => {
+            if (accessToken) {
+                setExpirationTime(Date.now() + 15 * 1000);
+            }
+        }).catch((error) => {
+            if (error.response.status === 400) {
+                return null
+            }
+            console.error(error)
+        })
+    }
 
     useEffect(() => {
-        getCurrentUser()
-            .then((res) => {
-                if (res) {
-                    setIsLoggedIn(true)
-                    setUser(res)
-                }
-                else {
-                    setIsLoggedIn(false)
-                    setUser(null)
-                }
+        if (toast) {
+            console.log(toast);
+            Toast.show({
+                type: toast.type,
+                text1: toast.text1,
+                text2: toast.text2,
+                position: 'bottom',
+                visibilityTime: 4000,
+                autoHide: true,
+                topOffset: 30,
+                bottomOffset: 40,
+                leadingIcon: null,
+                trailingIcon: null,
+                props: {
+                    swipeable: true,
+                },
             })
-            .catch((error) => {
-                console.error(error)
-            })
-            .finally(() => {
-                setIsLoading(false)
-            })
-    }, [])
+            setToast(null)
+        }
+    }, [toast])
+
+    useEffect(() => {
+        // Set a timeout to refresh the access token when it's about to expire
+        if (expirationTime) {
+            const timeout = setTimeout(handleRefreshAccessToken, expirationTime - Date.now());
+            // Clear the timeout when the component unmounts or when the expiration time changes
+            return () => {
+                clearTimeout(timeout)
+            };
+        }
+    }, [expirationTime]);
 
     return (
         <GlobalContext.Provider
@@ -36,7 +65,12 @@ const GlobalProvider = ({ children }) => {
                 setIsLoggedIn,
                 user,
                 setUser,
-                isLoading
+                isLoading,
+                toast,
+                setToast,
+                setIsLoading,
+                expirationTime,
+                setExpirationTime
             }}
         >
             {children}
