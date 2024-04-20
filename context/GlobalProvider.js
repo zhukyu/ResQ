@@ -15,7 +15,7 @@ const GlobalProvider = ({ children }) => {
     const handleRefreshAccessToken = () => {
         refreshAccessToken().then((accessToken) => {
             if (accessToken) {
-                setExpirationTime(Date.now() + 15 * 1000);
+                setExpirationTime(Date.now() + 9 * 60 * 1000);
             }
         }).catch((error) => {
             if (error.response.status === 400) {
@@ -32,10 +32,10 @@ const GlobalProvider = ({ children }) => {
                 type: toast.type,
                 text1: toast.text1,
                 text2: toast.text2,
-                position: 'bottom',
+                position: 'top',
                 visibilityTime: 4000,
                 autoHide: true,
-                topOffset: 30,
+                topOffset: 40,
                 bottomOffset: 40,
                 leadingIcon: null,
                 trailingIcon: null,
