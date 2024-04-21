@@ -11,7 +11,7 @@ i18next
         interpolation: {
             escapeValue: false,
         },
-        lng: 'vi',
+        lng: 'en',
         fallbackLng: 'en',
         resources: {
             en: {

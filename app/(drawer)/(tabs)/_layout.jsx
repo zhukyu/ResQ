@@ -1,7 +1,7 @@
 import { Image, Platform, Text, TouchableOpacity, View, Animated } from 'react-native'
 import { Tabs, Redirect } from 'expo-router'
 
-import { icons } from '../../constants'
+import { icons } from '../../../constants'
 import { useRef } from 'react'
 
 const TabIcon = ({ icon, iconFocused, color, name, focused, customClass }) => {
@@ -25,6 +25,7 @@ const EmptyIcon = ({ icon, color, name, focused }) => {
 
     return (
         <TouchableOpacity
+            activeOpacity={0.6}
             onPress={() => console.log('hehe boi')}
         >
             <View style={{
@@ -67,6 +68,7 @@ const TabsLayout = () => {
                     name="request"
                     options={{
                         title: "Requests",
+                        tabBarLabel: "Requests",
                         headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon

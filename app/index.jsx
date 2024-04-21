@@ -25,7 +25,7 @@ export default function App() {
     const handleGetCurrentUser = async () => {
         const res = await getCurrentUser()
         // wait for logo screen
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // await new Promise(resolve => setTimeout(resolve, 2000));
 
         return res
     }

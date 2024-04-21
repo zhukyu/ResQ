@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { getCurrentUser } from '../../lib/appwrite'
+import { getCurrentUser } from '../../../lib/appwrite'
 
 const Inbox = () => {
     const [user, setUser] = useState(null)

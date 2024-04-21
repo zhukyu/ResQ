@@ -1,12 +1,13 @@
 import { View, Text } from 'react-native'
 import React, { useEffect } from 'react'
-import { useGlobalContext } from '../../context/GlobalProvider'
-import CustomButton from '../../components/CustomButton'
-import axiosInstance from '../../lib/AxiosInstance'
-import { refreshAccessToken } from '../../lib/appwrite'
+import { useGlobalContext } from '../../../context/GlobalProvider'
+import CustomButton from '../../../components/CustomButton'
+import axiosInstance from '../../../lib/AxiosInstance'
+import { refreshAccessToken } from '../../../lib/appwrite'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { router } from 'expo-router'
 import { useTranslation } from 'react-i18next'
+import { Drawer } from 'expo-router/drawer'
 
 const Request = () => {
 
@@ -44,6 +45,7 @@ const Request = () => {
             <Text>Request</Text>
             <CustomButton title="Sign out" handlePress={signOut} />
             <CustomButton title="Refresh Token" handlePress={refresh} />
+            <Drawer />
         </View>
     )
 }
