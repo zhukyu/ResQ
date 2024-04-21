@@ -6,10 +6,12 @@ import axiosInstance from '../../lib/AxiosInstance'
 import { refreshAccessToken } from '../../lib/appwrite'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { router } from 'expo-router'
+import { useTranslation } from 'react-i18next'
 
 const Request = () => {
 
     const { setUser, setIsLoggedIn, setToast } = useGlobalContext()
+    const { t } = useTranslation();
 
     const signOut = () => {
         axiosInstance.post("/auth/logout").then((res) => {
@@ -20,7 +22,7 @@ const Request = () => {
                 AsyncStorage.removeItem("accessToken")
                 AsyncStorage.removeItem("refreshToken")
 
-                setToast({ type: "success", text1: "Success", text2: "Logged out successfully" })
+                setToast({ type: "success", text1: t('success'), text2: t('logout success')})
 
                 router.replace('/sign-in')
             }

@@ -34,20 +34,20 @@ const SignIn = () => {
 
     const handleValidation = () => {
         let valid = true;
-        const newErrors = { ...errors };
+        const newErrors = { email: '', password: ''};
 
         if (!/\S+@\S+\.\S+/.test(form.email)) {
-            newErrors.email = 'Email is invalid';
+            newErrors.email = t('email must be valid');
             valid = false;
         }
 
         if (!form.email) {
-            newErrors.email = 'Email is required';
+            newErrors.email = t('email is required');
             valid = false;
         }
 
         if (!form.password) {
-            newErrors.password = 'Password is required';
+            newErrors.password = t('password is required');
             valid = false;
         }
 
@@ -59,6 +59,7 @@ const SignIn = () => {
         if (!handleValidation()) return;
 
         setIsSubbmitting(true)
+        setErrors({ email: '', password: '' })
 
         const email = form.email.toLowerCase();
         const password = form.password;
@@ -77,11 +78,16 @@ const SignIn = () => {
             const expiration = new Date(new Date().getTime() + 9 * 60 * 1000)
             setExpirationTime(expiration)
 
-            setToast({ type: "success", text1: "Success", text2: "Logged in successfully" })
+            setToast({ type: "success", text1: t('success'), text2: t('login success') })
 
             router.replace('/request')
         }).catch((error) => {
-            console.error(error)
+            console.log(error.response.data)
+            if (error.response.status === 401) {
+                setToast({ type: "error", text1: t("error"), text2: t('invalid login') })
+            } else {
+                setToast({ type: "error", text1: t("error"), text2: t('an error occurred') })
+            }
         }).finally(() => {
             setIsSubbmitting(false)
         })

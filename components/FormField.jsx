@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 
 import { icons } from '../constants'
 
-const FormField = ({ title, value, placeholder, handeChangeText, otherStyles, showPassword, setShowPassword, required = false, error, ...props }) => {
+const FormField = ({ title, name, value, placeholder, handeChangeText, otherStyles, showPassword, setShowPassword, required = false, error, ...props }) => {
 
     return (
         <View className={`space-y-2 ${otherStyles}`}>
@@ -30,7 +30,7 @@ const FormField = ({ title, value, placeholder, handeChangeText, otherStyles, sh
                     {...props}
                 />
 
-                {(title === 'Password' || title === 'Confirm Password') && (
+                {(name === 'password' || name === 'confirmPassword') && (
                     <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
                         <Image source={showPassword ? icons.eye : icons.eyeHide} className="w-6 h-6" resizeMode="contain" />
                     </TouchableOpacity>

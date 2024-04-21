@@ -9,6 +9,7 @@ import { Link, router } from 'expo-router'
 import DatePicker from '../../components/DatePicker'
 import axiosInstance from '../../lib/AxiosInstance'
 import { useGlobalContext } from '../../context/GlobalProvider'
+import { useTranslation } from 'react-i18next'
 
 const SignUp = () => {
     const { setToast } = useGlobalContext()
@@ -31,6 +32,7 @@ const SignUp = () => {
     });
     const [isSubbmitting, setIsSubbmitting] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
+    const { t } = useTranslation();
 
     const setDate = (date) => {
         setForm({ ...form, dob: date })
@@ -49,47 +51,52 @@ const SignUp = () => {
         };
 
         if (!/\S+@\S+\.\S+/.test(form.email)) {
-            newErrors.email = 'Email is invalid';
+            newErrors.email = t('email must be valid');
             valid = false;
         }
 
         if (!form.email) {
-            newErrors.email = 'Email is required';
+            newErrors.email = t('email is required');
+            valid = false;
+        }
+
+        if (form.password.length < 6) {
+            newErrors.password = t('password must be at least 6 characters');
             valid = false;
         }
 
         if (!form.password) {
-            newErrors.password = 'Password is required';
-            valid = false;
-        }
-
-        if (!form.repeatPassword) {
-            newErrors.repeatPassword = 'Confirm password is required';
+            newErrors.password = t('password is required');
             valid = false;
         }
 
         if (form.password !== form.repeatPassword) {
-            newErrors.repeatPassword = 'Passwords do not match';
+            newErrors.repeatPassword = t('passwords is not match');
+            valid = false;
+        }
+
+        if (!form.repeatPassword) {
+            newErrors.repeatPassword = t('password is required');
             valid = false;
         }
 
         if (!form.name) {
-            newErrors.name = 'Name is required';
+            newErrors.name = t('name is required');
             valid = false;
         }
 
         if (!form.phoneNumber.match(/^[0-9]{10,12}$/)) {
-            newErrors.phoneNumber = 'Phone number is invalid';
+            newErrors.phoneNumber = t('phone number must be valid');
             valid = false;
         }
 
         if (!form.phoneNumber) {
-            newErrors.phoneNumber = 'Phone number is required';
+            newErrors.phoneNumber = t('phone number is required');
             valid = false;
         }
 
         if (!form.dob) {
-            newErrors.dob = 'Date of birth is required';
+            newErrors.dob = t('dob is required');
             valid = false;
         }
 
@@ -115,16 +122,18 @@ const SignUp = () => {
         }).then((res) => {
             setToast({
                 type: 'success',
-                text1: 'Success',
-                text2: 'Account created successfully'
+                text1: t('success'),
+                text2: t('signup success')
             })
             router.replace('/sign-in')
         }).catch((error) => {
-            setToast({
-                type: 'error',
-                text1: 'Error',
-                text2: error.response.data.message
-            })
+            if (error.response.status === 400 && error.response.data.message === 'Email already exists') {
+                setToast({
+                    type: 'error',
+                    text1: t('error'),
+                    text2: t('email already exists')
+                })
+            }
         }).finally(() => {
             setIsSubbmitting(false)
         })
@@ -146,10 +155,11 @@ const SignUp = () => {
                         <Text className='text-4xl font-archivobold text-primary'>RES<Text className="text-secondary-200">Q</Text></Text>
                     </View>
 
-                    <Text className="text-2xl font-smibold mt-5 mb-3 font-psemibold">Sign up to ResQ</Text>
+                    <Text className="text-2xl font-smibold mt-5 mb-3 font-psemibold">{t('signup header')}</Text>
 
                     <FormField
-                        title="Email"
+                        title={t('email')}
+                        name="email"
                         value={form.email}
                         placeholder={"name@example.com"}
                         handeChangeText={(text) => setForm({ ...form, email: text })}
@@ -159,7 +169,8 @@ const SignUp = () => {
                         error={errors.email}
                     />
                     <FormField
-                        title="Password"
+                        title={t('password')}
+                        name="password"
                         value={form.password}
                         placeholder={"********"}
                         handeChangeText={(text) => setForm({ ...form, password: text })}
@@ -170,7 +181,8 @@ const SignUp = () => {
                         error={errors.password}
                     />
                     <FormField
-                        title="Confirm Password"
+                        title={t('confirm password')}
+                        name="confirmPassword"
                         value={form.repeatPassword}
                         placeholder={"********"}
                         handeChangeText={(text) => setForm({ ...form, repeatPassword: text })}
@@ -181,7 +193,8 @@ const SignUp = () => {
                         error={errors.repeatPassword}
                     />
                     <FormField
-                        title="Name"
+                        title={t('name')}
+                        name="name"
                         value={form.name}
                         placeholder={"John Doe"}
                         handeChangeText={(text) => setForm({ ...form, name: text })}
@@ -190,7 +203,8 @@ const SignUp = () => {
                         error={errors.name}
                     />
                     <FormField
-                        title="Phone Number"
+                        title={t('phone number')}
+                        name="phoneNumber"
                         value={form.phoneNumber}
                         placeholder={"08012345678"}
                         handeChangeText={(text) => setForm({ ...form, phoneNumber: text })}
@@ -199,7 +213,8 @@ const SignUp = () => {
                         error={errors.phoneNumber}
                     />
                     <FormField
-                        title="Address"
+                        title={t('address')}
+                        name="address"
                         value={form.address}
                         placeholder={"123, Main Street"}
                         handeChangeText={(text) => setForm({ ...form, address: text })}
@@ -207,7 +222,8 @@ const SignUp = () => {
                         error={errors.address}
                     />
                     <DatePicker
-                        title="Date of Birth"
+                        title={t('dob')}
+                        name="dob"
                         date={form.dob}
                         setDate={setDate}
                         otherStyles="mt-4"
@@ -215,15 +231,15 @@ const SignUp = () => {
                         error={errors.dob}
                     />
                     <CustomButton
-                        title="Sign up"
+                        title={t('signup')}
                         handlePress={submit}
                         containerStyles="w-full mt-9"
                         isLoading={isSubbmitting}
                     />
 
                     <View className="justify-center pt-5 flex-row gap-2">
-                        <Text className="text-light font-medium text-gray-700">Have an account already?</Text>
-                        <Link href={'/sign-in'} className="text-primary font-semibold">Sign in</Link>
+                        <Text className="text-light font-medium text-gray-700">{t('have account')}</Text>
+                        <Link href={'/sign-in'} className="text-primary font-semibold">{t('login')}</Link>
                     </View>
 
                 </View>
