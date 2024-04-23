@@ -1,4 +1,4 @@
-import { View, Text, Image, Alert } from 'react-native'
+import { View, Text, Image, Alert, ActivityIndicator } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Drawer } from 'expo-router/drawer';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
@@ -14,7 +14,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../../lib/AxiosInstance';
 
 const CustomDrawerContent = (props) => {
-    const { setUser, setIsLoggedIn, setToast } = useGlobalContext()
+    const { setUser, setIsLoggedIn, setToast, setIsLoading } = useGlobalContext()
     const { t } = useTranslation();
 
     const showAlert = () => {
@@ -34,6 +34,7 @@ const CustomDrawerContent = (props) => {
     }
 
     const signOut = () => {
+        setIsLoading(true)
         axiosInstance.post("/auth/logout").then((res) => {
             if (res.status === 200) {
                 setUser(null)
@@ -48,6 +49,8 @@ const CustomDrawerContent = (props) => {
             }
         }).catch((error) => {
             console.error(error)
+        }).finally(() => {
+            setIsLoading(false)
         })
     }
 
@@ -116,49 +119,61 @@ const CustomDrawerContent = (props) => {
 
 const DrawerLayout = () => {
     const { t } = useTranslation()
+    const { isLoading } = useGlobalContext()
 
     return (
-        <Drawer
-            drawerContent={(props) => <CustomDrawerContent {...props} />}
-            screenOptions={{
-                headerShown: true,
-                swipeEdgeWidth: 0,
-                drawerPosition: 'right',
-                drawerType: 'front',
-                headerTitle: (props) => <CustomHeader {...props} />,
-                headerLeft: () => null,
-                headerRight: (props) => <AvatarMenu {...props} />,
-                headerStyle: {
-                    backgroundColor: '#F73334',
-                },
-            }}
-            backBehavior="history"
-        >
-            <Drawer.Screen
-                name="profile"
-                options={{
+        <>
+            {isLoading && (
+                <View className="absolute items-center justify-center flex h-full w-full z-50">
+                    <View className="absolute justify-center items-center z-50 w-full h-full bg-black opacity-20">
+                    </View>
+                    <View className="absolute justify-center items-center z-50 w-full h-full">
+                        <ActivityIndicator size="large" color="#F73334" />
+                    </View>
+                </View>
+            )}
+            <Drawer
+                drawerContent={(props) => <CustomDrawerContent {...props} />}
+                screenOptions={{
                     headerShown: true,
-                    title: 'Profile',
-                    header: (props) => <BackButtonHeader title={t('Profile')} />,
-                    headerRight: () => null,
+                    swipeEdgeWidth: 0,
+                    drawerPosition: 'right',
+                    drawerType: 'front',
+                    headerTitle: (props) => <CustomHeader {...props} />,
+                    headerLeft: () => null,
+                    headerRight: (props) => <AvatarMenu {...props} />,
                     headerStyle: {
-                        backgroundColor: '#fff',
+                        backgroundColor: '#F73334',
                     },
                 }}
-            />
-            <Drawer.Screen
-                name="setting"
-                options={{
-                    headerShown: true,
-                    title: 'Setting',
-                    header: (props) => <BackButtonHeader title={t('Setting')} />,
-                    headerRight: () => null,
-                    headerStyle: {
-                        backgroundColor: '#fff',
-                    },
-                }}
-            />
-        </Drawer>
+                backBehavior="history"
+            >
+                <Drawer.Screen
+                    name="profile"
+                    options={{
+                        headerShown: true,
+                        title: 'Profile',
+                        header: (props) => <BackButtonHeader title={t('Profile')} />,
+                        headerRight: () => null,
+                        headerStyle: {
+                            backgroundColor: '#fff',
+                        },
+                    }}
+                />
+                <Drawer.Screen
+                    name="setting"
+                    options={{
+                        headerShown: true,
+                        title: 'Setting',
+                        header: (props) => <BackButtonHeader title={t('Setting')} />,
+                        headerRight: () => null,
+                        headerStyle: {
+                            backgroundColor: '#fff',
+                        },
+                    }}
+                />
+            </Drawer>
+        </>
     )
 }
 

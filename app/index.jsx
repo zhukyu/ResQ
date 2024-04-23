@@ -3,7 +3,7 @@ import { Image, ScrollView, Text, View } from 'react-native';
 import { Redirect, router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { images } from '../constants';
+import { images, system } from '../constants';
 import CustomButton from '../components/CustomButton';
 import { useGlobalContext } from '../context/GlobalProvider';
 import Toast from 'react-native-toast-message';
@@ -39,7 +39,7 @@ export default function App() {
                     setUser(res)
 
                     // set timer for refresh access token
-                    const expiration = new Date(new Date().getTime() + 9 * 60 * 1000)
+                    const expiration = new Date(new Date().getTime() + system.refreshTime)
                     setExpirationTime(expiration)
                 }
                 else {
@@ -48,7 +48,10 @@ export default function App() {
                 }
             })
             .catch((error) => {
-                console.error(error)
+                if (error.response.status === 401) {
+                    setIsLoggedIn(false)
+                    setUser(null)
+                }
             })
             .finally(() => {
                 setIsLoading(false)

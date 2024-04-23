@@ -2,7 +2,7 @@ import { ActivityIndicator, Alert, Image, ImageBackground, ScrollView, StyleShee
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import { images } from '../../constants'
+import { images, system } from '../../constants'
 import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton'
 import { Link, router } from 'expo-router'
@@ -74,14 +74,15 @@ const SignIn = () => {
             axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`
 
             // set timer for refresh access token
-            const expiration = new Date(new Date().getTime() + 9 * 60 * 1000)
+            const expiration = new Date(new Date().getTime() + system.refreshTime)
             setExpirationTime(expiration)
 
             setToast({ type: "success", text1: t('success'), text2: t('login success') })
 
             router.replace('/request')
         }).catch((error) => {
-            console.log(error.response.data)
+            console.log("came ehere");
+            console.log(error)
             if (error.response.status === 401) {
                 setToast({ type: "error", text1: t("error"), text2: t('invalid login') })
             } else {

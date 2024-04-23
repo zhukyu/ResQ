@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { refreshAccessToken } from "../lib/appwrite";
 import Toast from "react-native-toast-message";
+import { system } from "../constants";
 
 const GlobalContext = createContext();
 export const useGlobalContext = () => useContext(GlobalContext);
@@ -15,7 +16,7 @@ const GlobalProvider = ({ children }) => {
     const handleRefreshAccessToken = () => {
         refreshAccessToken().then((accessToken) => {
             if (accessToken) {
-                setExpirationTime(Date.now() + 9 * 60 * 1000);
+                setExpirationTime(Date.now() + system.refreshTime);
             }
         }).catch((error) => {
             if (error.response.status === 400) {
