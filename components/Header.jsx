@@ -1,8 +1,9 @@
 import { View, Text, Image } from 'react-native'
+import { Header } from '@react-navigation/elements';
 import React from 'react'
 import { images } from '../constants'
 
-const Header = ({ ...props }) => {
+const CustomHeader = ({ ...props }) => {
     return (
         <View className="flex flex-row items-center justify-center">
             <View className="flex flex-row items-center justify-center gap-2">
@@ -13,4 +14,4 @@ const Header = ({ ...props }) => {
     )
 }
 
-export default Header
+export default CustomHeader

@@ -1,12 +1,11 @@
-import { Alert, Image, ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Alert, Image, ImageBackground, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import { images } from '../../constants'
+import { images, system } from '../../constants'
 import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton'
 import { Link, router } from 'expo-router'
-import { signIn } from '../../lib/appwrite'
 import axiosInstance from '../../lib/AxiosInstance'
 import { useGlobalContext } from '../../context/GlobalProvider'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -34,7 +33,7 @@ const SignIn = () => {
 
     const handleValidation = () => {
         let valid = true;
-        const newErrors = { email: '', password: ''};
+        const newErrors = { email: '', password: '' };
 
         if (!/\S+@\S+\.\S+/.test(form.email)) {
             newErrors.email = t('email must be valid');
@@ -75,14 +74,15 @@ const SignIn = () => {
             axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`
 
             // set timer for refresh access token
-            const expiration = new Date(new Date().getTime() + 9 * 60 * 1000)
+            const expiration = new Date(new Date().getTime() + system.refreshTime)
             setExpirationTime(expiration)
 
             setToast({ type: "success", text1: t('success'), text2: t('login success') })
 
             router.replace('/request')
         }).catch((error) => {
-            console.log(error.response.data)
+            console.log("came ehere");
+            console.log(error)
             if (error.response.status === 401) {
                 setToast({ type: "error", text1: t("error"), text2: t('invalid login') })
             } else {
@@ -94,10 +94,19 @@ const SignIn = () => {
     }
 
     return (
-        // <ImageBackground source={images.wallpaper} resizeMode="cover" style={{  }} className="w-full flex flex-grow justify-center items-center">
-        <SafeAreaView className="w-full flex flex-grow justify-center items-center">
+        <View className="w-full h-full justify-center items-center">
+            {isSubbmitting && (
+                <View className="absolute items-center justify-center flex h-full w-screen z-50">
+                    <View className="absolute justify-center items-center z-50 w-full h-full bg-black opacity-20">
+                    </View>
+                    <View className="absolute justify-center items-center z-50 w-full h-full">
+                        <ActivityIndicator size="large" color="#F73334" />
+                    </View>
+                </View>
+            )}
             <View className="w-full p-5 rounded-xl">
-                <ScrollView className="" style={{
+
+                <ScrollView className="flex-grow-0" style={{
                     shadowColor: "#000",
                     shadowOffset: {
                         width: 0,
@@ -158,7 +167,7 @@ const SignIn = () => {
 
                 </ScrollView>
             </View>
-        </SafeAreaView >
+        </View >
         // </ImageBackground>
     )
 }

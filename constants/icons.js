@@ -10,6 +10,11 @@ import chatFilled from "../assets/icons/chat_filled.png";
 import resqlogo from "../assets/icons/resqlogo.svg";
 import eye from "../assets/icons/eye.png";
 import eyeHide from "../assets/icons/eye-hide.png";
+import upOutlined from "../assets/icons/up_outlined.png";
+import upFilled from "../assets/icons/up_filled.png";
+import downOutlined from "../assets/icons/down_outlined.png";
+import downFilled from "../assets/icons/down_filled.png";
+import line from "../assets/icons/line.png";
 
 export default {
     plus,
@@ -24,4 +29,9 @@ export default {
     resqlogo,
     eye,
     eyeHide,
+    upOutlined,
+    upFilled,
+    downOutlined,
+    downFilled,
+    line
 };
