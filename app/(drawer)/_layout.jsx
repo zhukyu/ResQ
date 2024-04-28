@@ -139,12 +139,12 @@ const DrawerLayout = () => {
                     swipeEdgeWidth: 0,
                     drawerPosition: 'right',
                     drawerType: 'front',
-                    headerTitle: (props) => <CustomHeader {...props} />,
-                    headerLeft: () => null,
-                    headerRight: (props) => <AvatarMenu {...props} />,
-                    headerStyle: {
-                        backgroundColor: '#F73334',
-                    },
+                    // headerTitle: (props) => <CustomHeader {...props} />,
+                    // headerLeft: () => null,
+                    // headerRight: (props) => <AvatarMenu {...props} />,
+                    // headerStyle: {
+                    //     backgroundColor: '#F73334',
+                    // },
                 }}
                 backBehavior="history"
             >
@@ -164,6 +164,18 @@ const DrawerLayout = () => {
                     name="setting"
                     options={{
                         headerShown: true,
+                        title: 'Setting',
+                        header: (props) => <BackButtonHeader title={t('Setting')} />,
+                        headerRight: () => null,
+                        headerStyle: {
+                            backgroundColor: '#fff',
+                        },
+                    }}
+                />
+                <Drawer.Screen
+                    name="(tabs)"
+                    options={{
+                        headerShown: false,
                         title: 'Setting',
                         header: (props) => <BackButtonHeader title={t('Setting')} />,
                         headerRight: () => null,
