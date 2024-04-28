@@ -42,12 +42,5 @@
       }
     },
     "owner": "zhukyu"
-  },
-  "android": {
-    "config": {
-      "googleMaps": {
-        "apiKey": "AIzaSyAjpTbJGKCThQIjbhsvh1xbrgBVMioUKns"
-      }
-    }
   }
 }
