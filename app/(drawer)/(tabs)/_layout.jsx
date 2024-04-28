@@ -4,6 +4,8 @@ import { Tabs, Redirect } from 'expo-router'
 import { icons } from '../../../constants'
 import { useRef } from 'react'
 import ButtonNativeFeedback from '../../../components/ButtonNativeFeedback'
+import CustomHeader from '../../../components/Header'
+import AvatarMenu from '../../../components/AvatarMenu'
 
 const TabIcon = ({ icon, iconFocused, color, name, focused, customClass }) => {
 
@@ -61,7 +63,28 @@ const TabsLayout = () => {
                         height: 60,
                         backgroundColor: '#fff',
                         borderTopWidth: 0,
-                        elevation: 0
+                        shadowOffset: {
+                            width: 2,
+                            height: 12,
+                        },
+                        shadowColor: 'black',
+                        shadowOpacity: 1,
+                        shadowRadius: 3.84,
+                        elevation: 15,
+                    },
+                    headerTitle: (props) => <CustomHeader {...props} />,
+                    headerLeft: () => null,
+                    // headerRight: (props) => <AvatarMenu {...props} />,
+                    headerShadowVisible: true,
+                    headerStyle: {
+                        shadowOffset: {
+                            width: 0,
+                            height: 3,
+                        },
+                        shadowColor: '#171717',
+                        shadowOpacity: 0.2,
+                        shadowRadius: 3.84,
+                        elevation: 6,
                     },
                 }}
             >
@@ -70,7 +93,7 @@ const TabsLayout = () => {
                     options={{
                         title: "Requests",
                         tabBarLabel: "Requests",
-                        headerShown: false,
+                        headerShown: true,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
                                 icon={icons.lifebuoyOutlined}
@@ -80,7 +103,7 @@ const TabsLayout = () => {
                                 focused={focused}
                             />
                         ),
-                        tabBarButton: (props) => <ButtonNativeFeedback {...props} rippleColor='#FCBBBB' />
+                        tabBarButton: (props) => <ButtonNativeFeedback {...props} rippleColor='#ffecec' />
                     }}
                 />
 
@@ -98,7 +121,10 @@ const TabsLayout = () => {
                                 focused={focused}
                             />
                         ),
-                        tabBarButton: (props) => <ButtonNativeFeedback {...props} rippleColor='#FCBBBB' />
+                        tabBarButton: (props) => <ButtonNativeFeedback {...props} rippleColor='#ffecec' />,
+                        // headerTitle: (props) => <CustomHeader {...props} />,
+                        // headerLeft: () => null,
+                        // headerRight: (props) => <AvatarMenu {...props} />,
                     }}
                 />
 
@@ -127,7 +153,7 @@ const TabsLayout = () => {
                     name="chat"
                     options={{
                         title: "Chat",
-                        headerShown: false,
+                        headerShown: true,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
                                 icon={icons.chatOutlined}
@@ -137,7 +163,7 @@ const TabsLayout = () => {
                                 focused={focused}
                             />
                         ),
-                        tabBarButton: (props) => <ButtonNativeFeedback {...props} rippleColor='#FCBBBB' />
+                        tabBarButton: (props) => <ButtonNativeFeedback {...props} rippleColor='#ffecec' />
                     }}
                 />
 
@@ -145,7 +171,7 @@ const TabsLayout = () => {
                     name="inbox"
                     options={{
                         title: "Inbox",
-                        headerShown: false,
+                        headerShown: true,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
                                 icon={icons.notificationOutlined}
@@ -155,7 +181,7 @@ const TabsLayout = () => {
                                 focused={focused}
                             />
                         ),
-                        tabBarButton: (props) => <ButtonNativeFeedback {...props} rippleColor='#FCBBBB' />
+                        tabBarButton: (props) => <ButtonNativeFeedback {...props} rippleColor='#ffecec' />
                     }}
                 />
             </Tabs>

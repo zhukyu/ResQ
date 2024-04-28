@@ -11,6 +11,8 @@ import { useEffect } from 'react';
 import { getCurrentUser } from '../lib/appwrite';
 import axiosInstance from '../lib/AxiosInstance';
 import i18next from '../lang/i18n'
+import * as Location from "expo-location";
+import Geocoding from 'react-native-geocoding';
 
 export default function App() {
     const {
@@ -29,6 +31,14 @@ export default function App() {
 
         return res
     }
+
+    const GOOGLE_MAPS_APIKEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY
+
+    useEffect(() => {
+        Location.requestForegroundPermissionsAsync();
+        Geocoding.init(GOOGLE_MAPS_APIKEY);
+    }, [])
+
 
     useEffect(() => {
         handleGetCurrentUser()

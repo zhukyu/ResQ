@@ -1,5 +1,5 @@
 const system = {
-    refreshTime: 10 * 1000,
+    refreshTime: 9 * 60 * 1000,
 }
 
 export default system;
