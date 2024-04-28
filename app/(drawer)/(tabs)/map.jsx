@@ -153,7 +153,7 @@ const Map = () => {
                 setSelectedLocation({
                     latitude,
                     longitude,
-                    address: addressComponent.formattedAddress
+                    address: addressComponent?.formattedAddress
                 });
             } catch (error) {
                 console.error("Reverse Geocoding Error:", error);
