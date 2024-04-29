@@ -1,8 +1,8 @@
 import { Image, Platform, Text, TouchableOpacity, View, Animated, TouchableNativeFeedback } from 'react-native'
-import { Tabs, Redirect } from 'expo-router'
+import { Tabs, Redirect, useSegments } from 'expo-router'
 
 import { icons } from '../../../constants'
-import { useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import ButtonNativeFeedback from '../../../components/ButtonNativeFeedback'
 import CustomHeader from '../../../components/Header'
 import AvatarMenu from '../../../components/AvatarMenu'
@@ -51,6 +51,18 @@ const EmptyIcon = ({ icon, color, name, focused }) => {
 }
 
 const TabsLayout = () => {
+    const segments = useSegments();
+
+    console.log(segments);
+    const nestedHomePageOpened = useMemo(() => {
+        return (
+            segments.length > 2 && segments[2] === "request" && segments[3] === "[id]"
+        );
+    }, [segments]);
+
+    useEffect(() => {
+        console.log(nestedHomePageOpened);
+    }, [nestedHomePageOpened])
 
     return (
         <>
@@ -71,10 +83,9 @@ const TabsLayout = () => {
                         shadowOpacity: 1,
                         shadowRadius: 3.84,
                         elevation: 15,
+                        display: nestedHomePageOpened ? "none" : 'flex',
                     },
-                    headerTitle: (props) => <CustomHeader {...props} />,
-                    headerLeft: () => null,
-                    // headerRight: (props) => <AvatarMenu {...props} />,
+                    header: (props) => <CustomHeader {...props} />,
                     headerShadowVisible: true,
                     headerStyle: {
                         shadowOffset: {
@@ -93,7 +104,7 @@ const TabsLayout = () => {
                     options={{
                         title: "Requests",
                         tabBarLabel: "Requests",
-                        headerShown: true,
+                        headerShown: false,
                         tabBarIcon: ({ color, focused }) => (
                             <TabIcon
                                 icon={icons.lifebuoyOutlined}

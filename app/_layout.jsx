@@ -57,8 +57,6 @@ const RootLayout = () => {
                     options={{ 
                         headerShown: false, 
                         animation: 'ios',
-                        headerTitle: (props) => <Header {...props} />,
-                        headerRight: (props) => <AvatarMenu />
                     }}
                 />
             </Stack>

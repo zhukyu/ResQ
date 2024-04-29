@@ -20,6 +20,16 @@ const BackButtonHeader = ({ title }) => {
             headerTitleStyle={{
                 marginLeft: -14,
             }}
+            headerStyle={{
+                shadowOffset: {
+                    width: 0,
+                    height: 3,
+                },
+                shadowColor: '#171717',
+                shadowOpacity: 0.2,
+                shadowRadius: 3.84,
+                elevation: 6,
+            }}
         />
     )
 }

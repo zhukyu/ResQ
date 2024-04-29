@@ -7,8 +7,8 @@ const RequestDetail = () => {
     const { id } = useLocalSearchParams();
 
     return (
-        <ScrollView className="bg-black-100 h-screen">
-            <Text>{`RequestDetail ${id}`}</Text>
+        <ScrollView>
+            <Text>{`RequestDetail1231231 ${id}`}</Text>
         </ScrollView>
     )
 }

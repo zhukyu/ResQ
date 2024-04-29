@@ -8,7 +8,8 @@ const Post = ({ id }) => {
     const [isEmergency, setIsEmergency] = useState(false)
 
     const handlePostPress = () => {
-        router.push(`/request/${id}`)
+        router.push(`../request/${id}`)
+        // router.push(`../request/requestDetail`, { id: id })
     }
     return (
         <TouchableNativeFeedback

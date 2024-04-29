@@ -158,6 +158,7 @@ const DrawerLayout = () => {
                         headerStyle: {
                             backgroundColor: '#fff',
                         },
+                        swipeEnabled: true,
                     }}
                 />
                 <Drawer.Screen
@@ -177,8 +178,16 @@ const DrawerLayout = () => {
                     options={{
                         headerShown: false,
                         title: 'Setting',
-                        header: (props) => <BackButtonHeader title={t('Setting')} />,
-                        headerRight: () => null,
+                        headerStyle: {
+                            backgroundColor: '#fff',
+                        },
+                    }}
+                />
+                <Drawer.Screen
+                    name="request"
+                    options={{
+                        headerShown: false,
+                        title: 'Setting',
                         headerStyle: {
                             backgroundColor: '#fff',
                         },
