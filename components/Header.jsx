@@ -25,6 +25,7 @@ const CustomHeader = ({ ...props }) => {
                 shadowOpacity: 0.2,
                 shadowRadius: 3.84,
                 elevation: 6,
+                height: 89,
             }}
         />
 

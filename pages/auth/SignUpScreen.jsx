@@ -1,4 +1,4 @@
-import { Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -10,8 +10,9 @@ import DatePicker from '../../components/DatePicker'
 import axiosInstance from '../../lib/AxiosInstance'
 import { useGlobalContext } from '../../context/GlobalProvider'
 import { useTranslation } from 'react-i18next'
+import { useNavigation } from '@react-navigation/native'
 
-const SignUp = () => {
+const SignUpScreen = () => {
     const { setToast } = useGlobalContext()
     const [form, setForm] = useState({
         email: '',
@@ -32,6 +33,7 @@ const SignUp = () => {
     });
     const [isSubbmitting, setIsSubbmitting] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
+    const navigation = useNavigation();
     const { t } = useTranslation();
 
     const setDate = (date) => {
@@ -125,7 +127,7 @@ const SignUp = () => {
                 text1: t('success'),
                 text2: t('signup success')
             })
-            router.replace('/sign-in')
+            navigation.navigate('Sign In')
         }).catch((error) => {
             if (error.response.status === 400 && error.response.data.message === 'Email already exists') {
                 setToast({
@@ -239,7 +241,9 @@ const SignUp = () => {
 
                     <View className="justify-center pt-5 flex-row gap-2">
                         <Text className="text-light font-medium text-gray-700">{t('have account')}</Text>
-                        <Link href={'/sign-in'} className="text-primary font-semibold">{t('login')}</Link>
+                        <TouchableOpacity onPress={() => navigation.navigate('Sign In')}>
+                            <Text className="text-primary font-semibold">{t('login')}</Text>
+                        </TouchableOpacity>
                     </View>
 
                 </View>
@@ -250,6 +254,6 @@ const SignUp = () => {
     )
 }
 
-export default SignUp
+export default SignUpScreen
 
 const styles = StyleSheet.create({})
