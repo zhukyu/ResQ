@@ -8,7 +8,7 @@ export const useGlobalContext = () => useContext(GlobalContext);
 
 const GlobalProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [user, setUser] = useState(null)
+    const [user, setUser] = useState('dagadadg')
     const [isLoading, setIsLoading] = useState(true)
     const [toast, setToast] = useState(null)
     const [expirationTime, setExpirationTime] = useState(null)
@@ -27,6 +27,7 @@ const GlobalProvider = ({ children }) => {
     }
 
     useEffect(() => {
+        console.log("toast: ", toast);
         if (toast) {
             console.log(toast);
             Toast.show({

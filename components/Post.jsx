@@ -3,12 +3,18 @@ import React, { useState } from 'react'
 import { AntDesign, EvilIcons, Feather, FontAwesome, FontAwesome5, FontAwesome6, MaterialIcons } from '@expo/vector-icons'
 import { icons } from '../constants'
 import { router } from 'expo-router'
+import { useNavigation } from '@react-navigation/native'
 
 const Post = ({ id }) => {
     const [isEmergency, setIsEmergency] = useState(false)
+    const navigation = useNavigation()
 
     const handlePostPress = () => {
-        router.push(`/request/${id}`)
+        navigation.navigate(`stack`, {
+            screen: `requestDetail`,
+            param: { id: id }
+        })
+        // router.push(`../request/requestDetail`, { id: id })
     }
     return (
         <TouchableNativeFeedback

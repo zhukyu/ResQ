@@ -1,20 +1,13 @@
-import { StatusBar } from 'expo-status-bar';
-import { Image, ScrollView, Text, View } from 'react-native';
-import { Redirect, router } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-import { images, system } from '../constants';
-import CustomButton from '../components/CustomButton';
-import { useGlobalContext } from '../context/GlobalProvider';
-import Toast from 'react-native-toast-message';
-import { useEffect } from 'react';
-import { getCurrentUser } from '../lib/appwrite';
-import axiosInstance from '../lib/AxiosInstance';
-import i18next from '../lang/i18n'
+import { View, Text, SafeAreaView, Image, ScrollView } from 'react-native'
+import React, { useEffect } from 'react'
+import { useGlobalContext } from '../../context/GlobalProvider';
+import { getCurrentUser } from '../../lib/appwrite';
 import * as Location from "expo-location";
+import { CommonActions, useNavigation } from '@react-navigation/native';
+import { images, system } from '../../constants';
 import Geocoding from 'react-native-geocoding';
 
-export default function App() {
+const SplashScreen = () => {
     const {
         isLoading,
         isLoggedIn,
@@ -23,6 +16,8 @@ export default function App() {
         setIsLoading,
         setExpirationTime
     } = useGlobalContext();
+
+    const navigation = useNavigation();
 
     const handleGetCurrentUser = async () => {
         const res = await getCurrentUser()
@@ -58,6 +53,7 @@ export default function App() {
                 }
             })
             .catch((error) => {
+                console.log("error", error);
                 if (error.response.status === 401) {
                     setIsLoggedIn(false)
                     setUser(null)
@@ -70,10 +66,20 @@ export default function App() {
 
     useEffect(() => {
         if (!isLoading && isLoggedIn) {
-            router.replace('/request')
+            navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: 'drawer' }],
+                })
+            );
         }
         else if (!isLoading && !isLoggedIn) {
-            router.replace('/sign-in')
+            navigation.dispatch(
+                CommonActions.reset({
+                    index: 0,
+                    routes: [{ name: 'auth' }],
+                })
+            );
         }
     }, [isLoading, isLoggedIn])
 
@@ -91,10 +97,10 @@ export default function App() {
                         </View>
                     </View>
                     {/* <CustomButton
-                        title="Continue with email"
-                        handlePress={() => router.push('/sign-in')}
-                        containerStyles="w-full mt-7"
-                    /> */}
+                    title="Continue with email"
+                    handlePress={() => router.push('/sign-in')}
+                    containerStyles="w-full mt-7"
+                /> */}
                 </View>
             </ScrollView>
 
@@ -102,3 +108,5 @@ export default function App() {
         </SafeAreaView>
     );
 }
+
+export default SplashScreen

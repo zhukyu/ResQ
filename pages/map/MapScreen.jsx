@@ -4,7 +4,7 @@ import MapView, { Geojson, Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import * as Location from 'expo-location';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome, FontAwesome6, MaterialIcons } from '@expo/vector-icons';
-import AvatarMenu from '../../../components/AvatarMenu';
+import AvatarMenu from '../../components/AvatarMenu';
 import Geocoding from 'react-native-geocoding';
 
 const styles = StyleSheet.create({
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     }
 })
 
-const Map = () => {
+const MapScreen = () => {
     const places = [
         {
             id: 1,
@@ -187,7 +187,7 @@ const Map = () => {
                 >
                     {showLocationsOfInterest()}
                 </MapView>
-                <View className="absolute z-50 flex flex-row mx-4 my-3">
+                <View className="absolute z-50 flex flex-row mx-4 my-2">
                     <View className="bg-white py-2 px-3 rounded-lg flex-row items-center flex-1 mr-4" style={styles.shadow}>
                         <View className="mr-3">
                             <FontAwesome name="search" size={18} color="gray" />
@@ -242,4 +242,4 @@ const Map = () => {
     )
 }
 
-export default Map
+export default MapScreen

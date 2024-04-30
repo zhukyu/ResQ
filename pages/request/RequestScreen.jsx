@@ -1,9 +1,9 @@
 import { View, Text, ScrollView } from 'react-native'
-import CustomButton from '../../../../components/CustomButton'
+import CustomButton from '../../components/CustomButton'
 import { Drawer } from 'expo-router/drawer'
-import Post from '../../../../components/Post'
+import Post from '../../components/Post'
 
-const Request = () => {
+const RequestScreen = () => {
 
     return (
         <ScrollView>
@@ -20,4 +20,4 @@ const Request = () => {
     )
 }
 
-export default Request
+export default RequestScreen

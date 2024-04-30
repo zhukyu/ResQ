@@ -1,9 +1,12 @@
 import { View, Text, TouchableOpacity } from 'react-native'
 import { Header } from '@react-navigation/elements';
 import { Ionicons } from '@expo/vector-icons';
-import { router } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 
-const BackButtonHeader = ({ title }) => {
+const BackButtonHeader = (props) => {
+    const navigation = useNavigation();
+    const title = props?.options?.title;
+
     return (
         // <View className="flex flex-row items-center justify-center">
         //     <Text className='text-xl font-bold'>{props?.route?.name}</Text>
@@ -11,7 +14,7 @@ const BackButtonHeader = ({ title }) => {
         <Header
             title={title}
             headerLeft={() => (
-                <TouchableOpacity className="p-4" onPress={() => router.back()}>
+                <TouchableOpacity className="p-4" onPress={() => navigation.goBack()}>
                     <View className="">
                         <Ionicons name="arrow-back" size={24} color="black" />
                     </View>
@@ -19,6 +22,16 @@ const BackButtonHeader = ({ title }) => {
             )}
             headerTitleStyle={{
                 marginLeft: -14,
+            }}
+            headerStyle={{
+                shadowOffset: {
+                    width: 0,
+                    height: 3,
+                },
+                shadowColor: '#171717',
+                shadowOpacity: 0.2,
+                shadowRadius: 3.84,
+                elevation: 6,
             }}
         />
     )
