@@ -12,7 +12,7 @@ const Post = ({ id }) => {
     const handlePostPress = () => {
         navigation.navigate(`stack`, {
             screen: `requestDetail`,
-            param: { id: id }
+            params: { id: id }
         })
         // router.push(`../request/requestDetail`, { id: id })
     }

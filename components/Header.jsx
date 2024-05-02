@@ -17,15 +17,15 @@ const CustomHeader = ({ ...props }) => {
                 </View>
             )}
             headerStyle={{
-                shadowOffset: {
-                    width: 0,
-                    height: 3,
-                },
-                shadowColor: '#171717',
-                shadowOpacity: 0.2,
-                shadowRadius: 3.84,
-                elevation: 6,
                 height: 89,
+                // shadowOffset: {
+                //     width: 0,
+                //     height: 3,
+                // },
+                // shadowColor: '#171717',
+                // shadowOpacity: 0.2,
+                // shadowRadius: 3.84,
+                // elevation: 6,
             }}
         />
 
