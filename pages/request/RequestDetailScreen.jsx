@@ -1,11 +1,12 @@
 import { View, Text, SafeAreaView, ScrollView } from 'react-native'
 import React from 'react'
 
-const RequestDetailScreen = () => {
+const RequestDetailScreen = ({ route }) => {
+    const { id } = route.params
 
     return (
-        <ScrollView className="bg-black-100 h-screen">
-            <Text>{`RequestDetail `}</Text>
+        <ScrollView className="h-screen">
+            <Text>{`RequestDetail ${id}`}</Text>
         </ScrollView>
     )
 }
