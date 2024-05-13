@@ -56,10 +56,12 @@ const AddButton = ({ icon, color, name, focused, open, setOpen }) => {
         navigation.navigate(`stack`, {
             screen: `addRequest`,
         });
+        setOpen(false);
     };
 
     const handleSOSButton = () => {
         console.log("SOS");
+        setOpen(false);
     };
 
     return (

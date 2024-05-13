@@ -29,5 +29,12 @@
     "address": "Địa chỉ",
     "have account": "Đã có tài khoản?",
     "login success": "Đăng nhập thành công",
-    "logout success": "Đăng xuất thành công"
+    "logout success": "Đăng xuất thành công",
+    "choose request type": "Chọn loại yêu cầu",
+    "create request": "Tạo yêu cầu",
+    "create request success": "Tạo yêu cầu thành công",
+    "create request confirmation": "Bạn có chắc chắn muốn tạo yêu cầu này?",
+    "yes": "Có",
+    "no": "Không",
+    "cancel": "Hủy"
 }

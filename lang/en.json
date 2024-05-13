@@ -29,5 +29,12 @@
     "address": "Address",
     "have account": "Have an account already?",
     "login success": "Log in successfully",
-    "logout success": "Log out successfully"
+    "logout success": "Log out successfully",
+    "choose request type": "Choose request type",
+    "create request": "Create request",
+    "create request success": "Create request successfully",
+    "create request confirmation": "Are you sure you want to create this request?",
+    "yes": "Yes",
+    "no": "No",
+    "cancel": "Cancel"
 }

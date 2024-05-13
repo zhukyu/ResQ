@@ -19,31 +19,33 @@ const BackButtonHeader = ({ close, ...props }) => {
                     onPress={() => navigation.goBack()}
                 >
                     <View className="">
-                        {
-                            close ? (
-                                <Ionicons name="close" size={24} color="black" />
-                            ) : (
-                                <Ionicons name="arrow-back" size={24} color="black" />
-                            )
-                        }
+                        {close ? (
+                            <Ionicons name="close" size={24} color="black" />
+                        ) : (
+                            <Ionicons
+                                name="arrow-back"
+                                size={24}
+                                color="black"
+                            />
+                        )}
                     </View>
                 </TouchableOpacity>
             )}
             headerTitleStyle={{
                 marginLeft: -14,
             }}
-            headerStyle={
-                {
-                    // shadowOffset: {
-                    //     width: 0,
-                    //     height: 3,
-                    // },
-                    // shadowColor: '#171717',
-                    // shadowOpacity: 0.2,
-                    // shadowRadius: 3.84,
-                    // elevation: 6,
-                }
-            }
+            headerStyle={{
+                elevation: 0,
+                shadowOpacity: 0,
+                // shadowOffset: {
+                //     width: 0,
+                //     height: 3,
+                // },
+                // shadowColor: '#171717',
+                // shadowOpacity: 0.2,
+                // shadowRadius: 3.84,
+                // elevation: 6,
+            }}
         />
     );
 };

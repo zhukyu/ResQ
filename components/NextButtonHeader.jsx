@@ -4,7 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import CustomButton from "./CustomButton";
 
-const NextButtonHeader = ({ next, canProceed, ...props }) => {
+const NextButtonHeader = ({ next, params, canProceed, ...props }) => {
     const navigation = useNavigation();
     const title = props?.options?.title;
 
@@ -21,6 +21,10 @@ const NextButtonHeader = ({ next, canProceed, ...props }) => {
                     </View>
                 </TouchableOpacity>
             )}
+            headerStyle={{
+                elevation: 0,
+                shadowOpacity: 0,
+            }}
             headerTitleStyle={{
                 marginLeft: -14,
             }}
@@ -28,9 +32,9 @@ const NextButtonHeader = ({ next, canProceed, ...props }) => {
                 <View className="flex flex-row items-center justify-end w-full">
                     <CustomButton
                         title="Next"
-                        handlePress={() => navigation.navigate(next)}
+                        handlePress={() => navigation.navigate(next, params)}
                         containerStyles="min-h-[30px] py-2 px-3 rounded-full"
-                        textStyles="text-base"
+                        textStyles="text-sm font-semibold"
                         disabled={!canProceed}
                     />
                 </View>
