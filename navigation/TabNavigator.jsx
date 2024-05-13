@@ -114,7 +114,7 @@ const TabNavigator = ({ navigation }) => {
                         zIndex: 50,
                     },
                     header: (props) => <CustomHeader {...props} />,
-                    headerShadowVisible: true,
+                    headerShadowVisible: false,
                     headerStyle: {
                         shadowOffset: {
                             width: 0,

@@ -6,6 +6,7 @@ import Step1Screen from "../pages/request/addRequest/Step1Screen";
 import Step2Screen from "../pages/request/addRequest/Step2Screen";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
+import Step3Screen from "../pages/request/addRequest/Step3Screen";
 
 const AddRequestStack = createStackNavigator();
 
@@ -34,6 +35,7 @@ const AddRequestNavigator = () => {
         >
             <AddRequestStack.Screen name="step1" component={Step1Screen} />
             <AddRequestStack.Screen name="step2" component={Step2Screen} />
+            <AddRequestStack.Screen name="step3" component={Step3Screen} />
         </AddRequestStack.Navigator>
     );
 };

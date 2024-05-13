@@ -18,6 +18,8 @@ const CustomHeader = ({ ...props }) => {
             )}
             headerStyle={{
                 height: 89,
+                elevation: 0,
+                shadowOpacity: 0,
                 // shadowOffset: {
                 //     width: 0,
                 //     height: 3,
@@ -28,20 +30,6 @@ const CustomHeader = ({ ...props }) => {
                 // elevation: 6,
             }}
         />
-
-        // <Header
-        // title={title}
-        // headerLeft={() => (
-        //     <TouchableOpacity className="p-4" onPress={() => router.back()}>
-        //         <View className="">
-        //             <Ionicons name="arrow-back" size={24} color="black" />
-        //         </View>
-        //     </TouchableOpacity >
-        // )}
-        // headerTitleStyle={{
-        //     marginLeft: -14,
-        // }}
-        // />
     )
 }
 
