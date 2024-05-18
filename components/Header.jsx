@@ -17,7 +17,7 @@ const CustomHeader = ({ ...props }) => {
                 </View>
             )}
             headerStyle={{
-                height: 89,
+                // height: 89,
                 elevation: 0,
                 shadowOpacity: 0,
                 // shadowOffset: {

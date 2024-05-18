@@ -187,7 +187,7 @@ const MapScreen = () => {
                 >
                     {showLocationsOfInterest()}
                 </MapView>
-                <View className="absolute z-50 flex flex-row mx-4 my-2">
+                <View className="absolute z-50 flex flex-row mx-4 my-[6]">
                     <View className="bg-white py-2 px-3 rounded-lg flex-row items-center flex-1 mr-4" style={styles.shadow}>
                         <View className="mr-3">
                             <FontAwesome name="search" size={18} color="gray" />
