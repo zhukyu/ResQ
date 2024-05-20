@@ -8,7 +8,7 @@ import {
     Pressable,
     StatusBar,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Gallery from "react-native-awesome-gallery";
 import ImageView from "react-native-image-viewing";
 // import ImageView from "react-native-zoom-image-view";
@@ -25,15 +25,26 @@ const ImageCollage = ({ images, handleDeleteImage }) => {
         setIndex(index);
     };
 
-    const ImageRender = ({ height, width, index }) => {
+    const ImageRender = ({ height, width, index, resizeMode }) => {
+        const [imageHeight, setImageHeight] = useState(0);
+
+        useEffect(() => {
+            Image.getSize(images[index], (width, height) => {
+                const aspectRatio = width / height;
+                setImageHeight(windowWidth / aspectRatio);
+            });
+        }, [index]);
+
         return (
             <Pressable onPress={() => handleImagePress(index)}>
                 <Image
                     source={{ uri: images[index] }}
                     style={{
                         width: width,
-                        height: height,
+                        height: height === "auto" ? imageHeight : height,
+                        maxHeight: windowWidth * 1.5,
                     }}
+                    resizeMode={resizeMode || "cover"}
                 />
             </Pressable>
         );
@@ -82,11 +93,13 @@ const ImageCollage = ({ images, handleDeleteImage }) => {
             />
             {(() => {
                 switch (images.length) {
+                    case 0:
+                        return null;
                     case 1:
                         return (
                             <ImageRender
                                 key={index}
-                                height={windowWidth}
+                                height="auto"
                                 width={windowWidth}
                                 index={0}
                             />

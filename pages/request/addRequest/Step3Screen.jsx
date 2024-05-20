@@ -52,7 +52,7 @@ const Step3Screen = () => {
     const { step2Data } = useRoute().params;
 
     useEffect(() => {
-        console.log(step2Data);
+        // console.log(step2Data);
     }, [step2Data]);
 
     const navigation = useNavigation();
@@ -254,7 +254,9 @@ const Step3Screen = () => {
                     text1: t("success"),
                     text2: t("create request success"),
                 });
-                navigation.navigate("request");
+                navigation.navigate("request", {
+                    triggerRefresh: true,
+                });
             }
         } catch (error) {
             console.error(error);
