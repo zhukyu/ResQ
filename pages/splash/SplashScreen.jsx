@@ -39,7 +39,7 @@ const SplashScreen = () => {
         handleGetCurrentUser()
             .then((res) => {
                 if (res) {
-                    console.log("current user", res);
+                    // console.log("current user", res);
                     setIsLoggedIn(true)
                     setUser(res)
 

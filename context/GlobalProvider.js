@@ -8,7 +8,7 @@ export const useGlobalContext = () => useContext(GlobalContext);
 
 const GlobalProvider = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [user, setUser] = useState('dagadadg')
+    const [user, setUser] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const [toast, setToast] = useState(null)
     const [expirationTime, setExpirationTime] = useState(null)

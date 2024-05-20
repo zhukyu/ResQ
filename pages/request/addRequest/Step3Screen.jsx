@@ -26,6 +26,8 @@ import Geocoding from "react-native-geocoding";
 import haversine from "haversine";
 import { useTranslation } from "react-i18next";
 import LoadingOverlay from "../../../components/LoadingOverlay";
+import axiosInstance from "../../../lib/AxiosInstance";
+import { useGlobalContext } from "../../../context/GlobalProvider";
 
 const styles = StyleSheet.create({
     shadow: {
@@ -50,11 +52,12 @@ const Step3Screen = () => {
     const { step2Data } = useRoute().params;
 
     useEffect(() => {
-        console.log(step2Data);
+        // console.log(step2Data);
     }, [step2Data]);
 
     const navigation = useNavigation();
     const { t } = useTranslation();
+    const { setToast } = useGlobalContext();
     const [canProceed, setCanProceed] = useState(false);
     const [initialRegion, setInitialRegion] = useState(null);
     const [currentLocation, setCurrentLocation] = useState(null);
@@ -214,20 +217,47 @@ const Step3Screen = () => {
         }
     }, [isCustomLocation]);
 
+    const uploadImages = async (images) => {
+        const formData = new FormData();
+        images.forEach((image, index) => {
+            formData.append("files", {
+                uri: image.uri,
+                name: image.fileName,
+                type: image.mimeType,
+            });
+        });
+        const response = await axiosInstance.post("/upload", formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        return response.data.data;
+    };
+
     const createRequest = async () => {
         setIsSubmitting(true);
         try {
+            if (step2Data.media.length > 0) {
+                const imageUrls = await uploadImages(step2Data.media);
+                step2Data.media = imageUrls.map((image) => image.url);
+            }
             const requestData = {
                 ...step2Data,
                 ...selectedLocation,
                 isEmergency: 0,
             };
-            console.log(requestData);
-            // const response = await axiosInstance.post("/request", {
-            //     ...step2Data,
-            //     location: selectedLocation,
-            // });
-            // console.log(response);
+
+            const response = await axiosInstance.post("/requests", requestData);
+            if (response.status === 200) {
+                setToast({
+                    type: "success",
+                    text1: t("success"),
+                    text2: t("create request success"),
+                });
+                navigation.navigate("request", {
+                    triggerRefresh: true,
+                });
+            }
         } catch (error) {
             console.error(error);
         } finally {
