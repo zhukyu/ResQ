@@ -7,66 +7,135 @@ import {
 } from "react-native";
 import Post from "../../components/Post";
 import axiosInstance from "../../lib/AxiosInstance";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 
-const RequestScreen = ({ route }) => {
-    const { triggerRefresh } = route.params || {};
+const RequestScreen = ({ route, navigation }) => {
+    const { triggerRefresh, scrollToTop } = route.params || {};
     const [posts, setPosts] = useState([]);
-    const [page, setPage] = useState(1);
+    const flatListRef = useRef();
+    const isFocused = useIsFocused();
     const [loading, setLoading] = useState(false);
+    const [loadingMore, setLoadingMore] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
 
-    const fetchPosts = async () => {
-        if (loading) return; // Avoid multiple concurrent requests
+    const fetchData = async (isLoadMore = false, isRefreshing = false) => {
+        if (loading || loadingMore || refreshing) return;
 
-        setLoading(true);
+        if (isLoadMore) {
+            setLoadingMore(true);
+        } else if (isRefreshing) {
+            setRefreshing(true);
+        } else {
+            setLoading(true);
+        }
+
         try {
             const response = await axiosInstance.get(
-                `/requests?page=${page}&itemPerPage=10`
+                `/requests?page=${isRefreshing ? 1 : page}&itemPerPage=5`
             );
-            const data = await response.data.requests;
-            setPosts((prevPosts) => [...prevPosts, ...data]);
-            setPage((prevPage) => prevPage + 1);
+            const result = await response.data.requests;
+
+            if (result.length > 0) {
+                if (isRefreshing) {
+                    setPosts(result);
+                    setPage(2); // reset to the second page for next load more
+                    setHasMore(true); // reset the hasMore flag for refreshing
+                } else {
+                    setPosts((prevData) =>
+                        isLoadMore ? [...prevData, ...result] : result
+                    );
+                    setPage((prevPage) => prevPage + 1);
+                }
+            } else {
+                setHasMore(false);
+            }
         } catch (error) {
-            console.error("Error fetching posts:", error);
-            // Handle errors gracefully (e.g., show a user-friendly message)
+            console.error(error);
         } finally {
-            setLoading(false);
+            if (isLoadMore) {
+                setLoadingMore(false);
+            } else if (isRefreshing) {
+                setRefreshing(false);
+            } else {
+                setLoading(false);
+            }
         }
     };
 
-    const performRefresh = () => {
-        setPosts([]);
-        setPage(1);
-    };
+    useEffect(() => {
+        if (isFocused) {
+            const unsubscribe = navigation.addListener("tabPress", (e) => {
+                e.preventDefault();
+
+                flatListRef?.current?.scrollToOffset({
+                    animated: true,
+                    offset: 0,
+                });
+
+                handleRefresh();
+            });
+
+            return unsubscribe;
+        }
+    }, [navigation, isFocused]);
+
+    useFocusEffect(
+        useCallback(() => {
+            if (scrollToTop) {
+                flatListRef?.current?.scrollToOffset({
+                    animated: true,
+                    offset: 0,
+                });
+                handleRefresh();
+            }
+        }, [scrollToTop])
+    );
 
     useEffect(() => {
-        console.log("triggerRefresh: ", triggerRefresh);
         if (triggerRefresh) {
-            performRefresh();
+            handleRefresh();
         }
     }, [triggerRefresh]);
 
     // useEffect(() => {
-    //     if (!isFocus) return; // Fetch posts only when the screen is focused
-    //     setPosts([]);
-    //     setPage(1);
-    // }, [isFocus]);
+    //     if (!isFocused) return; // Fetch posts only when the screen is focused
+    //     handleRefresh();
+    // }, [isFocused]);
 
     useEffect(() => {
-        fetchPosts();
-    }, [page]);
+        fetchData(false, true);
+    }, []);
 
     useEffect(() => {
         // console.log(posts);
     }, [posts]);
 
+    const handleLoadMore = () => {
+        if (hasMore && !loadingMore) {
+            fetchData(true);
+        }
+    };
+
+    const handleRefresh = () => {
+        fetchData(false, true);
+    };
+
     const renderFooter = () =>
-        loading ? <ActivityIndicator size="large" color="#F73334" /> : null;
+        loadingMore ? <ActivityIndicator size="large" color="#F73334" /> : null;
 
     return (
         <FlatList
+            ref={flatListRef}
             data={posts}
             renderItem={({ item }) => <Post item={item} />}
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={renderFooter}
         />
     );
 };

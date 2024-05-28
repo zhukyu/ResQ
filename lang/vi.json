@@ -36,5 +36,9 @@
     "create request confirmation": "Bạn có chắc chắn muốn tạo yêu cầu này?",
     "yes": "Có",
     "no": "Không",
-    "cancel": "Hủy"
+    "cancel": "Hủy",
+    "create emergency request": "Tạo yêu cầu khẩn cấp",
+    "create emergency request confirmation": "Bạn có chắc chắn muốn tạo yêu cầu khẩn cấp này?",
+    "loading...": "Đang tải...",
+    "EMERGENCY": "KHẨN CẤP"
 }

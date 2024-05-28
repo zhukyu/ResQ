@@ -36,5 +36,9 @@
     "create request confirmation": "Are you sure you want to create this request?",
     "yes": "Yes",
     "no": "No",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "create emergency request": "Create emergency request",
+    "create emergency request confirmation": "Are you sure you want to create this emergency request?",
+    "loading...": "Loading...",
+    "EMERGENCY": "EMERGENCY"
 }

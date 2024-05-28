@@ -5,7 +5,7 @@ import {
     TouchableNativeFeedback,
     TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { memo, useState } from "react";
 import {
     AntDesign,
     EvilIcons,
@@ -20,12 +20,13 @@ import { router } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 import ImageCollage from "./ImageCollage";
 import { useGlobalContext } from "../context/GlobalProvider";
+import { useTranslation } from "react-i18next";
 
 const Post = ({ item }) => {
     const { user } = useGlobalContext();
-    const [isEmergency, setIsEmergency] = useState(false);
     const navigation = useNavigation();
     const media = item.requestMedia;
+    const { t } = useTranslation();
 
     const handlePostPress = () => {
         navigation.navigate(`stack`, {
@@ -43,7 +44,7 @@ const Post = ({ item }) => {
         <TouchableNativeFeedback delayPressIn={100} onPress={handlePostPress}>
             <View
                 className={`bg-white w-full py-3 mb-1 flex flex-col ${
-                    isEmergency ? "border-2 border-primary" : null
+                    item?.isEmergency ? "border border-primary" : null
                 }`}
             >
                 <View className="flex flex-row justify-center w-full px-4">
@@ -78,20 +79,44 @@ const Post = ({ item }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View className="flex flex-row justify-center items-center w-full mt-2 px-4">
+                {/* {item?.isEmergency ? (
+                    <View className="flex flex-row justify-start items-center w-full mt-3 px-4">
+                        <Text className="text-sm font-semibold text-primary">
+                            {t("EMERGENCY")}
+                        </Text>
+                    </View>
+                ) : null} */}
+                <View className="flex flex-col justify-center items-center w-full mt-3 px-4">
+                    {item?.isEmergency ? (
+                        <View className="flex justify-start items-center w-full flex-row mb-1">
+                            <Text className="text-sm font-semibold text-primary">
+                                ⚠️ {t("EMERGENCY")} ⚠️
+                            </Text>
+                        </View>
+                    ) : null}
                     <Text
-                        className="text-base text-gray-500 w-full"
+                        className="text-base text-gray-700 w-full"
                         numberOfLines={3}
                     >
                         {item.content}
                     </Text>
                 </View>
-                <View className="my-2" pointerEvents="none">
-                    <ImageCollage images={media.map((image) => image.url)} />
-                </View>
+                {media && media.length > 0 ? (
+                    <View className="mt-2" pointerEvents="none">
+                        <ImageCollage
+                            images={media.map((image) => image.url)}
+                        />
+                    </View>
+                ) : null}
 
-                <View className="flex flex-row justify-between items-center w-full mt-2 px-4">
-                    <View className="flex flex-row justify-center items-center border-[1px] border-gray-300 rounded-2xl px-2 py-1">
+                <View className="flex flex-row justify-between items-center w-full mt-3 px-4">
+                    <View
+                        className={`flex flex-row justify-center items-center border-[1px] border-gray-300 rounded-2xl px-2 py-1 ${
+                            item?.isEmergency
+                                ? "border-gray-300"
+                                : "border-gray-300"
+                        }`}
+                    >
                         <Image
                             source={icons.upOutlined}
                             className="w-5 h-5 mr-3"
@@ -112,9 +137,19 @@ const Post = ({ item }) => {
                         />
                     </View>
 
-                    <View className="flex flex-row justify-center items-center border-[1px] border-gray-300 rounded-2xl px-2 py-1">
-                        <View className="mr-1">
-                            <EvilIcons name="comment" size={20} color="gray" />
+                    <View
+                        className={`flex flex-row justify-center items-center border-[1px]  rounded-2xl px-2 py-1 ${
+                            item?.isEmergency
+                                ? "border-gray-300"
+                                : "border-gray-300"
+                        }`}
+                    >
+                        <View className="mr-1 w-5 h-5">
+                            <FontAwesome
+                                name="commenting-o"
+                                size={18}
+                                color="gray"
+                            />
                         </View>
                         <Text className="text-sm font-medium text-gray-500 mr-2">
                             12 comments
@@ -126,4 +161,4 @@ const Post = ({ item }) => {
     );
 };
 
-export default Post;
+export default memo(Post);

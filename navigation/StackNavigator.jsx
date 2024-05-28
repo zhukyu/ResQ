@@ -8,6 +8,7 @@ import {
 import BackButtonHeader from "../components/BackButtonHeader";
 import AddRequestScreen from "../pages/request/AddRequestScreen";
 import AddRequestNavigator from "./AddRequestNavigator";
+import EmergencyRequestScreen from "../pages/request/EmergencyRequestScreen";
 
 const Stack = createStackNavigator();
 
@@ -39,6 +40,20 @@ const StackNavigator = () => {
                     cardStyleInterpolator:
                         CardStyleInterpolators.forHorizontalIOS,
                     headerShown: false,
+                    cardStyle: {
+                        backgroundColor: "white",
+                    },
+                }}
+            />
+            <Stack.Screen
+                name="emergencyRequest"
+                component={EmergencyRequestScreen}
+                options={{
+                    title: "",
+                    cardStyleInterpolator:
+                        CardStyleInterpolators.forHorizontalIOS,
+                    headerShown: false,
+                    header: (props) => <BackButtonHeader {...props} close={true} />,
                     cardStyle: {
                         backgroundColor: "white",
                     },

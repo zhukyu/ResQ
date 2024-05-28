@@ -14,6 +14,7 @@ import NotificationScreen from "../pages/notification/NotificationScreen";
 import RequestScreen from "../pages/request/RequestScreen";
 import { icons } from "../constants";
 import AddButton from "../components/AddButton";
+import { useNavigationState } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
@@ -138,7 +139,7 @@ const TabNavigator = ({ navigation }) => {
                     tabBarButton: ({ children, style, ...props }) => (
                         <TouchableNativeFeedback
                             {...props}
-                            onPress={handleTabPress.bind(this, route.name)}
+                            // onPress={handleTabPress.bind(this, route.name)}
                             background={TouchableNativeFeedback.Ripple(
                                 "#ffecec",
                                 true
@@ -156,6 +157,22 @@ const TabNavigator = ({ navigation }) => {
                         title: "Requests",
                         tabBarLabel: "Requests",
                     }}
+                    // listeners={({ navigation, route }) => ({
+                    //     tabPress: (e) => {
+                    //         e.preventDefault();
+
+                    //         const isFocused = navigation.isFocused();
+
+                    //         if (isFocused) {
+                    //             console.log("Request tab pressed again");
+                    //             navigation.navigate("request", {
+                    //                 scrollToTop: true,
+                    //             });
+                    //         } else {
+                    //             navigation.navigate("request");
+                    //         }
+                    //     },
+                    // })}
                 />
                 <Tab.Screen
                     name="map"
