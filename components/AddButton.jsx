@@ -60,7 +60,9 @@ const AddButton = ({ icon, color, name, focused, open, setOpen }) => {
     };
 
     const handleSOSButton = () => {
-        console.log("SOS");
+        navigation.navigate(`stack`, {
+            screen: `emergencyRequest`,
+        });
         setOpen(false);
     };
 

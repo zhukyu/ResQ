@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Modal, View, ActivityIndicator } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Modal, View, ActivityIndicator, Dimensions } from "react-native";
 
 const LoadingOverlay = ({ visible }) => {
 

@@ -3,7 +3,7 @@ import { Header } from "@react-navigation/elements";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-const BackButtonHeader = ({ close, ...props }) => {
+const BackButtonHeader = ({ close, headerStyle, ...props }) => {
     const navigation = useNavigation();
     const title = props?.options?.title;
 
@@ -37,6 +37,7 @@ const BackButtonHeader = ({ close, ...props }) => {
             headerStyle={{
                 elevation: 0,
                 shadowOpacity: 0,
+                ...headerStyle,
                 // shadowOffset: {
                 //     width: 0,
                 //     height: 3,
