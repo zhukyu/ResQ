@@ -4,6 +4,7 @@ import {
     Image,
     TouchableWithoutFeedback,
     TouchableNativeFeedback,
+    Dimensions,
 } from "react-native";
 import React, { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -15,10 +16,13 @@ import RequestScreen from "../pages/request/RequestScreen";
 import { icons } from "../constants";
 import AddButton from "../components/AddButton";
 import { useNavigationState } from "@react-navigation/native";
+import { useHeaderHeight } from "@react-navigation/elements";
 
 const Tab = createBottomTabNavigator();
+const { width, height } = Dimensions.get("window");
 
 const TabIcon = ({ color, name, focused, customClass, size, route }) => {
+
     let icon = null;
     let title = "";
     switch (route.name) {
@@ -85,7 +89,12 @@ const TabNavigator = ({ navigation }) => {
     };
 
     return (
-        <>
+        <View
+            style={{
+                flex: 1,
+                minHeight: height
+            }}
+        >
             {open && (
                 <TouchableWithoutFeedback
                     onPress={() => setOpen(false)}
@@ -100,6 +109,7 @@ const TabNavigator = ({ navigation }) => {
                     tabBarShowLabel: false,
                     tabBarActiveTintColor: "#F73334",
                     tabBarInactiveTintColor: "#AAAAAA",
+                    // tabBarHideOnKeyboard: true,
                     tabBarStyle: {
                         height: 60,
                         backgroundColor: "#fff",
@@ -212,7 +222,7 @@ const TabNavigator = ({ navigation }) => {
                 <Tab.Screen name="chat" component={ChatScreen} />
                 <Tab.Screen name="inbox" component={NotificationScreen} />
             </Tab.Navigator>
-        </>
+        </View>
     );
 };
 

@@ -40,5 +40,10 @@
     "create emergency request": "Tạo yêu cầu khẩn cấp",
     "create emergency request confirmation": "Bạn có chắc chắn muốn tạo yêu cầu khẩn cấp này?",
     "loading...": "Đang tải...",
-    "EMERGENCY": "KHẨN CẤP"
+    "EMERGENCY": "KHẨN CẤP",
+    "location": "Vị trí",
+    "view location": "Xem vị trí trên bản đồ",
+    "chat": "Nhắn tin",
+    "start chat": "Bắt đầu cuộc trò chuyện với người yêu cầu",
+    "search": "Tìm kiếm"
 }

@@ -10,6 +10,9 @@ import * as Location from "expo-location";
 import Geocoding from "react-native-geocoding";
 import Toast from "react-native-toast-message";
 import * as NavigationBar from "expo-navigation-bar";
+import { PaperProvider } from "react-native-paper";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const App = () => {
     const [fontsLoaded, error] = useFonts({
@@ -46,10 +49,16 @@ const App = () => {
 
     return (
         <GlobalProvider>
-            <NavigationContainer>
-                <AppNavigator />
-            </NavigationContainer>
-            <Toast />
+            <PaperProvider>
+                <GestureHandlerRootView>
+                    <BottomSheetModalProvider>
+                        <NavigationContainer>
+                            <AppNavigator />
+                        </NavigationContainer>
+                        <Toast />
+                    </BottomSheetModalProvider>
+                </GestureHandlerRootView>
+            </PaperProvider>
         </GlobalProvider>
     );
 };

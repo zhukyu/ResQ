@@ -9,6 +9,8 @@ import BackButtonHeader from "../components/BackButtonHeader";
 import AddRequestScreen from "../pages/request/AddRequestScreen";
 import AddRequestNavigator from "./AddRequestNavigator";
 import EmergencyRequestScreen from "../pages/request/EmergencyRequestScreen";
+import LocationView from "../components/LocationView";
+import ChatSearch from "../components/ChatSearch";
 
 const Stack = createStackNavigator();
 
@@ -27,9 +29,15 @@ const StackNavigator = () => {
                     title: "Request Detail",
                     cardStyleInterpolator:
                         CardStyleInterpolators.forHorizontalIOS,
-                    header: (props) => (
-                        <BackButtonHeader close={true} {...props} />
-                    ),
+                }}
+            />
+            <Stack.Screen
+                name="chatSearch"
+                component={ChatSearch}
+                options={{
+                    title: "Chat Search",
+                    cardStyleInterpolator:
+                        CardStyleInterpolators.forHorizontalIOS,
                 }}
             />
             <Stack.Screen

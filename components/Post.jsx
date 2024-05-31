@@ -4,8 +4,9 @@ import {
     Image,
     TouchableNativeFeedback,
     TouchableOpacity,
+    Modal,
 } from "react-native";
-import React, { memo, useState } from "react";
+import React, { memo, useCallback, useMemo, useRef, useState } from "react";
 import {
     AntDesign,
     EvilIcons,
@@ -21,30 +22,74 @@ import { useNavigation } from "@react-navigation/native";
 import ImageCollage from "./ImageCollage";
 import { useGlobalContext } from "../context/GlobalProvider";
 import { useTranslation } from "react-i18next";
+import { Menu } from "react-native-paper";
+import {
+    BottomSheetBackdrop,
+    BottomSheetModal,
+    BottomSheetView,
+} from "@gorhom/bottom-sheet";
+import LocationView from "./LocationView";
 
-const Post = ({ item }) => {
-    const { user } = useGlobalContext();
+const MenuItem = ({ icon, title, description, onPress }) => (
+    <TouchableNativeFeedback
+        onPress={onPress}
+    >
+        <View className="flex flex-row items-center p-2">
+            <View className="w-12 flex items-center justify-center">
+                {icon}
+            </View>
+            <View className="flex">
+                <Text className="text-base font-medium ml-2 text-gray-700">
+                    {title}
+                </Text>
+                <Text className="text-sm font-normal ml-2 text-gray-500">
+                    {description}
+                </Text>
+            </View>
+        </View>
+    </TouchableNativeFeedback>
+);
+
+const Post = ({ item, isFullView }) => {
+    const user = item.users;
     const navigation = useNavigation();
     const media = item.requestMedia;
     const { t } = useTranslation();
+    const menuRef = useRef(null);
+
+    const [isMapModalVisible, setIsMapModalVisible] = useState(false);
+
+    const openMenu = useCallback(() => {
+        menuRef.current?.present();
+    }, []);
+
+    const handleClose = useCallback(() => {
+        menuRef.current?.dismiss();
+    }, []);
 
     const handlePostPress = () => {
         navigation.navigate(`stack`, {
             screen: `requestDetail`,
             params: { id: item.id },
         });
-        // router.push(`../request/requestDetail`, { id: id })
     };
 
     const handleLocationPress = () => {
-        navigation.navigate("map", { item: item });
+        handleClose();
+        // navigation.navigate(`stack`, {
+        //     screen: `locationView`,
+        //     params: { item },
+        // });
+        setIsMapModalVisible(true);
     };
 
-    return (
-        <TouchableNativeFeedback delayPressIn={100} onPress={handlePostPress}>
+    const PostContent = useMemo(() => {
+        return (
             <View
                 className={`bg-white w-full py-3 mb-1 flex flex-col ${
-                    item?.isEmergency ? "border border-primary" : null
+                    item?.isEmergency && !isFullView
+                        ? "border border-primary"
+                        : null
                 }`}
             >
                 <View className="flex flex-row justify-center w-full px-4">
@@ -68,24 +113,16 @@ const Post = ({ item }) => {
                             10km · 18:30
                         </Text>
                     </View>
-                    <View className="flex flex-row justify-center items-center gap-2">
-                        <FontAwesome6
-                            name="message"
-                            size={20}
-                            color="#F73334"
-                        />
-                        <TouchableOpacity onPress={handleLocationPress}>
-                            <Feather name="map-pin" size={20} color="#F73334" />
-                        </TouchableOpacity>
-                    </View>
+                    <TouchableOpacity onPress={openMenu}>
+                        <View className="flex flex-row justify-center items-center p-1">
+                            <Feather
+                                name="more-horizontal"
+                                size={24}
+                                color="gray"
+                            />
+                        </View>
+                    </TouchableOpacity>
                 </View>
-                {/* {item?.isEmergency ? (
-                    <View className="flex flex-row justify-start items-center w-full mt-3 px-4">
-                        <Text className="text-sm font-semibold text-primary">
-                            {t("EMERGENCY")}
-                        </Text>
-                    </View>
-                ) : null} */}
                 <View className="flex flex-col justify-center items-center w-full mt-3 px-4">
                     {item?.isEmergency ? (
                         <View className="flex justify-start items-center w-full flex-row mb-1">
@@ -96,13 +133,16 @@ const Post = ({ item }) => {
                     ) : null}
                     <Text
                         className="text-base text-gray-700 w-full"
-                        numberOfLines={3}
+                        numberOfLines={isFullView ? 0 : 3}
                     >
                         {item.content}
                     </Text>
                 </View>
                 {media && media.length > 0 ? (
-                    <View className="mt-2" pointerEvents="none">
+                    <View
+                        className="mt-2"
+                        pointerEvents={isFullView ? "auto" : "none"}
+                    >
                         <ImageCollage
                             images={media.map((image) => image.url)}
                         />
@@ -157,7 +197,67 @@ const Post = ({ item }) => {
                     </View>
                 </View>
             </View>
-        </TouchableNativeFeedback>
+        );
+    });
+
+    return (
+        <View className="">
+            {isFullView ? (
+                PostContent
+            ) : (
+                <TouchableNativeFeedback
+                    delayPressIn={100}
+                    onPress={handlePostPress}
+                >
+                    {PostContent}
+                </TouchableNativeFeedback>
+            )}
+            <BottomSheetModal
+                ref={menuRef}
+                enablePanDownToClose={true}
+                enableDynamicSizing={true}
+                backdropComponent={(props) => (
+                    <BottomSheetBackdrop
+                        {...props}
+                        opacity={0.5}
+                        enableTouchThrough={false}
+                        appearsOnIndex={0}
+                        disappearsOnIndex={-1}
+                    />
+                )}
+            >
+                <BottomSheetView style="">
+                    <MenuItem
+                        icon={
+                            <FontAwesome6
+                                name="location-dot"
+                                size={24}
+                                color="gray"
+                            />
+                        }
+                        title={t("location")}
+                        description={t("view location")}
+                        onPress={handleLocationPress}
+                    />
+                    <MenuItem
+                        title={t("chat")}
+                        description={t("start chat")}
+                        icon={
+                            <MaterialIcons name="chat" size={24} color="gray" />
+                        }
+                        onPress={() => {}}
+                    />
+                </BottomSheetView>
+            </BottomSheetModal>
+            <Modal
+                visible={isMapModalVisible}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() => setIsMapModalVisible(false)}
+            >
+                <LocationView item={item} />
+            </Modal>
+        </View>
     );
 };
 
