@@ -78,6 +78,7 @@ const Step1Screen = () => {
                         <RequestTypeCard
                             key={index}
                             name={requestType.name}
+                            icon={requestType.iconUrl}
                             onPress={() => handlePress(requestType.id)}
                         />
                     ))}

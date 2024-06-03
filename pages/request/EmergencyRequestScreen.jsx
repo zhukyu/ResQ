@@ -9,7 +9,6 @@ import {
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import BackButtonHeader from "../../components/BackButtonHeader";
-import { MotiView } from "moti";
 import { Easing } from "react-native-reanimated";
 import { useTranslation } from "react-i18next";
 import * as Location from "expo-location";
@@ -136,12 +135,10 @@ const EmergencyRequestScreen = () => {
         setIsSubmitting(true);
         try {
             const requestData = {
-                requestTypeId: 1,
-                content: "Emergency Request",
+                isEmergency: 1,
                 latitude: currentLocation?.latitude,
                 longitude: currentLocation?.longitude,
                 address: currentAddress,
-                isEmergency: 1,
             };
 
             const response = await axiosInstance.post("/requests", requestData);
@@ -242,7 +239,7 @@ const EmergencyRequestScreen = () => {
                                 }),
                             ])
                         ).start();
-                    }, index * 400);
+                    }, index * 500);
                 });
             } else {
                 rippleRefs.forEach((opacity, index) => {

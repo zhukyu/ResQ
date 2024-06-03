@@ -9,6 +9,7 @@ import Post from "../../components/Post";
 import axiosInstance from "../../lib/AxiosInstance";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import LoadingSkeleton from "../../components/LoadingSkeleton";
 
 const RequestScreen = ({ route, navigation }) => {
     const { triggerRefresh, scrollToTop } = route.params || {};
@@ -124,7 +125,7 @@ const RequestScreen = ({ route, navigation }) => {
     };
 
     const renderFooter = () =>
-        loadingMore ? <ActivityIndicator size="large" color="#F73334" /> : null;
+        loadingMore ? <LoadingSkeleton /> : null;
 
     return (
         <FlatList

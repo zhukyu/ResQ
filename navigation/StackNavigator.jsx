@@ -9,6 +9,9 @@ import BackButtonHeader from "../components/BackButtonHeader";
 import AddRequestScreen from "../pages/request/AddRequestScreen";
 import AddRequestNavigator from "./AddRequestNavigator";
 import EmergencyRequestScreen from "../pages/request/EmergencyRequestScreen";
+import LocationView from "../components/LocationView";
+import ChatSearchScreen from "../pages/chat/ChatSearchScreen";
+import ChatScreen from "../pages/chat/ChatScreen";
 
 const Stack = createStackNavigator();
 
@@ -27,11 +30,28 @@ const StackNavigator = () => {
                     title: "Request Detail",
                     cardStyleInterpolator:
                         CardStyleInterpolators.forHorizontalIOS,
-                    header: (props) => (
-                        <BackButtonHeader close={true} {...props} />
-                    ),
                 }}
             />
+            <Stack.Screen
+                name="chatSearch"
+                component={ChatSearchScreen}
+                options={{
+                    title: "Chat Search",
+                    headerShown: false,
+                    cardStyleInterpolator:
+                        CardStyleInterpolators.forHorizontalIOS,
+                }}
+            />
+            <Stack.Screen
+                name="chat"
+                component={ChatScreen}
+                options={{
+                    title: "Chat",
+                    cardStyleInterpolator:
+                        CardStyleInterpolators.forVerticalIOS,
+                }}
+            />
+
             <Stack.Screen
                 name="addRequest"
                 component={AddRequestNavigator}
@@ -53,7 +73,9 @@ const StackNavigator = () => {
                     cardStyleInterpolator:
                         CardStyleInterpolators.forHorizontalIOS,
                     headerShown: false,
-                    header: (props) => <BackButtonHeader {...props} close={true} />,
+                    header: (props) => (
+                        <BackButtonHeader {...props} close={true} />
+                    ),
                     cardStyle: {
                         backgroundColor: "white",
                     },
