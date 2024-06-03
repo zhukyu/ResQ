@@ -40,10 +40,12 @@
     "create emergency request": "Create emergency request",
     "create emergency request confirmation": "Are you sure you want to create this emergency request?",
     "loading...": "Loading...",
-    "EMERGENCY": "EMERGENCY",
+    "EMERGENCY REQUEST": "EMERGENCY REQUEST",
     "location": "Location",
     "view location": "View Location on Map",
     "chat": "Chat",
     "start chat": "Start a conversation with the requester",
-    "search": "Search"
+    "search": "Search",
+    "chat placeholder": "Type a message...",
+    "you": "You"
 }

@@ -84,10 +84,12 @@ const SignInScreen = () => {
                 password: password,
             })
             .then((res) => {
-                setUser(res.data.user);
-                setIsLoggedIn(true);
                 AsyncStorage.setItem("accessToken", res.data.accessToken);
                 AsyncStorage.setItem("refreshToken", res.data.refreshToken);
+
+                setUser(res.data.user);
+                setIsLoggedIn(true);
+                
                 axiosInstance.defaults.headers.common[
                     "Authorization"
                 ] = `Bearer ${res.data.accessToken}`;

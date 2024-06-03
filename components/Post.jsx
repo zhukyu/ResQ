@@ -6,7 +6,14 @@ import {
     TouchableOpacity,
     Modal,
 } from "react-native";
-import React, { memo, useCallback, useMemo, useRef, useState } from "react";
+import React, {
+    memo,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import {
     AntDesign,
     EvilIcons,
@@ -29,11 +36,10 @@ import {
     BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import LocationView from "./LocationView";
+import { formatTime } from "../lib/helpers";
 
 const MenuItem = ({ icon, title, description, onPress }) => (
-    <TouchableNativeFeedback
-        onPress={onPress}
-    >
+    <TouchableNativeFeedback onPress={onPress}>
         <View className="flex flex-row items-center p-2">
             <View className="w-12 flex items-center justify-center">
                 {icon}
@@ -83,6 +89,16 @@ const Post = ({ item, isFullView }) => {
         setIsMapModalVisible(true);
     };
 
+    const handlePress = () => {
+        handleClose();
+        navigation.navigate(`stack`, {
+            screen: `chat`,
+            params: {
+                opponentId: user?.id,
+            },
+        });
+    };
+
     const PostContent = useMemo(() => {
         return (
             <View
@@ -106,11 +122,9 @@ const Post = ({ item, isFullView }) => {
                         </View>
                     )}
                     <View className="flex flex-col ml-2 flex-grow">
-                        <Text className="text-sm font-semibold">
-                            {user?.name}
-                        </Text>
+                        <Text className="text-sm font-rbold">{user?.name}</Text>
                         <Text className="text-xs text-gray-500">
-                            10km · 18:30
+                            {item?.distance}km · {formatTime(item?.updatedAt)}
                         </Text>
                     </View>
                     <TouchableOpacity onPress={openMenu}>
@@ -126,17 +140,18 @@ const Post = ({ item, isFullView }) => {
                 <View className="flex flex-col justify-center items-center w-full mt-3 px-4">
                     {item?.isEmergency ? (
                         <View className="flex justify-start items-center w-full flex-row mb-1">
-                            <Text className="text-sm font-semibold text-primary">
-                                ⚠️ {t("EMERGENCY")} ⚠️
+                            <Text className="text-base font-rbold text-primary">
+                                ⚠️ {t("EMERGENCY REQUEST")} ⚠️
                             </Text>
                         </View>
-                    ) : null}
-                    <Text
-                        className="text-base text-gray-700 w-full"
-                        numberOfLines={isFullView ? 0 : 3}
-                    >
-                        {item.content}
-                    </Text>
+                    ) : (
+                        <Text
+                            className="text-base font-rregular text-gray-700 w-full"
+                            numberOfLines={isFullView ? 0 : 3}
+                        >
+                            {item.content}
+                        </Text>
+                    )}
                 </View>
                 {media && media.length > 0 ? (
                     <View
@@ -162,8 +177,8 @@ const Post = ({ item, isFullView }) => {
                             className="w-5 h-5 mr-3"
                             tintColor={"gray"}
                         />
-                        <Text className="text-sm font-medium text-gray-500 mr-2">
-                            12
+                        <Text className="text-sm font-rregular text-gray-500 mr-2">
+                            {item?.voteCount}
                         </Text>
                         <Image
                             source={icons.line}
@@ -191,7 +206,7 @@ const Post = ({ item, isFullView }) => {
                                 color="gray"
                             />
                         </View>
-                        <Text className="text-sm font-medium text-gray-500 mr-2">
+                        <Text className="text-sm font-rregular text-gray-500 mr-2">
                             12 comments
                         </Text>
                     </View>
@@ -245,7 +260,7 @@ const Post = ({ item, isFullView }) => {
                         icon={
                             <MaterialIcons name="chat" size={24} color="gray" />
                         }
-                        onPress={() => {}}
+                        onPress={handlePress}
                     />
                 </BottomSheetView>
             </BottomSheetModal>

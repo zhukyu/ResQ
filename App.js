@@ -26,6 +26,12 @@ const App = () => {
         "Poppins-SemiBold": require("./assets/fonts/Poppins-SemiBold.ttf"),
         "Poppins-Thin": require("./assets/fonts/Poppins-Thin.ttf"),
         "Archivo-Bold": require("./assets/fonts/Archivo-Bold.ttf"),
+        "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
+        "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
+        "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
+        "Roboto-Light": require("./assets/fonts/Roboto-Light.ttf"),
+        "Roboto-Thin": require("./assets/fonts/Roboto-Thin.ttf"),
+        "Roboto-Black": require("./assets/fonts/Roboto-Black.ttf"),
     });
 
     const GOOGLE_MAPS_APIKEY = process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY;

@@ -5,6 +5,8 @@ import { system } from "../constants";
 import { io } from "socket.io-client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { connectSocket, disconnectSocket } from "../lib/socketInstance";
+import * as Location from "expo-location";
+import axiosInstance from "../lib/AxiosInstance";
 
 const GlobalContext = createContext();
 export const useGlobalContext = () => useContext(GlobalContext);
@@ -31,28 +33,49 @@ const GlobalProvider = ({ children }) => {
             });
     };
 
-    // useEffect(() => {
-    //     const newSocket = io(socketUrl);
+    const fetchCurrentLocation = async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+            console.error("Location permission not granted!");
+            return;
+        }
 
-    //     newSocket.on("connect", () => {
-    //         console.log("Connected to Socket.IO server");
-    //     });
+        let location = await Location.getCurrentPositionAsync({});
 
-    //     newSocket.on("disconnect", () => {
-    //         console.log("Disconnected from Socket.IO server");
-    //     });
+        const locationData = {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+        };
 
-    //     setSocket(newSocket);
+        return locationData;
+    };
 
-    //     return () => newSocket.close();
-    // }, []);
+    const updateLocation = async () => {
+        try {
+            const { latitude, longitude } = await fetchCurrentLocation();
+            const response = await axiosInstance.post(`/user/location`, {
+                latitude,
+                longitude,
+            });
+            const data = await response.data;
+            if (data) {
+                console.log(data);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     useEffect(() => {
         if (user) {
+            console.log("connecting socket");
             connectSocket();
+
+            updateLocation();
         }
 
         return () => {
+            console.log("disconnecting socket");
             disconnectSocket();
         };
     }, [user]);

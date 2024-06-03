@@ -10,7 +10,7 @@ import React, { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import CustomHeader from "../components/Header";
 import MapScreen from "../pages/map/MapScreen";
-import ChatScreen from "../pages/chat/ChatScreen";
+import ChatListScreen from "../pages/chat/ChatListScreen";
 import NotificationScreen from "../pages/notification/NotificationScreen";
 import RequestScreen from "../pages/request/RequestScreen";
 import { icons } from "../constants";
@@ -219,7 +219,7 @@ const TabNavigator = ({ navigation }) => {
                         },
                     })}
                 />
-                <Tab.Screen name="chat" component={ChatScreen} />
+                <Tab.Screen name="chat" component={ChatListScreen} />
                 <Tab.Screen name="inbox" component={NotificationScreen} />
             </Tab.Navigator>
         </View>

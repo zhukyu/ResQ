@@ -135,12 +135,10 @@ const EmergencyRequestScreen = () => {
         setIsSubmitting(true);
         try {
             const requestData = {
-                requestTypeId: 8,
-                content: "Emergency Request",
+                isEmergency: 1,
                 latitude: currentLocation?.latitude,
                 longitude: currentLocation?.longitude,
                 address: currentAddress,
-                isEmergency: 1,
             };
 
             const response = await axiosInstance.post("/requests", requestData);

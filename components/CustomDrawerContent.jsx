@@ -8,6 +8,7 @@ import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import CustomButton from "./CustomButton";
 import { CommonActions, useNavigation } from "@react-navigation/native";
+import { disconnectSocket } from "../lib/socketInstance";
 
 const CustomDrawerContent = (props) => {
     const { user, setUser, setIsLoggedIn, setToast, setIsLoading } =
@@ -42,6 +43,8 @@ const CustomDrawerContent = (props) => {
 
                     AsyncStorage.removeItem("accessToken");
                     AsyncStorage.removeItem("refreshToken");
+
+                    disconnectSocket();
 
                     setToast({
                         type: "success",

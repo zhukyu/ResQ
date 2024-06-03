@@ -15,7 +15,7 @@ import SettingScreen from "../pages/setting/SettingScreen";
 import BackButtonHeader from "../components/BackButtonHeader";
 import { useTranslation } from "react-i18next";
 import MapScreen from "../pages/map/MapScreen";
-import ChatScreen from "../pages/chat/ChatScreen";
+import ChatListScreen from "../pages/chat/ChatListScreen";
 import { icons } from "../constants";
 import ButtonNativeFeedback from "../components/ButtonNativeFeedback";
 import AuthNavigator from "./AuthNavigator";
