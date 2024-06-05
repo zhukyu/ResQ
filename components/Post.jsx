@@ -56,7 +56,7 @@ const MenuItem = ({ icon, title, description, onPress }) => (
     </TouchableNativeFeedback>
 );
 
-const Post = ({ item, isFullView }) => {
+const Post = ({ item, isFullView, voteCount, commentCount }) => {
     const user = item.users;
     const navigation = useNavigation();
     const media = item.requestMedia;
@@ -82,10 +82,6 @@ const Post = ({ item, isFullView }) => {
 
     const handleLocationPress = () => {
         handleClose();
-        // navigation.navigate(`stack`, {
-        //     screen: `locationView`,
-        //     params: { item },
-        // });
         setIsMapModalVisible(true);
     };
 
@@ -178,7 +174,7 @@ const Post = ({ item, isFullView }) => {
                             tintColor={"gray"}
                         />
                         <Text className="text-sm font-rregular text-gray-500 mr-2">
-                            {item?.voteCount}
+                            {voteCount}
                         </Text>
                         <Image
                             source={icons.line}
@@ -207,7 +203,7 @@ const Post = ({ item, isFullView }) => {
                             />
                         </View>
                         <Text className="text-sm font-rregular text-gray-500 mr-2">
-                            12 comments
+                            {commentCount} {t("comments")}
                         </Text>
                     </View>
                 </View>
@@ -270,7 +266,11 @@ const Post = ({ item, isFullView }) => {
                 animationType="slide"
                 onRequestClose={() => setIsMapModalVisible(false)}
             >
-                <LocationView item={item} />
+                <LocationView
+                    item={item}
+                    visible={isMapModalVisible}
+                    handleCloseModal={() => setIsMapModalVisible(false)}
+                />
             </Modal>
         </View>
     );

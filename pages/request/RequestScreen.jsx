@@ -124,14 +124,19 @@ const RequestScreen = ({ route, navigation }) => {
         fetchData(false, true);
     };
 
-    const renderFooter = () =>
-        loadingMore ? <LoadingSkeleton /> : null;
+    const renderFooter = () => (loadingMore ? <LoadingSkeleton /> : null);
 
     return (
         <FlatList
             ref={flatListRef}
             data={posts}
-            renderItem={({ item }) => <Post item={item} />}
+            renderItem={({ item }) => (
+                <Post
+                    item={item}
+                    voteCount={item?.voteCount}
+                    commentCount={item?.commentCount}
+                />
+            )}
             refreshing={refreshing}
             onRefresh={handleRefresh}
             onEndReached={handleLoadMore}
