@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { refreshAccessToken } from "../lib/appwrite";
 import Toast from "react-native-toast-message";
 import { system } from "../constants";
@@ -7,6 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { connectSocket, disconnectSocket } from "../lib/socketInstance";
 import * as Location from "expo-location";
 import axiosInstance from "../lib/AxiosInstance";
+import { AppState } from "react-native";
 
 const GlobalContext = createContext();
 export const useGlobalContext = () => useContext(GlobalContext);
@@ -17,6 +18,28 @@ const GlobalProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [toast, setToast] = useState(null);
     const [expirationTime, setExpirationTime] = useState(null);
+    const [currentLocation, setCurrentLocation] = useState(null);
+
+    const locationSubscriptionRef = useRef(null);
+    const appStateSubscriptionRef = useRef(null);
+
+    const fetchCurrentLocation = async () => {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+            console.error("Location permission not granted!");
+            return;
+        }
+
+        let location = await Location.getCurrentPositionAsync({});
+
+        const locationData = {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+        };
+        setCurrentLocation(locationData);
+
+        return locationData;
+    };
 
     const handleRefreshAccessToken = () => {
         refreshAccessToken()
@@ -33,50 +56,94 @@ const GlobalProvider = ({ children }) => {
             });
     };
 
-    const fetchCurrentLocation = async () => {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-            console.error("Location permission not granted!");
-            return;
-        }
-
-        let location = await Location.getCurrentPositionAsync({});
-
-        const locationData = {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-        };
-
-        return locationData;
-    };
-
     const updateLocation = async () => {
         try {
-            const { latitude, longitude } = await fetchCurrentLocation();
+            // const { latitude, longitude } = await fetchCurrentLocation();
+            if (!currentLocation) {
+                return;
+            }
+
+            const { latitude, longitude } = currentLocation;
             const response = await axiosInstance.post(`/user/location`, {
                 latitude,
                 longitude,
             });
             const data = await response.data;
             if (data) {
-                console.log(data);
+                // console.log(data);
             }
         } catch (error) {
             console.error(error);
         }
-    }
+    };
 
     useEffect(() => {
+        if (currentLocation) {
+            updateLocation();
+            
+        }
+    }, [currentLocation]);
+
+    useEffect(() => {
+        const handleAppStateChange = (nextAppState) => {
+            if (nextAppState === "active") {
+                requestLocationPermissionAndTrack();
+            } else if (nextAppState.match(/inactive|background/)) {
+                removeLocationSubscription();
+            }
+        };
+
+        const requestLocationPermissionAndTrack = async () => {
+            let { status } = await Location.requestForegroundPermissionsAsync();
+
+            if (status !== "granted") {
+                console.error("Permission to access location was denied");
+                return;
+            }
+
+            locationSubscriptionRef.current = await Location.watchPositionAsync(
+                {
+                    accuracy: Location.Accuracy.High,
+                    timeInterval: 1000,
+                    distanceInterval: 10,
+                },
+                (location) => {
+                    console.log("Location changed");
+                    setCurrentLocation(location.coords);
+                }
+            );
+        };
+
+        const removeLocationSubscription = () => {
+            if (locationSubscriptionRef.current) {
+                locationSubscriptionRef.current.remove();
+                locationSubscriptionRef.current = null;
+            }
+        };
+
         if (user) {
             console.log("connecting socket");
             connectSocket();
 
-            updateLocation();
+            requestLocationPermissionAndTrack();
+
+            appStateSubscriptionRef.current = AppState.addEventListener(
+                "change",
+                handleAppStateChange
+            );
         }
 
         return () => {
             console.log("disconnecting socket");
             disconnectSocket();
+
+            console.log("removing location subscription");
+            removeLocationSubscription();
+
+            if (appStateSubscriptionRef.current) {
+                appStateSubscriptionRef.current.remove();
+                appStateSubscriptionRef.current = null;
+            }
         };
     }, [user]);
 
@@ -130,6 +197,8 @@ const GlobalProvider = ({ children }) => {
                 setIsLoading,
                 expirationTime,
                 setExpirationTime,
+                currentLocation,
+                setCurrentLocation,
             }}
         >
             {children}

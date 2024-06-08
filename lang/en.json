@@ -47,5 +47,8 @@
     "start chat": "Start a conversation with the requester",
     "search": "Search",
     "chat placeholder": "Type a message...",
-    "you": "You"
+    "you": "You",
+    "comments": "Comments",
+    "show direction": "Show Direction",
+    "start navigation": "Start Navigation"
 }

@@ -13,6 +13,7 @@ import * as NavigationBar from "expo-navigation-bar";
 import { PaperProvider } from "react-native-paper";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import EmergencyProvider from "./context/EmergencyProvider";
 
 const App = () => {
     const [fontsLoaded, error] = useFonts({
@@ -55,16 +56,18 @@ const App = () => {
 
     return (
         <GlobalProvider>
-            <PaperProvider>
-                <GestureHandlerRootView>
-                    <BottomSheetModalProvider>
-                        <NavigationContainer>
-                            <AppNavigator />
-                        </NavigationContainer>
-                        <Toast />
-                    </BottomSheetModalProvider>
-                </GestureHandlerRootView>
-            </PaperProvider>
+            <EmergencyProvider>
+                <PaperProvider>
+                    <GestureHandlerRootView>
+                        <BottomSheetModalProvider>
+                            <NavigationContainer>
+                                <AppNavigator />
+                            </NavigationContainer>
+                            <Toast />
+                        </BottomSheetModalProvider>
+                    </GestureHandlerRootView>
+                </PaperProvider>
+            </EmergencyProvider>
         </GlobalProvider>
     );
 };

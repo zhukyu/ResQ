@@ -1,32 +1,39 @@
 import { View, Text, Button } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../context/GlobalProvider";
+import { emitWithToken, socket } from "../../lib/socketInstance";
 
 const NotificationScreen = () => {
-    const [notification, setNotification] = useState([]);
-    const { socket } = useGlobalContext();
+    const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
         if (socket) {
-            socket.emit("getNotification");
-            socket.on("notification", (data) => {
-                setNotification(data);
+            emitWithToken("getNotification");
+            socket.on("notificationList", (data) => {
+                console.log("notificationList", data.length);
+                setNotifications(data);
             });
         }
+
+        return () => {
+            if (socket) {
+                socket.off("notification");
+            }
+        };
     }, [socket]);
 
     const handleRefreshNotification = () => {
         if (socket) {
-            socket.emit("getNotification");
+            emitWithToken("getNotification");
         }
     };
 
     return (
         <View>
             <Button title="Refresh" onPress={handleRefreshNotification} />
-            {notification.map((item, index) => (
+            {notifications.map((item, index) => (
                 <View key={index}>
-                    <Text>{item}</Text>
+                    <Text>{item?.message}</Text>
                 </View>
             ))}
         </View>

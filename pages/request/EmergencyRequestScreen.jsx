@@ -16,12 +16,17 @@ import { formatCoordinates } from "../../lib/helpers";
 import axiosInstance from "../../lib/AxiosInstance";
 import { emitWithToken, socket } from "../../lib/socketInstance";
 import LoadingOverlay from "../../components/LoadingOverlay";
+import { useGlobalContext } from "../../context/GlobalProvider";
+import { useEmergencyContext } from "../../context/EmergencyProvider";
+import { system } from "../../constants";
+import { getAddress } from "../../lib/appwrite";
 
 const EmergencyRequestScreen = () => {
     const { t } = useTranslation();
-    const [currentLocation, setCurrentLocation] = useState(null);
+    const { currentLocation } = useGlobalContext();
+    const { isActivated, setIsActivated, requestId, setRequestId, emitLocation, stopSharingLocation } =
+        useEmergencyContext();
     const [currentAddress, setCurrentAddress] = useState(null);
-    const [isActivated, setIsActivated] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isInitial, setIsInitial] = useState(true);
@@ -29,33 +34,15 @@ const EmergencyRequestScreen = () => {
         latitude: "N, 0°0'0''",
         longitude: "E, 0°0'0''",
     });
-    const [requestId, setRequestId] = useState(null);
-    const intervalRef = useRef(null);
 
-    const fetchCurrentLocation = async () => {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-            console.error("Location permission not granted!");
-            return;
-        }
-
-        let location = await Location.getCurrentPositionAsync({});
-
-        const locationData = {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-        };
-        setCurrentLocation(locationData);
-
-        return locationData;
-    };
-
-    useEffect(() => {
-        fetchCurrentLocation();
-    }, []);
-
+    // Display current geolocation and address
     useEffect(() => {
         if (currentLocation) {
+            console.log(
+                "Current Location: ",
+                currentLocation?.latitude,
+                currentLocation?.longitude
+            );
             performReverseGeocoding(
                 currentLocation.latitude,
                 currentLocation.longitude
@@ -72,23 +59,21 @@ const EmergencyRequestScreen = () => {
     }, [currentLocation]);
 
     const performReverseGeocoding = async (latitude, longitude) => {
+        // let addresses = await Geocoding.from(latitude, longitude)
+        // const addressComponent = addresses.results[0]; // Use the first address
+        // console.log(addressComponent.formatted_address);
         try {
             if (isInitial) {
                 setIsLoading(true);
             }
-            // let addresses = await Geocoding.from(latitude, longitude)
-            // const addressComponent = addresses.results[0]; // Use the first address
-            // console.log(addressComponent.formatted_address);
-            try {
-                let addresses = await Location.reverseGeocodeAsync({
-                    latitude,
-                    longitude,
-                });
-                const addressComponent = addresses[0]; // Use the first address
-                setCurrentAddress(addressComponent?.formattedAddress);
-            } catch (error) {
-                console.error("Reverse Geocoding Error:", error);
+            console.log("Reverse Geocoding: ", latitude, longitude);
+            const address = await getAddress(latitude, longitude);
+            console.log("Address: ", address);
+            if (!address) {
+                return;
             }
+
+            setCurrentAddress(address);
         } catch (error) {
             console.error("Reverse Geocoding Error:", error);
         } finally {
@@ -145,6 +130,7 @@ const EmergencyRequestScreen = () => {
             if (response.status === 200) {
                 setRequestId(response.data.id);
                 setIsActivated(true);
+                emitLocation(response.data.id);
             }
         } catch (error) {
             console.error(error);
@@ -153,40 +139,9 @@ const EmergencyRequestScreen = () => {
         }
     };
 
-    useEffect(() => {
-        const emitLocation = async () => {
-            if (isActivated && requestId && socket) {
-                const { latitude, longitude } = currentLocation;
-                emitWithToken("startSharingLocation", {
-                    requestId,
-                    latitude,
-                    longitude,
-                });
-
-                socket.on("locationSharingStarted", (data) => {
-                    intervalRef.current = setInterval(async () => {
-                        const { latitude, longitude } =
-                            await fetchCurrentLocation();
-                        emitWithToken("updateLocation", {
-                            requestId,
-                            latitude,
-                            longitude,
-                        });
-                    }, 5000);
-                    console.log("Request ID: ", requestId);
-                });
-            }
-        };
-
-        emitLocation();
-    }, [requestId, isActivated]);
-
     const handleStopTracking = () => {
         setIsActivated(false);
-        emitWithToken("stopSharingLocation", { requestId });
-
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
+        stopSharingLocation(requestId);
     };
 
     const AnimatedButton = () => {

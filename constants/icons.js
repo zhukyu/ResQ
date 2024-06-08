@@ -15,6 +15,7 @@ import upFilled from "../assets/icons/up_filled.png";
 import downOutlined from "../assets/icons/down_outlined.png";
 import downFilled from "../assets/icons/down_filled.png";
 import line from "../assets/icons/line.png";
+import marker from "../assets/icons/marker.png";
 
 export default {
     plus,
@@ -33,5 +34,6 @@ export default {
     upFilled,
     downOutlined,
     downFilled,
-    line
+    line,
+    marker
 };

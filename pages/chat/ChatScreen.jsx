@@ -225,7 +225,7 @@ const ChatScreen = ({ navigation, route }) => {
                                             item.sender === user?.id;
                                         return (
                                             <View
-                                                key={item._id}
+                                                key={itemIndex}
                                                 className={`flex flex-row ${
                                                     senderIsUser
                                                         ? "justify-end"
