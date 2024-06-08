@@ -1,9 +1,9 @@
 import {
     View,
     Text,
-    TextInput,
     TouchableOpacity,
     StyleSheet,
+    Platform,
     Image,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
@@ -16,14 +16,15 @@ import {
     Ionicons,
     MaterialIcons,
 } from "@expo/vector-icons";
-import AvatarMenu from "./AvatarMenu";
-import Geocoding from "react-native-geocoding";
 import { icons, system } from "../constants";
 import MapViewDirections from "react-native-maps-directions";
 import CustomButton from "./CustomButton";
 import haversine from "haversine";
 import { useTranslation } from "react-i18next";
 import { getGreatCircleBearing } from "geolib";
+import { useGlobalContext } from "../context/GlobalProvider";
+import { emitWithToken, socket } from "../lib/socketInstance";
+import { getAddress } from "../lib/appwrite";
 
 const styles = StyleSheet.create({
     shadow: {
@@ -38,9 +39,9 @@ const styles = StyleSheet.create({
     },
 });
 
-const LocationView = ({ item, handleCloseModal, visible }) => {
+const LocationView = ({ item, handleCloseModal, isEmergency, visible }) => {
     const [initialRegion, setInitialRegion] = useState(null);
-    const [currentLocation, setCurrentLocation] = useState(null);
+    const { currentLocation } = useGlobalContext(null);
     const [heading, setHeading] = useState(0);
     const [delta, setDelta] = useState({
         latitudeDelta: 0.02,
@@ -67,6 +68,26 @@ const LocationView = ({ item, handleCloseModal, visible }) => {
     };
 
     useEffect(() => {
+        const handleLocationUpdate = async (data) => {
+            const { latitude, longitude } = data;
+            console.log("Location Update:", latitude, longitude);
+
+            const address = await getAddress(latitude, longitude);
+
+            setSelectedLocation({ latitude, longitude, address });
+        };
+
+        if (isEmergency && item) {
+            emitWithToken("joinRequestRoom", { requestId: item?.id });
+            socket.on("locationUpdate", handleLocationUpdate);
+        }
+
+        return () => {
+            socket.off("locationUpdate", handleLocationUpdate);
+        };
+    }, [isEmergency, item]);
+
+    useEffect(() => {
         // if (item) {
         //     const { latitude, longitude } = item;
         //     console.log(parseFloat(latitude), parseFloat(longitude));
@@ -86,47 +107,6 @@ const LocationView = ({ item, handleCloseModal, visible }) => {
             handleReverseGeocoding(item);
         }
     }, [item]);
-
-    useEffect(() => {
-        const requestLocationPermissionAndTrack = async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (!visible) {
-                return;
-            }
-            if (status !== "granted") {
-                console.error("Permission to access location was denied");
-                return;
-            }
-
-            locationSubscriptionRef.current = await Location.watchPositionAsync(
-                {
-                    accuracy: Location.Accuracy.High,
-                    timeInterval: 1000,
-                    distanceInterval: 10,
-                },
-                (location) => {
-                    console.log("Location changed", location.coords);
-                    setCurrentLocation(location.coords);
-                }
-            );
-        };
-
-        if (visible) {
-            requestLocationPermissionAndTrack();
-        } else {
-            if (locationSubscriptionRef.current) {
-                locationSubscriptionRef.current.remove();
-                locationSubscriptionRef.current = null;
-            }
-        }
-
-        // Clean up on unmount or visibility change
-        return () => {
-            if (locationSubscriptionRef.current) {
-                locationSubscriptionRef.current.remove();
-            }
-        };
-    }, [visible]);
 
     useEffect(() => {
         // Calculate heading when both location and route are available
@@ -194,22 +174,29 @@ const LocationView = ({ item, handleCloseModal, visible }) => {
     const showSelectedLocation = () => {
         if (selectedLocation) {
             return (
-                // <Marker
-                //     coordinate={selectedLocation}
-                //     title={selectedLocation.address}
-                // >
-                //     <Image
-                //         source={icons.marker}
-                //         style={{ width: 40, height: 40 }}
-                //     />
-                // </Marker>
                 <Marker
                     coordinate={selectedLocation}
+                    key={`locationView_${selectedLocation?.latitude}_${
+                        selectedLocation?.longitude
+                    }${Date.now()}`}
                     title={selectedLocation.address}
-                    onPress={() => {
-                        console.log("here");
-                    }}
-                />
+                >
+                    <Image
+                        source={icons.marker}
+                        style={{ width: 40, height: 40 }}
+                    />
+                </Marker>
+                // <Marker
+                //     // key={`locationView_${Date.now()}`}
+                //     key={`locationView_${selectedLocation?.latitude}_${selectedLocation?.longitude}${Date.now()}`}
+                //     id="selectedLocation"
+                //     coordinate={selectedLocation}
+                //     tracksViewChanges={true}
+                //     // title={selectedLocation.address}
+                //     onPress={() => {
+                //         console.log("here");
+                //     }}
+                // />
             );
         }
     };
@@ -251,10 +238,14 @@ const LocationView = ({ item, handleCloseModal, visible }) => {
     };
 
     useEffect(() => {
-        if (showDirectionEnabled && !startNavigation && routeCoordinates.length > 0) {
+        if (
+            showDirectionEnabled &&
+            !startNavigation &&
+            routeCoordinates.length > 0
+        ) {
             fitToMarkers();
         }
-    },[showDirectionEnabled, startNavigation, routeCoordinates])
+    }, [showDirectionEnabled, startNavigation, routeCoordinates]);
 
     const handleMapDirectionReady = (result) => {
         if (result && result.coordinates && result.coordinates.length > 0) {
@@ -298,11 +289,13 @@ const LocationView = ({ item, handleCloseModal, visible }) => {
             longitude: selectedLocation?.longitude,
             ...delta,
         });
-        mapRef?.current?.animateToRegion({
-            latitude: selectedLocation?.latitude,
-            longitude: selectedLocation?.longitude,
-            ...delta,
-        });
+        // if (!showDirectionEnabled && !startNavigation) {
+        //     mapRef?.current?.animateToRegion({
+        //         latitude: selectedLocation?.latitude,
+        //         longitude: selectedLocation?.longitude,
+        //         ...delta,
+        //     });
+        // }
     }, [selectedLocation, mapRef]);
 
     return (
@@ -327,8 +320,8 @@ const LocationView = ({ item, handleCloseModal, visible }) => {
                         pitch: 0,
                         zoom: 16,
                         center: {
-                            latitude: selectedLocation?.latitude || 0,
-                            longitude: selectedLocation?.longitude || 0,
+                            latitude: 0,
+                            longitude: 0,
                         },
                     }}
                 >

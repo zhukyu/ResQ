@@ -76,7 +76,7 @@ const Post = ({ item, isFullView, voteCount, commentCount }) => {
     const handlePostPress = () => {
         navigation.navigate(`stack`, {
             screen: `requestDetail`,
-            params: { id: item.id },
+            params: { id: item?.id },
         });
     };
 
@@ -268,6 +268,7 @@ const Post = ({ item, isFullView, voteCount, commentCount }) => {
             >
                 <LocationView
                     item={item}
+                    isEmergency={item?.isEmergency}
                     visible={isMapModalVisible}
                     handleCloseModal={() => setIsMapModalVisible(false)}
                 />

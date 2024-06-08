@@ -142,6 +142,7 @@ const RequestScreen = ({ route, navigation }) => {
             onEndReached={handleLoadMore}
             onEndReachedThreshold={0.5}
             ListFooterComponent={renderFooter}
+            keyExtractor={(item) => item.id}
         />
     );
 };
