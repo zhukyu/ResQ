@@ -126,6 +126,13 @@ const RequestScreen = ({ route, navigation }) => {
 
     const renderFooter = () => (loadingMore ? <LoadingSkeleton /> : null);
 
+    const handleCommentPress = (item) => {
+        navigation.navigate(`stack`, {
+            screen: `requestDetail`,
+            params: { id: item?.id, focusTextInput: true },
+        });
+    };
+
     return (
         <FlatList
             ref={flatListRef}
@@ -133,8 +140,11 @@ const RequestScreen = ({ route, navigation }) => {
             renderItem={({ item }) => (
                 <Post
                     item={item}
-                    voteCount={item?.voteCount}
+                    initVoteCount={item?.voteCount}
                     commentCount={item?.commentCount}
+                    refreshList={handleRefresh}
+                    onCommentPress={() => handleCommentPress(item)}
+                    initVoteType={item?.votes?.[0]?.voteType}
                 />
             )}
             refreshing={refreshing}

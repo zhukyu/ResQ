@@ -11,8 +11,7 @@ const ChatListCard = ({ item }) => {
     const navigation = useNavigation();
     const { t } = useTranslation();
 
-    useEffect(() => {
-    }, [opponent]);
+    useEffect(() => {}, [opponent]);
 
     const handlePress = () => {
         navigation.navigate(`stack`, {
@@ -41,17 +40,21 @@ const ChatListCard = ({ item }) => {
                 <View className="flex flex-col ml-3 flex-grow">
                     <View className="flex flex-row items-center justify-between">
                         <Text
-                            className="text-base font-rbold text-gray-800 max-w-[78%]"
+                            className="text-base font-rbold text-gray-800"
                             numberOfLines={1}
                             ellipsizeMode="tail"
                         >
                             {opponent?.name}
                         </Text>
-                        <Text className="text-sm font-rregular text-gray-500">
-                            {formatTime(lastMessage?.timestamp)}
-                        </Text>
+                        {item?.unreadCount > 0 && (
+                            <View className="w-5 h-5 bg-primary rounded-full flex justify-center items-center">
+                                <Text className="text-white font-medium text-sm">
+                                    {item?.unreadCount}
+                                </Text>
+                            </View>
+                        )}
                     </View>
-                    <View className="flex flex-row items-center justify-between">
+                    <View className="flex flex-row items-center justify-start">
                         <Text
                             className="text-sm font-normal text-gray-500  max-w-[78%]"
                             numberOfLines={1}
@@ -62,13 +65,12 @@ const ChatListCard = ({ item }) => {
                                 : ""}
                             {lastMessage?.message}
                         </Text>
-                        {item?.unreadCount > 0 && (
-                            <View className="w-5 h-5 bg-primary rounded-full flex justify-center items-center">
-                                <Text className="text-white font-medium text-sm">
-                                    {item?.unreadCount}
-                                </Text>
-                            </View>
-                        )}
+                        <Text className="text-sm font-rregular text-gray-500 mx-1">
+                            ·
+                        </Text>
+                        <Text className="text-sm font-rregular text-gray-500">
+                            {formatTime(lastMessage?.timestamp, "format")}
+                        </Text>
                     </View>
                 </View>
             </View>

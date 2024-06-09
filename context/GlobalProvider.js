@@ -80,7 +80,6 @@ const GlobalProvider = ({ children }) => {
     useEffect(() => {
         if (currentLocation) {
             updateLocation();
-            
         }
     }, [currentLocation]);
 
@@ -156,7 +155,7 @@ const GlobalProvider = ({ children }) => {
                 text1: toast.text1,
                 text2: toast.text2,
                 position: "top",
-                visibilityTime: 4000,
+                visibilityTime: toast.visibilityTime || 4000,
                 autoHide: true,
                 topOffset: 40,
                 bottomOffset: 40,
@@ -164,6 +163,12 @@ const GlobalProvider = ({ children }) => {
                 trailingIcon: null,
                 props: {
                     swipeable: true,
+                },
+                onPress: () => {
+                    if (toast.onPress) {
+                        toast.onPress();
+                    }
+                    Toast.hide();
                 },
             });
             setToast(null);

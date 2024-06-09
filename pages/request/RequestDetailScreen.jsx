@@ -11,7 +11,7 @@ import {
     Keyboard,
     TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import axiosInstance from "../../lib/AxiosInstance";
 import { useHeaderHeight } from "@react-navigation/elements";
 import Post from "../../components/Post";
@@ -22,9 +22,10 @@ import { Facebook } from "react-content-loader/native";
 import LoadingSkeleton from "../../components/LoadingSkeleton";
 import { emitWithToken, socket } from "../../lib/socketInstance";
 import CommentSkeleton from "../../components/CommentSkeleton";
+import { useFocusEffect } from "@react-navigation/native";
 
 const RequestDetailScreen = ({ route }) => {
-    const { id } = route.params;
+    const { id, focusTextInput } = route.params;
     const { t } = useTranslation();
     const [request, setRequest] = useState(null);
     const headerHeight = useHeaderHeight();
@@ -40,7 +41,6 @@ const RequestDetailScreen = ({ route }) => {
     const fetchData = async () => {
         const response = await axiosInstance.get(`/requests/${id}`);
         const result = await response.data;
-        console.log(result);
         setRequest(result);
         setVoteCount(result.voteCount);
         setCommentCount(result.commentCount);
@@ -50,7 +50,6 @@ const RequestDetailScreen = ({ route }) => {
         setIsLoadingComments(true);
         const response = await axiosInstance.get(`/requests/${id}/comments`);
         const result = await response.data;
-        console.log(result);
         setComments(result);
         setIsLoadingComments(false);
     };
@@ -60,6 +59,21 @@ const RequestDetailScreen = ({ route }) => {
         setComment("");
         Keyboard.dismiss();
     };
+
+    const openKeyboard = () => {
+        setTimeout(() => {
+            inputRef.current?.blur();
+            inputRef.current?.focus();
+        }, 100);
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            if (inputRef.current && focusTextInput) {
+                openKeyboard();
+            }
+        }, [])
+    );
 
     useEffect(() => {
         fetchData();
@@ -75,15 +89,21 @@ const RequestDetailScreen = ({ route }) => {
             setCommentCount(commentCount);
         });
 
+        socket.on("newVoteUpdate", (data) => {
+            const { voteCount } = data;
+            setVoteCount(voteCount);
+        });
+
         return () => {
             socket.off("comment");
+            socket.off("newVoteUpdate");
             emitWithToken("leaveRequestDetailRoom", { requestId: id });
         };
     }, []);
 
     useEffect(() => {
         console.log("commentCount", commentCount);
-    }, [commentCount])
+    }, [commentCount]);
 
     return (
         <KeyboardAvoidingView
@@ -99,8 +119,10 @@ const RequestDetailScreen = ({ route }) => {
                             <Post
                                 item={request}
                                 isFullView={true}
-                                voteCount={voteCount}
+                                initVoteCount={voteCount}
                                 commentCount={commentCount}
+                                onCommentPress={() => openKeyboard()}
+                                initVoteType={request.votes?.[0]?.voteType}
                             />
                         ) : (
                             // null

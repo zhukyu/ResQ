@@ -55,20 +55,20 @@ const App = () => {
     if (!fontsLoaded && !error) return null;
 
     return (
-        <GlobalProvider>
-            <EmergencyProvider>
-                <PaperProvider>
-                    <GestureHandlerRootView>
-                        <BottomSheetModalProvider>
-                            <NavigationContainer>
+        <NavigationContainer>
+            <GlobalProvider>
+                <EmergencyProvider>
+                    <PaperProvider>
+                        <GestureHandlerRootView>
+                            <BottomSheetModalProvider>
                                 <AppNavigator />
-                            </NavigationContainer>
-                            <Toast />
-                        </BottomSheetModalProvider>
-                    </GestureHandlerRootView>
-                </PaperProvider>
-            </EmergencyProvider>
-        </GlobalProvider>
+                                <Toast />
+                            </BottomSheetModalProvider>
+                        </GestureHandlerRootView>
+                    </PaperProvider>
+                </EmergencyProvider>
+            </GlobalProvider>
+        </NavigationContainer>
     );
 };
 
