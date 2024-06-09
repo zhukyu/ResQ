@@ -333,7 +333,7 @@ const LocationView = ({ item, handleCloseModal, isEmergency, visible }) => {
                             <MapViewDirections
                                 origin={currentLocation}
                                 destination={selectedLocation}
-                                apikey={system.googleMapAPIKey}
+                                apikey={system.GOOGLE_MAP_API_KEY}
                                 strokeWidth={3}
                                 strokeColor="hotpink"
                                 onReady={handleMapDirectionReady}

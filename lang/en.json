@@ -38,7 +38,7 @@
     "no": "No",
     "cancel": "Cancel",
     "create emergency request": "Create emergency request",
-    "create emergency request confirmation": "Are you sure you want to create this emergency request?",
+    "create emergency request confirmation": "You are about to create an emergency request. This will notify all nearby rescuers. Are you sure you want to proceed?",
     "loading...": "Loading...",
     "EMERGENCY REQUEST": "EMERGENCY REQUEST",
     "location": "Location",
@@ -50,5 +50,10 @@
     "you": "You",
     "comments": "Comments",
     "show direction": "Show Direction",
-    "start navigation": "Start Navigation"
+    "start navigation": "Start Navigation",
+    "warning": "Warning",
+    "emergency request warning": "You still have an emergency request in progress.",
+    "finish request": "Close Request",
+    "finish request description": "Mark this request as rescued",
+    "finish request confirmation": "Are you sure you want to mark this request as rescued and close it?"
 }

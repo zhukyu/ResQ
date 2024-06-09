@@ -28,6 +28,7 @@ import { useTranslation } from "react-i18next";
 import LoadingOverlay from "../../../components/LoadingOverlay";
 import axiosInstance from "../../../lib/AxiosInstance";
 import { useGlobalContext } from "../../../context/GlobalProvider";
+import { getAddress } from "../../../lib/appwrite";
 
 const styles = StyleSheet.create({
     shadow: {
@@ -160,23 +161,12 @@ const Step3Screen = () => {
             setIsLoading(true);
         }
         try {
-            // let addresses = await Geocoding.from(latitude, longitude)
-            // const addressComponent = addresses.results[0]; // Use the first address
-            // console.log(addressComponent.formatted_address);
-            try {
-                let addresses = await Location.reverseGeocodeAsync({
-                    latitude,
-                    longitude,
-                });
-                const addressComponent = addresses[0]; // Use the first address
-                setSelectedLocation({
-                    latitude,
-                    longitude,
-                    address: addressComponent?.formattedAddress,
-                });
-            } catch (error) {
-                console.error("Reverse Geocoding Error:", error);
-            }
+            let address = await getAddress(latitude, longitude);
+            setSelectedLocation({
+                latitude,
+                longitude,
+                address,
+            });
         } catch (error) {
             console.error("Reverse Geocoding Error:", error);
         } finally {

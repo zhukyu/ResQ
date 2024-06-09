@@ -5,6 +5,7 @@ import {
     TouchableNativeFeedback,
     TouchableOpacity,
     Modal,
+    Alert,
 } from "react-native";
 import React, {
     memo,
@@ -23,13 +24,11 @@ import {
     FontAwesome6,
     MaterialIcons,
 } from "@expo/vector-icons";
-import { icons } from "../constants";
-import { router } from "expo-router";
+import { icons, system } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 import ImageCollage from "./ImageCollage";
 import { useGlobalContext } from "../context/GlobalProvider";
 import { useTranslation } from "react-i18next";
-import { Menu } from "react-native-paper";
 import {
     BottomSheetBackdrop,
     BottomSheetModal,
@@ -37,6 +36,8 @@ import {
 } from "@gorhom/bottom-sheet";
 import LocationView from "./LocationView";
 import { formatTime } from "../lib/helpers";
+import axiosInstance from "../lib/AxiosInstance";
+import { socket } from "../lib/socketInstance";
 
 const MenuItem = ({ icon, title, description, onPress }) => (
     <TouchableNativeFeedback onPress={onPress}>
@@ -56,14 +57,35 @@ const MenuItem = ({ icon, title, description, onPress }) => (
     </TouchableNativeFeedback>
 );
 
-const Post = ({ item, isFullView, voteCount, commentCount }) => {
-    const user = item.users;
+const Post = ({
+    item,
+    isFullView,
+    initVoteCount,
+    commentCount,
+    refreshList,
+    onCommentPress,
+    initVoteType,
+}) => {
+    const requester = item.users;
+    const { user } = useGlobalContext();
     const navigation = useNavigation();
     const media = item.requestMedia;
     const { t } = useTranslation();
     const menuRef = useRef(null);
 
     const [isMapModalVisible, setIsMapModalVisible] = useState(false);
+    const [voteType, setVoteType] = useState(
+        initVoteType || system.VOTE_TYPE.NONE
+    );
+    const [voteCount, setVoteCount] = useState(initVoteCount);
+
+    useEffect(() => {
+        setVoteCount(initVoteCount);
+    }, [initVoteCount]);
+
+    useEffect(() => {
+        setVoteType(initVoteType || system.VOTE_TYPE.NONE);
+    }, [initVoteType]);
 
     const openMenu = useCallback(() => {
         menuRef.current?.present();
@@ -72,6 +94,26 @@ const Post = ({ item, isFullView, voteCount, commentCount }) => {
     const handleClose = useCallback(() => {
         menuRef.current?.dismiss();
     }, []);
+
+    const finishRequest = async (requestId) => {
+        try {
+            const status = system.REQUEST_STATUS.RESCUED;
+            const response = await axiosInstance.put(
+                `/requests/${requestId}?status=${status}`
+            );
+            if (response.status === 200) {
+                if (refreshList) {
+                    refreshList();
+                }
+
+                navigation.navigate("request", {
+                    triggerRefresh: true,
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     const handlePostPress = () => {
         navigation.navigate(`stack`, {
@@ -90,9 +132,56 @@ const Post = ({ item, isFullView, voteCount, commentCount }) => {
         navigation.navigate(`stack`, {
             screen: `chat`,
             params: {
-                opponentId: user?.id,
+                opponentId: requester?.id,
             },
         });
+    };
+
+    const handleCommentPress = () => {
+        if (onCommentPress) {
+            onCommentPress();
+        }
+    };
+
+    const handleFinishRequestPress = () => {
+        handleClose();
+        Alert.alert(t("finish request"), t("finish request description"), [
+            {
+                text: t("cancel"),
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+            },
+            {
+                text: t("finish"),
+                onPress: () => finishRequest(item?.id),
+            },
+        ]);
+    };
+
+    const vote = async (voteType) => {
+        const response = await axiosInstance.post(`requests/${item?.id}/vote`, {
+            voteType,
+        });
+        if (response.status === 200) {
+            setVoteCount(response.data.voteCount);
+            setVoteType(voteType);
+        }
+    }
+
+    const handleUpvotePress = async () => {
+        if (voteType === system.VOTE_TYPE.UPVOTE) {
+            vote(system.VOTE_TYPE.NONE);
+        } else {
+            vote(system.VOTE_TYPE.UPVOTE);
+        }
+    };
+
+    const handleDownvotePress = () => {
+        if (voteType === system.VOTE_TYPE.DOWNVOTE) {
+            vote(system.VOTE_TYPE.NONE);
+        } else {
+            vote(system.VOTE_TYPE.DOWNVOTE);
+        }
     };
 
     const PostContent = useMemo(() => {
@@ -105,10 +194,10 @@ const Post = ({ item, isFullView, voteCount, commentCount }) => {
                 }`}
             >
                 <View className="flex flex-row justify-center w-full px-4">
-                    {user && user?.avatar ? (
+                    {requester && requester?.avatar ? (
                         <Image
                             source={{
-                                uri: user?.avatar,
+                                uri: requester?.avatar,
                             }}
                             className="w-9 h-9 rounded-full"
                         />
@@ -118,9 +207,11 @@ const Post = ({ item, isFullView, voteCount, commentCount }) => {
                         </View>
                     )}
                     <View className="flex flex-col ml-2 flex-grow">
-                        <Text className="text-sm font-rbold">{user?.name}</Text>
+                        <Text className="text-sm font-rbold">
+                            {requester?.name}
+                        </Text>
                         <Text className="text-xs text-gray-500">
-                            {item?.distance}km · {formatTime(item?.updatedAt)}
+                            {item?.distance}km · {formatTime(item?.createdAt)}
                         </Text>
                     </View>
                     <TouchableOpacity onPress={openMenu}>
@@ -162,49 +253,68 @@ const Post = ({ item, isFullView, voteCount, commentCount }) => {
 
                 <View className="flex flex-row justify-between items-center w-full mt-3 px-4">
                     <View
-                        className={`flex flex-row justify-center items-center border-[1px] border-gray-300 rounded-2xl px-2 py-1 ${
-                            item?.isEmergency
-                                ? "border-gray-300"
-                                : "border-gray-300"
-                        }`}
+                        className={`flex flex-row justify-center items-center border-[1px] border-gray-300 rounded-2xl overflow-hidden`}
                     >
-                        <Image
-                            source={icons.upOutlined}
-                            className="w-5 h-5 mr-3"
-                            tintColor={"gray"}
-                        />
-                        <Text className="text-sm font-rregular text-gray-500 mr-2">
-                            {voteCount}
-                        </Text>
+                        <TouchableNativeFeedback onPress={handleUpvotePress}>
+                            <View className="flex flex-row px-2 py-1">
+                                <Image
+                                    source={
+                                        voteType === system.VOTE_TYPE.UPVOTE
+                                            ? icons.upFilled
+                                            : icons.upOutlined
+                                    }
+                                    className="w-6 h-6 mr-3 "
+                                    tintColor={
+                                        voteType === system.VOTE_TYPE.UPVOTE
+                                            ? "#F73334"
+                                            : "gray"
+                                    }
+                                />
+                                <Text className="text-sm font-rregular text-gray-500">
+                                    {voteCount}
+                                </Text>
+                            </View>
+                        </TouchableNativeFeedback>
                         <Image
                             source={icons.line}
-                            className="w-[1px] h-4 mr-2"
+                            className="w-[1px] h-4"
                             tintColor={"#DDDDDD"}
                         />
-                        <Image
-                            source={icons.downOutlined}
-                            className="w-5 h-5"
-                            tintColor={"gray"}
-                        />
+                        <TouchableNativeFeedback onPress={handleDownvotePress}>
+                            <View className="flex flex-row px-2 py-1">
+                                <Image
+                                    source={
+                                        voteType === system.VOTE_TYPE.DOWNVOTE
+                                            ? icons.downFilled
+                                            : icons.downOutlined
+                                    }
+                                    className="w-6 h-6"
+                                    tintColor={
+                                        voteType === system.VOTE_TYPE.DOWNVOTE
+                                            ? "#F73334"
+                                            : "gray"
+                                    }
+                                />
+                            </View>
+                        </TouchableNativeFeedback>
                     </View>
-
-                    <View
-                        className={`flex flex-row justify-center items-center border-[1px]  rounded-2xl px-2 py-1 ${
-                            item?.isEmergency
-                                ? "border-gray-300"
-                                : "border-gray-300"
-                        }`}
-                    >
-                        <View className="mr-1 w-5 h-5">
-                            <FontAwesome
-                                name="commenting-o"
-                                size={18}
-                                color="gray"
-                            />
-                        </View>
-                        <Text className="text-sm font-rregular text-gray-500 mr-2">
-                            {commentCount} {t("comments")}
-                        </Text>
+                    <View className="rounded-2xl overflow-hidden">
+                        <TouchableNativeFeedback onPress={handleCommentPress}>
+                            <View
+                                className={`flex flex-row justify-center items-center border-[1px]  rounded-2xl px-2 py-1 border-gray-300`}
+                            >
+                                <View className="mr-1 w-6 h-6">
+                                    <FontAwesome
+                                        name="commenting-o"
+                                        size={22}
+                                        color="gray"
+                                    />
+                                </View>
+                                <Text className="text-sm font-rregular text-gray-500 mr-2">
+                                    {commentCount} {t("comments")}
+                                </Text>
+                            </View>
+                        </TouchableNativeFeedback>
                     </View>
                 </View>
             </View>
@@ -250,14 +360,33 @@ const Post = ({ item, isFullView, voteCount, commentCount }) => {
                         description={t("view location")}
                         onPress={handleLocationPress}
                     />
-                    <MenuItem
-                        title={t("chat")}
-                        description={t("start chat")}
-                        icon={
-                            <MaterialIcons name="chat" size={24} color="gray" />
-                        }
-                        onPress={handlePress}
-                    />
+                    {requester?.id === user?.id ? (
+                        <MenuItem
+                            title={t("finish request")}
+                            description={t("finish request description")}
+                            icon={
+                                <FontAwesome5
+                                    name="flag-checkered"
+                                    size={24}
+                                    color="gray"
+                                />
+                            }
+                            onPress={handleFinishRequestPress}
+                        />
+                    ) : (
+                        <MenuItem
+                            title={t("chat")}
+                            description={t("start chat")}
+                            icon={
+                                <MaterialIcons
+                                    name="chat"
+                                    size={24}
+                                    color="gray"
+                                />
+                            }
+                            onPress={handlePress}
+                        />
+                    )}
                 </BottomSheetView>
             </BottomSheetModal>
             <Modal

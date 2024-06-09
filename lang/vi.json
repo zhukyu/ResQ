@@ -38,7 +38,7 @@
     "no": "Không",
     "cancel": "Hủy",
     "create emergency request": "Tạo yêu cầu khẩn cấp",
-    "create emergency request confirmation": "Bạn có chắc chắn muốn tạo yêu cầu khẩn cấp này?",
+    "create emergency request confirmation": "Bạn đang chuẩn bị tạo một yêu cầu khẩn cấp. Điều này sẽ thông báo tới tất cả những người cứu hộ gần đây. Bạn có chắc chắn muốn tiếp tục?",
     "loading...": "Đang tải...",
     "EMERGENCY REQUEST": "YÊU CẦU KHẨN CẤP",
     "location": "Vị trí",
@@ -50,5 +50,10 @@
     "you": "Bạn",
     "comments": "Bình luận",
     "show direction": "Chỉ đường",
-    "start navigation": "Bắt đầu chỉ đường"
+    "start navigation": "Bắt đầu chỉ đường",
+    "warning": "Cảnh báo",
+    "emergency request warning": "Bạn vẫn đang còn một yêu cầu khẩn cấp đang chạy",
+    "finish request": "Đóng yêu cầu",
+    "finish request description": "Đánh dấu yêu cầu này đã được cứu",
+    "finish request confirmation": "Bạn có chắc chắn muốn đánh dấu yêu cầu này đã được cứu và đóng nó?"
 }
