@@ -55,5 +55,14 @@
     "emergency request warning": "You still have an emergency request in progress.",
     "finish request": "Close Request",
     "finish request description": "Mark this request as rescued",
-    "finish request confirmation": "Are you sure you want to mark this request as rescued and close it?"
+    "finish request confirmation": "Are you sure you want to mark this request as rescued and close it?",
+    "about": "About",
+    "requests": "Requests",
+    "personal info": "Personal Infomation",
+    "language": "Language",
+    "settings": "Settings",
+    "profile": "Profile",
+    "select language": "Select Language",
+    "map": "Map",
+    "inbox": "Inbox"
 }

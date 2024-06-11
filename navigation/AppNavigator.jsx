@@ -30,11 +30,19 @@ const AppNavigator = () => {
         <AppStack.Navigator
             screenOptions={{
                 headerShown: false,
+                animationEnabled: true,
             }}
         >
             <AppStack.Screen name="splash" component={SplashScreen} />
             <AppStack.Screen name="auth" component={AuthNavigator} />
-            <AppStack.Screen name="drawer" component={DrawerNavigator} />
+            <AppStack.Screen
+                name="drawer"
+                component={DrawerNavigator}
+                options={{
+                    cardStyleInterpolator:
+                        CardStyleInterpolators.forFadeFromBottomAndroid,
+                }}
+            />
             <AppStack.Screen
                 name="stack"
                 component={StackNavigator}

@@ -13,9 +13,9 @@ import LoadingSkeleton from "../../components/LoadingSkeleton";
 
 const RequestScreen = ({ route, navigation }) => {
     const { triggerRefresh, scrollToTop } = route.params || {};
+    const isFocused = useIsFocused();
     const [posts, setPosts] = useState([]);
     const flatListRef = useRef();
-    const isFocused = useIsFocused();
     const [loading, setLoading] = useState(false);
     const [loadingMore, setLoadingMore] = useState(false);
     const [refreshing, setRefreshing] = useState(false);

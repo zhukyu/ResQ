@@ -17,32 +17,34 @@ import { icons } from "../constants";
 import AddButton from "../components/AddButton";
 import { useNavigationState } from "@react-navigation/native";
 import { useHeaderHeight } from "@react-navigation/elements";
+import { useTranslation } from "react-i18next";
 
 const Tab = createBottomTabNavigator();
 const { width, height } = Dimensions.get("window");
 
 const TabIcon = ({ color, name, focused, customClass, size, route }) => {
+    const { t } = useTranslation();
 
     let icon = null;
     let title = "";
     switch (route.name) {
         case "request":
             icon = focused ? icons.lifebuoyFilled : icons.lifebuoyOutlined;
-            title = "Requests";
+            title = t("requests");
             break;
         case "map":
             icon = focused ? icons.mapsFilled : icons.mapsOutlined;
-            title = "Map";
+            title = t("map");
             break;
         case "chat":
             icon = focused ? icons.chatFilled : icons.chatOutlined;
-            title = "Chat";
+            title = t("chat");
             break;
         case "inbox":
             icon = focused
                 ? icons.notificationFilled
                 : icons.notificationOutlined;
-            title = "Inbox";
+            title = t("inbox");
             break;
         default:
             icon = icons.lifebuoyOutlined;
@@ -80,6 +82,7 @@ const EmptyTab = () => {
 
 const TabNavigator = ({ navigation }) => {
     const [open, setOpen] = useState(false);
+    const { t } = useTranslation();
 
     const handleTabPress = (route) => {
         if (route !== "create" && open) {
@@ -164,8 +167,8 @@ const TabNavigator = ({ navigation }) => {
                     name="request"
                     component={RequestScreen}
                     options={{
-                        title: "Requests",
-                        tabBarLabel: "Requests",
+                        title: t("requests"),
+                        tabBarLabel: t("requests"),
                     }}
                     // listeners={({ navigation, route }) => ({
                     //     tabPress: (e) => {

@@ -55,5 +55,14 @@
     "emergency request warning": "Bạn vẫn đang còn một yêu cầu khẩn cấp đang chạy",
     "finish request": "Đóng yêu cầu",
     "finish request description": "Đánh dấu yêu cầu này đã được cứu",
-    "finish request confirmation": "Bạn có chắc chắn muốn đánh dấu yêu cầu này đã được cứu và đóng nó?"
+    "finish request confirmation": "Bạn có chắc chắn muốn đánh dấu yêu cầu này đã được cứu và đóng nó?",
+    "about": "Giới thiệu",
+    "requests": "Yêu cầu",
+    "personal ifo": "Thông tin cá nhân",
+    "language": "Ngôn ngữ",
+    "settings": "Cài đặt",
+    "profile": "Hồ sơ",
+    "select language": "Chọn ngôn ngữ",
+    "map": "Bản đồ",
+    "inbox": "Thông báo"
 }

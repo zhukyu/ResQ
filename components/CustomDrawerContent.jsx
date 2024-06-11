@@ -106,7 +106,7 @@ const CustomDrawerContent = (props) => {
                 icon={({ color, size }) => (
                     <Feather name="settings" size={size} color="gray" />
                 )}
-                label={t("setting")}
+                label={t("settings")}
                 labelStyle={{
                     marginLeft: -20,
                     fontSize: 16,

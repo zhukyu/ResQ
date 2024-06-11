@@ -16,6 +16,8 @@ import downOutlined from "../assets/icons/down_outlined.png";
 import downFilled from "../assets/icons/down_filled.png";
 import line from "../assets/icons/line.png";
 import marker from "../assets/icons/marker.png";
+import english from "../assets/icons/english.png";
+import vietnamese from "../assets/icons/vietnamese.png";
 
 export default {
     plus,
@@ -35,5 +37,7 @@ export default {
     downOutlined,
     downFilled,
     line,
-    marker
+    marker,
+    english,
+    vietnamese
 };
