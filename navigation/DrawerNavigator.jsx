@@ -8,6 +8,7 @@ import UserProfileScreen from "../pages/user/UserProfileScreen";
 import SettingScreen from "../pages/setting/SettingScreen";
 import BackButtonHeader from "../components/BackButtonHeader";
 import { useTranslation } from "react-i18next";
+import SettingNavigator from "./SettingNavigator";
 
 const UserDrawer = createDrawerNavigator();
 
@@ -46,26 +47,17 @@ const DrawerNavigator = () => {
                 component={UserProfileScreen}
                 options={{
                     headerShown: true,
-                    title: t("Profile"),
+                    title: t("profile"),
                     header: (props) => <BackButtonHeader {...props} />,
                     headerRight: () => null,
                     headerStyle: {
-                        backgroundColor: "#fff",
+                        backgroundColor: "white",
                     },
                 }}
             />
             <UserDrawer.Screen
                 name="setting"
-                component={SettingScreen}
-                options={{
-                    headerShown: true,
-                    title: t("Settings"),
-                    header: (props) => <BackButtonHeader {...props} />,
-                    headerRight: () => null,
-                    headerStyle: {
-                        backgroundColor: "#fff",
-                    },
-                }}
+                component={SettingNavigator}
             />
         </UserDrawer.Navigator>
     );

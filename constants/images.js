@@ -8,5 +8,6 @@ import empty from "../assets/images/empty.png";
 import resqlogo from "../assets/images/resq_logo_gradient.png";
 import resqlogoWhite from "../assets/images/resq_logo_white.png";
 import wallpaper from "../assets/images/wallpaper.jpg";
+import profileWallpaper from "../assets/images/profile_wallpaper.jpg";
 
-export default { profile, thumbnail, cards, path, logo, logoSmall, empty, resqlogo, resqlogoWhite, wallpaper };
+export default { profile, thumbnail, cards, path, logo, logoSmall, empty, resqlogo, resqlogoWhite, wallpaper, profileWallpaper };
