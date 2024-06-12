@@ -54,7 +54,7 @@ const SplashScreen = () => {
             })
             .catch((error) => {
                 console.log("error", error);
-                if (error.response.status === 401) {
+                if (error.response?.status === 401) {
                     setIsLoggedIn(false)
                     setUser(null)
                 }

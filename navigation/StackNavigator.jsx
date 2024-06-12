@@ -12,10 +12,14 @@ import EmergencyRequestScreen from "../pages/request/EmergencyRequestScreen";
 import LocationView from "../components/LocationView";
 import ChatSearchScreen from "../pages/chat/ChatSearchScreen";
 import ChatScreen from "../pages/chat/ChatScreen";
+import UpdateUserProfileScreen from "../pages/user/UpdateUserProfileScreen";
+import { useTranslation } from "react-i18next";
 
 const Stack = createStackNavigator();
 
 const StackNavigator = () => {
+    const { t } = useTranslation();
+
     return (
         <Stack.Navigator
             screenOptions={{
@@ -27,7 +31,7 @@ const StackNavigator = () => {
                 name="requestDetail"
                 component={RequestDetailScreen}
                 options={{
-                    title: "Request Detail",
+                    title: t("request detail"),
                     cardStyleInterpolator:
                         CardStyleInterpolators.forHorizontalIOS,
                 }}
@@ -36,7 +40,7 @@ const StackNavigator = () => {
                 name="chatSearch"
                 component={ChatSearchScreen}
                 options={{
-                    title: "Chat Search",
+                    title: t("chat search"),
                     headerShown: false,
                     cardStyleInterpolator:
                         CardStyleInterpolators.forHorizontalIOS,
@@ -46,7 +50,7 @@ const StackNavigator = () => {
                 name="chat"
                 component={ChatScreen}
                 options={{
-                    title: "Chat",
+                    title: t("chat"),
                     cardStyleInterpolator:
                         CardStyleInterpolators.forVerticalIOS,
                 }}
@@ -79,6 +83,15 @@ const StackNavigator = () => {
                     cardStyle: {
                         backgroundColor: "white",
                     },
+                }}
+            />
+            <Stack.Screen
+                name="updateProfile"
+                component={UpdateUserProfileScreen}
+                options={{
+                    title: t("update profile"),
+                    cardStyleInterpolator:
+                        CardStyleInterpolators.forHorizontalIOS,
                 }}
             />
         </Stack.Navigator>
