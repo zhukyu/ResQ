@@ -68,12 +68,14 @@ const Header = ({ user }) => {
             >
                 <View className="flex flex-row items-end">
                     {user && user?.avatar ? (
-                        <Animated.Image
-                            source={{
-                                uri: user?.avatar,
-                            }}
-                            className="w-28 h-28 rounded-full border-4 border-white"
-                        />
+                        <View className="border-4 border-white rounded-full bg-white">
+                            <Animated.Image
+                                source={{
+                                    uri: user?.avatar,
+                                }}
+                                className="w-28 h-28 rounded-full"
+                            />
+                        </View>
                     ) : (
                         <Animated.View className="w-28 h-28 rounded-full bg-[#CCCCCC] flex items-center justify-center border-4 border-white">
                             <FontAwesome name="user" size={58} color="white" />
@@ -109,6 +111,16 @@ const Header = ({ user }) => {
 
 const About = ({ user }) => {
     const { t } = useTranslation();
+    const navigation = useNavigation();
+
+    const handleEditProfilePress = () => {
+        navigation.navigate(`stack`, {
+            screen: `updateProfile`,
+            params: {
+                userId: user?.id,
+            },
+        });
+    };
 
     return (
         <Tabs.ScrollView>
@@ -182,7 +194,7 @@ const About = ({ user }) => {
                         {user?.address}
                     </Text>
                 </View>
-                <TouchableNativeFeedback onPress={() => {}}>
+                <TouchableNativeFeedback onPress={handleEditProfilePress}>
                     <View className="flex flex-row w-full mt-7 rounded-full bg-zinc-300 py-2 items-center justify-center">
                         <AntDesign name="edit" size={20} color="#1f2937" />
                         <Text className="text-gray-800 font-rmedium text-base ml-2">

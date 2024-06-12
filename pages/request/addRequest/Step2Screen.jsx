@@ -124,7 +124,7 @@ const Step2Screen = () => {
                                     selectedImages.length == 0 ? "flex-1" : ""
                                 }`}
                                 cursorColor={"#000"}
-                                placeholder="What is your request?"
+                                placeholder={t("request placeholder")}
                                 value={step2Data.content}
                                 multiline={true}
                                 numberOfLines={

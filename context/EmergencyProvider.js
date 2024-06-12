@@ -28,7 +28,7 @@ const EmergencyProvider = ({ children }) => {
     const checkRequestExists = async () => {
         try {
             const response = await axiosInstance.get("/requests/active");
-            if (response.status === 200) {
+            if (response?.status === 200) {
                 const request = response.data.requests[0];
                 if (request) {
                     setRequestId(request.id);
@@ -53,7 +53,7 @@ const EmergencyProvider = ({ children }) => {
         try {
             const status = system.REQUEST_STATUS.RESCUED;
             const response = await axiosInstance.put(`/requests/${requestId}?status=${status}`);
-            if (response.status === 200) {
+            if (response?.status === 200) {
                 setRequestId(null);
                 setIsActivated(false);
             }

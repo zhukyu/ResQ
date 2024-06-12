@@ -176,7 +176,7 @@ const Step3Screen = () => {
 
     useEffect(() => {
         navigation.setOptions({
-            title: "Select Location",
+            title: t("select location"),
             header: (props) => <BackButtonHeader {...props} close={true} />,
         });
     }, [navigation]);
@@ -309,7 +309,7 @@ const Step3Screen = () => {
                         </View>
                         <TextInput
                             className="flex-1 text-base font-medium text-gray-900"
-                            placeholder="Search"
+                            placeholder={t("search")}
                             onChangeText={handleSearchChange}
                             value={searchTerm}
                             cursorColor={"#000"}
@@ -370,8 +370,11 @@ const Step3Screen = () => {
                                             color="gray"
                                         />
                                     </View>
-                                    <View className="flex ml-3">
-                                        <Text className="text-sm font-semibold text-gray-800">
+                                    <View className="flex ml-3 mr-1">
+                                        <Text
+                                            className="text-sm font-semibold text-gray-800"
+                                            style={{ flexWrap: "wrap" }}
+                                        >
                                             {selectedLocation?.address}
                                         </Text>
                                         <Text className="text-xs font-medium text-gray-500">
@@ -380,7 +383,7 @@ const Step3Screen = () => {
                                     </View>
                                 </View>
                                 <CustomButton
-                                    title="Create Request"
+                                    title={t("create request")}
                                     handlePress={handleCreateRequest}
                                     disabled={isLoading || !selectedLocation}
                                 />

@@ -64,5 +64,15 @@
     "profile": "Profile",
     "select language": "Select Language",
     "map": "Map",
-    "inbox": "Inbox"
+    "inbox": "Inbox",
+    "edit profile": "Edit Profile",
+    "request placeholder": "What is your request?",
+    "next": "Next",
+    "select location": "Select Location",
+    "request detail": "Request Detail",
+    "chat search": "Chat Search",
+    "update profile": "Update Profile",
+    "update" : "Update",
+    "update profile confirmation": "Are you sure you want to update your profile?",
+    "profile updated successfully": "Profile updated successfully"
 }

@@ -58,11 +58,21 @@
     "finish request confirmation": "Bạn có chắc chắn muốn đánh dấu yêu cầu này đã được cứu và đóng nó?",
     "about": "Giới thiệu",
     "requests": "Yêu cầu",
-    "personal ifo": "Thông tin cá nhân",
+    "personal info": "Thông tin cá nhân",
     "language": "Ngôn ngữ",
     "settings": "Cài đặt",
     "profile": "Hồ sơ",
     "select language": "Chọn ngôn ngữ",
     "map": "Bản đồ",
-    "inbox": "Thông báo"
+    "inbox": "Thông báo",
+    "edit profile": "Chỉnh sửa hồ sơ",
+    "request placeholder": "Yêu cầu của bạn là gì?",
+    "next": "Tiếp",
+    "select location": "Chọn vị trí",
+    "request detail": "Chi tiết yêu cầu",
+    "chat search": "Tìm kiếm cuộc trò chuyện",
+    "update profile": "Cập nhật hồ sơ",
+    "update" : "Cập nhật",
+    "update profile confirmation": "Bạn có chắc chắn muốn cập nhật hồ sơ của mình?",
+    "profile updated successfully": "Cập nhật hồ sơ thành công"
 }
