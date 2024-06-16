@@ -5,9 +5,17 @@ import {
     Pressable,
     Alert,
     Animated,
+    TouchableOpacity,
+    Keyboard,
 } from "react-native";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
+import React, {
+    useEffect,
+    useState,
+    useMemo,
+    useRef,
+    useCallback,
+} from "react";
+import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import BackButtonHeader from "../../components/BackButtonHeader";
 import { Easing } from "react-native-reanimated";
 import { useTranslation } from "react-i18next";
@@ -20,12 +28,27 @@ import { useGlobalContext } from "../../context/GlobalProvider";
 import { useEmergencyContext } from "../../context/EmergencyProvider";
 import { system } from "../../constants";
 import { getAddress } from "../../lib/appwrite";
+import {
+    BottomSheetBackdrop,
+    BottomSheetModal,
+    BottomSheetScrollView,
+    BottomSheetView,
+} from "@gorhom/bottom-sheet";
+import { ScrollView } from "react-native-gesture-handler";
+import CommentSection from "../../components/CommentSection";
+import CommentInput from "../../components/CommentInput";
 
 const EmergencyRequestScreen = () => {
     const { t } = useTranslation();
     const { currentLocation } = useGlobalContext();
-    const { isActivated, setIsActivated, requestId, setRequestId, emitLocation, stopSharingLocation } =
-        useEmergencyContext();
+    const {
+        isActivated,
+        setIsActivated,
+        requestId,
+        setRequestId,
+        emitLocation,
+        stopSharingLocation,
+    } = useEmergencyContext();
     const [currentAddress, setCurrentAddress] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -34,6 +57,39 @@ const EmergencyRequestScreen = () => {
         latitude: "N, 0°0'0''",
         longitude: "E, 0°0'0''",
     });
+    const menuRef = useRef(null);
+
+    const initialSnapPoints = useMemo(() => ["50%", "90%"], []);
+    const [snapPoints, setSnapPoints] = useState(initialSnapPoints);
+
+    useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+            "keyboardDidShow",
+            () => {
+                setSnapPoints(["90%"]);
+                menuRef.current?.expand();
+            }
+        );
+        const keyboardDidHideListener = Keyboard.addListener(
+            "keyboardDidHide",
+            () => {
+                setSnapPoints(initialSnapPoints);
+            }
+        );
+
+        return () => {
+            keyboardDidHideListener.remove();
+            keyboardDidShowListener.remove();
+        };
+    }, [initialSnapPoints]);
+
+    const openMenu = useCallback(() => {
+        menuRef.current?.present();
+    }, []);
+
+    const handleClose = useCallback(() => {
+        menuRef.current?.dismiss();
+    }, []);
 
     // Display current geolocation and address
     useEffect(() => {
@@ -57,6 +113,19 @@ const EmergencyRequestScreen = () => {
             });
         }
     }, [currentLocation]);
+
+    useEffect(() => {
+        if (requestId) {
+            emitWithToken("joinRequestDetailRoom", { requestId: requestId });
+        }
+        return () => {
+            if (requestId) {
+                emitWithToken("leaveRequestDetailRoom", {
+                    requestId: requestId,
+                });
+            }
+        };
+    }, [requestId]);
 
     const performReverseGeocoding = async (latitude, longitude) => {
         // let addresses = await Geocoding.from(latitude, longitude)
@@ -252,12 +321,55 @@ const EmergencyRequestScreen = () => {
                 <Text className="text-2xl font-extrabold mb-4 px-4 text-gray-800">
                     {t("create emergency request")}
                 </Text>
-                <Pressable
-                    onPress={isActivated ? handleDeactivate : handleActivate}
+                <View
+                    style={{
+                        position: "absolute",
+                        top: 0,
+                        bottom: 100,
+                        left: 0,
+                        right: 0,
+                        justifyContent: "center",
+                        alignItems: "center",
+                    }}
                 >
-                    {AnimatedButton}
-                </Pressable>
+                    <Pressable
+                        onPress={
+                            isActivated ? handleDeactivate : handleActivate
+                        }
+                    >
+                        {AnimatedButton}
+                    </Pressable>
+                </View>
                 <View className="w-full p-4">
+                    {isActivated && requestId && (
+                        <View className="flex justify-center items-end">
+                            <TouchableOpacity
+                                activeOpacity={0.7}
+                                onPress={openMenu}
+                                style={{
+                                    shadowOffset: {
+                                        width: 0,
+                                        height: 3,
+                                    },
+                                    shadowColor: "#8C929D",
+                                    shadowOpacity: 0.2,
+                                    shadowRadius: 3.84,
+                                    elevation: 10,
+                                    borderRadius: 50,
+                                    marginBottom: 10,
+                                }}
+                            >
+                                <View className="rounded-full bg-white p-4 flex items-center justify-center mb-2">
+                                    <FontAwesome6
+                                        name="comment-alt"
+                                        size={24}
+                                        color="#4B5563"
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+
                     <View
                         className="bg-white p-4 rounded-lg items-start justify-center w-full"
                         style={{
@@ -304,6 +416,28 @@ const EmergencyRequestScreen = () => {
                     </View>
                 </View>
             </View>
+            <BottomSheetModal
+                ref={menuRef}
+                enablePanDownToClose={true}
+                snapPoints={snapPoints}
+                // enableDynamicSizing={true}
+                backdropComponent={(props) => (
+                    <BottomSheetBackdrop
+                        {...props}
+                        opacity={0.5}
+                        enableTouchThrough={false}
+                        appearsOnIndex={0}
+                        disappearsOnIndex={-1}
+                    />
+                )}
+            >
+                <BottomSheetView style={{ flex: 1 }}>
+                    <CommentInput requestId={requestId} />
+                    <ScrollView style={{ flex: 1 }}>
+                        <CommentSection requestId={requestId} />
+                    </ScrollView>
+                </BottomSheetView>
+            </BottomSheetModal>
         </View>
     );
 };

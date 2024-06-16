@@ -4,7 +4,12 @@ import Toast from "react-native-toast-message";
 import { system } from "../constants";
 import { io } from "socket.io-client";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { connectSocket, disconnectSocket } from "../lib/socketInstance";
+import {
+    connectSocket,
+    disconnectSocket,
+    emitWithToken,
+    socket,
+} from "../lib/socketInstance";
 import * as Location from "expo-location";
 import axiosInstance from "../lib/AxiosInstance";
 import { AppState } from "react-native";

@@ -74,5 +74,10 @@
     "update profile": "Update Profile",
     "update" : "Update",
     "update profile confirmation": "Are you sure you want to update your profile?",
-    "profile updated successfully": "Profile updated successfully"
+    "profile updated successfully": "Profile updated successfully",
+    "logout confirmation" : "Are you sure you want to log out?",
+    "pending" : "Pending",
+    "rescuing" : "Rescuing",
+    "rescued" : "Rescued",
+    "rejected" : "Rejected"
 }

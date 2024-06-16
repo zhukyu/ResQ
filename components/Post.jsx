@@ -181,6 +181,64 @@ const Footer = ({
     );
 };
 
+const StatusBadge = ({ status }) => {
+    const { t } = useTranslation();
+
+    const getStatusProps = (status) => {
+        switch (status) {
+            case system.REQUEST_STATUS.PENDING:
+                return {
+                    text: t("pending"),
+                    style: "border-orange-500 bg-orange-300",
+                };
+            case system.REQUEST_STATUS.RESCUING:
+                return {
+                    text: t("rescuing"),
+                    style: "border-indigo-500 bg-indigo-300",
+                };
+            case system.REQUEST_STATUS.RESCUED:
+                return {
+                    text: t("rescued"),
+                    style: "border-emerald-500 bg-emerald-300",
+                };
+            case system.REQUEST_STATUS.REJECTED:
+                return {
+                    text: t("rejected"),
+                    style: "border-red-500 bg-red-300",
+                };
+            default:
+                return {
+                    text: "",
+                    style: "border-gray-500 bg-gray-300",
+                };
+        }
+    };
+
+    const { text, style } = getStatusProps(status);
+
+    return (
+        <View
+            className={`flex flex-row items-center justify-center rounded-full px-2 py-1 border ${style}`}
+        >
+            <Text className="text-xs font-rregular text-white">{text}</Text>
+        </View>
+    );
+};
+
+const RequestTypeBadge = ({ type }) => {
+    return (
+        <View>
+            {type ? (
+                <View className="mx-4 mt-2">
+                    <Text className="text-sm font-rbold  text-primary">
+                        #{type?.name}
+                    </Text>
+                </View>
+            ) : null}
+        </View>
+    );
+};
+
 const Post = ({
     item,
     isFullView,
@@ -286,13 +344,19 @@ const Post = ({
                             <FontAwesome name="user" size={22} color="white" />
                         </View>
                     )}
-                    <View className="flex flex-col ml-2 flex-grow">
-                        <Text className="text-sm font-rbold">
-                            {requester?.name}
-                        </Text>
-                        <Text className="text-xs text-gray-500">
-                            {item?.distance}km · {formatTime(item?.createdAt)}
-                        </Text>
+                    <View className="flex flex-row flex-grow items-center">
+                        <View className="flex flex-col ml-2 ">
+                            <Text className="text-sm font-rbold">
+                                {requester?.name}
+                            </Text>
+                            <Text className="text-xs text-gray-500">
+                                {item?.distance}km ·{" "}
+                                {formatTime(item?.createdAt)}
+                            </Text>
+                        </View>
+                        <View className="ml-2">
+                            <StatusBadge status={item?.status} />
+                        </View>
                     </View>
                     <TouchableOpacity onPress={openMenu}>
                         <View className="flex flex-row justify-center items-center p-1">
@@ -320,6 +384,7 @@ const Post = ({
                         </Text>
                     )}
                 </View>
+                <RequestTypeBadge type={item?.requestTypes} />
                 {media && media.length > 0 ? (
                     <View
                         className="mt-2"
