@@ -26,7 +26,7 @@ const FormField = ({ title, name, value, placeholder, handeChangeText, otherStyl
                     onChangeText={handeChangeText}
                     placeholder={placeholder}
                     cursorColor={'#000'}
-                    secureTextEntry={(title === 'Password' || title === "Confirm Password") && !showPassword}
+                    secureTextEntry={(name === 'password' || name === 'confirmPassword') && !showPassword}
                     {...props}
                 />
 

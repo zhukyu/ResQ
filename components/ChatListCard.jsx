@@ -56,7 +56,7 @@ const ChatListCard = ({ item }) => {
                     </View>
                     <View className="flex flex-row items-center justify-start">
                         <Text
-                            className="text-sm font-normal text-gray-500  max-w-[78%]"
+                            className="text-sm font-normal text-gray-500  max-w-[70%]"
                             numberOfLines={1}
                             ellipsizeMode="tail"
                         >
