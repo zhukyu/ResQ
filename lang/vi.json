@@ -74,5 +74,10 @@
     "update profile": "Cập nhật hồ sơ",
     "update" : "Cập nhật",
     "update profile confirmation": "Bạn có chắc chắn muốn cập nhật hồ sơ của mình?",
-    "profile updated successfully": "Cập nhật hồ sơ thành công"
+    "profile updated successfully": "Cập nhật hồ sơ thành công",
+    "logout confirmation" : "Bạn có chắc chắn muốn đăng xuất?",
+    "pending" : "Chờ xử lý",
+    "rescuing" : "Đang cứu hộ",
+    "rescued" : "Đã cứu hộ",
+    "rejected" : "Từ chối"
 }

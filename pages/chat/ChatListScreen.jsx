@@ -4,7 +4,7 @@ import { FontAwesome } from "@expo/vector-icons";
 import SearchBox from "../../components/SearchBox";
 import ChatListCard from "../../components/ChatListCard";
 import axiosInstance from "../../lib/AxiosInstance";
-import { socket } from "../../lib/socketInstance";
+import { emitWithToken, socket } from "../../lib/socketInstance";
 import { useIsFocused } from "@react-navigation/native";
 
 const ChatListScreen = ({ navigation }) => {
@@ -16,6 +16,7 @@ const ChatListScreen = ({ navigation }) => {
         const data = await response.data;
         if (data) {
             setConversations(data);
+            emitWithToken("resetUnviewedMessages");
         }
     };
 

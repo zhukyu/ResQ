@@ -133,20 +133,24 @@ const RequestScreen = ({ route, navigation }) => {
         });
     };
 
+    const callRenderItem = useCallback(({ item }) => {
+        return (
+            <Post
+                item={item}
+                initVoteCount={item?.voteCount}
+                commentCount={item?.commentCount}
+                refreshList={handleRefresh}
+                onCommentPress={() => handleCommentPress(item)}
+                initVoteType={item?.votes?.[0]?.voteType}
+            />
+        );
+    }, []);
+
     return (
         <FlatList
             ref={flatListRef}
             data={posts}
-            renderItem={({ item }) => (
-                <Post
-                    item={item}
-                    initVoteCount={item?.voteCount}
-                    commentCount={item?.commentCount}
-                    refreshList={handleRefresh}
-                    onCommentPress={() => handleCommentPress(item)}
-                    initVoteType={item?.votes?.[0]?.voteType}
-                />
-            )}
+            renderItem={callRenderItem}
             refreshing={refreshing}
             onRefresh={handleRefresh}
             onEndReached={handleLoadMore}

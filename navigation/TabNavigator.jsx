@@ -6,7 +6,7 @@ import {
     TouchableNativeFeedback,
     Dimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import CustomHeader from "../components/Header";
 import MapScreen from "../pages/map/MapScreen";
@@ -18,15 +18,19 @@ import AddButton from "../components/AddButton";
 import { useNavigationState } from "@react-navigation/native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useTranslation } from "react-i18next";
+import { emitWithToken, socket } from "../lib/socketInstance";
+import { useGlobalContext } from "../context/GlobalProvider";
+import { Badge } from "react-native-paper";
 
 const Tab = createBottomTabNavigator();
 const { width, height } = Dimensions.get("window");
 
-const TabIcon = ({ color, name, focused, customClass, size, route }) => {
+const TabIcon = ({ color, name, focused, customClass, size, route, messagesCount, notificationsCount }) => {
     const { t } = useTranslation();
 
     let icon = null;
     let title = "";
+    let count = 0;
     switch (route.name) {
         case "request":
             icon = focused ? icons.lifebuoyFilled : icons.lifebuoyOutlined;
@@ -39,12 +43,14 @@ const TabIcon = ({ color, name, focused, customClass, size, route }) => {
         case "chat":
             icon = focused ? icons.chatFilled : icons.chatOutlined;
             title = t("chat");
+            count = messagesCount;
             break;
         case "inbox":
             icon = focused
                 ? icons.notificationFilled
                 : icons.notificationOutlined;
             title = t("inbox");
+            count = notificationsCount;
             break;
         default:
             icon = icons.lifebuoyOutlined;
@@ -72,6 +78,19 @@ const TabIcon = ({ color, name, focused, customClass, size, route }) => {
             >
                 {title}
             </Text>
+            <Badge
+                visible={count > 0}
+                size={20}
+                style={{
+                    position: "absolute",
+                    top: -5,
+                    right: -5,
+                    zIndex: 100,
+                    backgroundColor: "#F73334",
+                }}
+            >
+                {count}
+            </Badge>
         </View>
     );
 };
@@ -81,7 +100,11 @@ const EmptyTab = () => {
 };
 
 const TabNavigator = ({ navigation }) => {
+    const { user } = useGlobalContext();
     const [open, setOpen] = useState(false);
+    const [chatUnviewedCount, setChatUnviewedCount] = useState(0);
+    const [notificationUnviewedCount, setNotificationUnviewedCount] =
+        useState(0);
     const { t } = useTranslation();
 
     const handleTabPress = (route) => {
@@ -91,11 +114,28 @@ const TabNavigator = ({ navigation }) => {
         navigation.navigate(route);
     };
 
+    useEffect(() => {
+        if (user && socket) {
+            emitWithToken("getUnviewedCounts");
+
+            socket.on("unviewedCountUpdated", (data) => {
+                setChatUnviewedCount(data.unviewedMessages);
+                setNotificationUnviewedCount(data.unviewedNotifications);
+            });
+        }
+
+        return () => {
+            if (socket) {
+                socket.off("unviewedCounts");
+            }
+        };
+    }, [user, socket]);
+
     return (
         <View
             style={{
                 flex: 1,
-                minHeight: height
+                minHeight: height,
             }}
         >
             {open && (
@@ -146,6 +186,8 @@ const TabNavigator = ({ navigation }) => {
                                 focused={focused}
                                 size={size}
                                 route={route}
+                                messagesCount={chatUnviewedCount}
+                                notificationsCount={notificationUnviewedCount}
                             />
                         );
                     },

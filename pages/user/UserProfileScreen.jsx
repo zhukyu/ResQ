@@ -90,7 +90,7 @@ const Header = ({ user }) => {
                                 <Text
                                     className={`text-xs font-rlight  ml-2 
                                 border rounded-full p-1 px-2 ${
-                                    user.role === "admin"
+                                    user?.role === "admin"
                                         ? "border-red-300 text-red-400 bg-red-100"
                                         : "border-gray-300 text-gray-400 bg-slate-100"
                                 }`}
