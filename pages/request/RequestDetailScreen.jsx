@@ -10,8 +10,9 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     TouchableOpacity,
+    FlatList,
 } from "react-native";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState, memo } from "react";
 import axiosInstance from "../../lib/AxiosInstance";
 import { useHeaderHeight } from "@react-navigation/elements";
 import Post from "../../components/Post";
@@ -24,6 +25,61 @@ import { emitWithToken, socket } from "../../lib/socketInstance";
 import CommentSkeleton from "../../components/CommentSkeleton";
 import { useFocusEffect } from "@react-navigation/native";
 
+const CommentInput = ({ onSend }) => {
+    const { t } = useTranslation();
+    const inputRef = useRef(null);
+    const [comment, setComment] = useState("");
+    const [isFocused, setIsFocused] = useState(false);
+
+    const handleSendPress = () => {
+        onSend(comment);
+        setComment("");
+        Keyboard.dismiss();
+    };
+
+    return (
+        <View className="flex justify-between p-2 bg-white flex-row">
+            <View
+                className="border rounded-full px-4 h-11 flex-1 bg-gray-50 border-gray-300 
+                flex flex-row items-center"
+            >
+                <TextInput
+                    ref={inputRef}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                    className="flex-1 text-base font-medium text-gray-900"
+                    placeholder={t("chat placeholder")}
+                    cursorColor={"#000"}
+                    value={comment}
+                    onChangeText={(text) => setComment(text)}
+                />
+            </View>
+            {isFocused && comment.length > 0 && (
+                <TouchableOpacity onPress={handleSendPress}>
+                    <View className="flex items-center justify-center p-2">
+                        <FontAwesome name="send" size={24} color="#F73334" />
+                    </View>
+                </TouchableOpacity>
+            )}
+            <View className="flex items-center justify-center"></View>
+        </View>
+    );
+};
+
+const CommentSection = memo(({ comments, isLoadingComments }) => {
+    return (
+        <View className="mt-1 bg-white">
+            <View>
+                {isLoadingComments ? (
+                    <CommentSkeleton />
+                ) : (
+                    <Comment comments={comments} />
+                )}
+            </View>
+        </View>
+    );
+});
+
 const RequestDetailScreen = ({ route }) => {
     const { id, focusTextInput } = route.params;
     const { t } = useTranslation();
@@ -31,11 +87,9 @@ const RequestDetailScreen = ({ route }) => {
     const headerHeight = useHeaderHeight();
     const { height } = Dimensions.get("window");
     const inputRef = useRef(null);
-    const [isFocused, setIsFocused] = useState(false);
     const [comments, setComments] = useState([]);
     const [commentCount, setCommentCount] = useState(0);
     const [voteCount, setVoteCount] = useState(0);
-    const [comment, setComment] = useState("");
     const [isLoadingComments, setIsLoadingComments] = useState(false);
 
     const fetchData = async () => {
@@ -54,10 +108,8 @@ const RequestDetailScreen = ({ route }) => {
         setIsLoadingComments(false);
     };
 
-    const handleSendPress = () => {
+    const handleSendPress = (comment) => {
         emitWithToken("comment", { requestId: id, content: comment });
-        setComment("");
-        Keyboard.dismiss();
     };
 
     const openKeyboard = () => {
@@ -105,6 +157,23 @@ const RequestDetailScreen = ({ route }) => {
         console.log("commentCount", commentCount);
     }, [commentCount]);
 
+    const renderPost = useCallback(() => {
+        if (request) {
+            return (
+                <Post
+                    item={request}
+                    isFullView={true}
+                    initVoteCount={voteCount}
+                    commentCount={commentCount}
+                    onCommentPress={() => openKeyboard()}
+                    initVoteType={request.votes?.[0]?.voteType}
+                />
+            );
+        } else {
+            return <LoadingSkeleton />;
+        }
+    }, [request, voteCount, commentCount]);
+
     return (
         <KeyboardAvoidingView
             className="flex h-full"
@@ -115,58 +184,13 @@ const RequestDetailScreen = ({ route }) => {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <>
                     <ScrollView className="flex">
-                        {request ? (
-                            <Post
-                                item={request}
-                                isFullView={true}
-                                initVoteCount={voteCount}
-                                commentCount={commentCount}
-                                onCommentPress={() => openKeyboard()}
-                                initVoteType={request.votes?.[0]?.voteType}
-                            />
-                        ) : (
-                            // null
-                            <LoadingSkeleton />
-                        )}
-                        <View className="mt-1 bg-white ">
-                            <View className="">
-                                {isLoadingComments ? (
-                                    <CommentSkeleton />
-                                ) : (
-                                    <Comment comments={comments} />
-                                )}
-                            </View>
-                        </View>
+                        {renderPost()}
+                        <CommentSection
+                            comments={comments}
+                            isLoadingComments={isLoadingComments}
+                        />
                     </ScrollView>
-                    <View className="flex justify-between p-2 bg-white flex-row">
-                        <View
-                            className="border rounded-full px-4 h-11 flex-1 bg-gray-50 border-gray-300 
-                            flex flex-row items-center"
-                        >
-                            <TextInput
-                                ref={inputRef}
-                                onFocus={() => setIsFocused(true)}
-                                onBlur={() => setIsFocused(false)}
-                                className="flex-1 text-base font-medium text-gray-900"
-                                placeholder={t("chat placeholder")}
-                                cursorColor={"#000"}
-                                value={comment}
-                                onChangeText={(text) => setComment(text)}
-                            />
-                        </View>
-                        {isFocused && comment.length > 0 && (
-                            <TouchableOpacity onPress={handleSendPress}>
-                                <View className="flex items-center justify-center p-2">
-                                    <FontAwesome
-                                        name="send"
-                                        size={24}
-                                        color="#F73334"
-                                    />
-                                </View>
-                            </TouchableOpacity>
-                        )}
-                        <View className="flex items-center justify-center"></View>
-                    </View>
+                    <CommentInput onSend={handleSendPress} />
                 </>
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>

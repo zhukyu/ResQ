@@ -57,6 +57,130 @@ const MenuItem = ({ icon, title, description, onPress }) => (
     </TouchableNativeFeedback>
 );
 
+const Footer = ({
+    item,
+    initVoteType,
+    initVoteCount,
+    commentCount,
+    onCommentPress,
+}) => {
+    const { t } = useTranslation();
+
+    const [voteType, setVoteType] = useState(
+        initVoteType || system.VOTE_TYPE.NONE
+    );
+    const [voteCount, setVoteCount] = useState(initVoteCount);
+
+    const vote = async (voteType) => {
+        const response = await axiosInstance.post(`requests/${item?.id}/vote`, {
+            voteType,
+        });
+        if (response.status === 200) {
+            setVoteCount(response.data.voteCount);
+            setVoteType(voteType);
+        }
+    };
+
+    const handleUpvotePress = async () => {
+        if (voteType === system.VOTE_TYPE.UPVOTE) {
+            vote(system.VOTE_TYPE.NONE);
+        } else {
+            vote(system.VOTE_TYPE.UPVOTE);
+        }
+    };
+
+    const handleDownvotePress = () => {
+        if (voteType === system.VOTE_TYPE.DOWNVOTE) {
+            vote(system.VOTE_TYPE.NONE);
+        } else {
+            vote(system.VOTE_TYPE.DOWNVOTE);
+        }
+    };
+
+    const handleCommentPress = () => {
+        if (onCommentPress) {
+            onCommentPress();
+        }
+    };
+
+    useEffect(() => {
+        setVoteCount(initVoteCount);
+    }, [initVoteCount]);
+
+    useEffect(() => {
+        setVoteType(initVoteType || system.VOTE_TYPE.NONE);
+    }, [initVoteType]);
+
+    return (
+        <View className="flex flex-row justify-between items-center w-full mt-3 px-4">
+            <View
+                className={`flex flex-row justify-center items-center border-[1px] border-gray-300 rounded-2xl overflow-hidden`}
+            >
+                <TouchableNativeFeedback onPress={handleUpvotePress}>
+                    <View className="flex flex-row px-2 py-1">
+                        <Image
+                            source={
+                                voteType === system.VOTE_TYPE.UPVOTE
+                                    ? icons.upFilled
+                                    : icons.upOutlined
+                            }
+                            className="w-6 h-6 mr-3 "
+                            tintColor={
+                                voteType === system.VOTE_TYPE.UPVOTE
+                                    ? "#F73334"
+                                    : "gray"
+                            }
+                        />
+                        <Text className="text-sm font-rregular text-gray-500">
+                            {voteCount}
+                        </Text>
+                    </View>
+                </TouchableNativeFeedback>
+                <Image
+                    source={icons.line}
+                    className="w-[1px] h-4"
+                    tintColor={"#DDDDDD"}
+                />
+                <TouchableNativeFeedback onPress={handleDownvotePress}>
+                    <View className="flex flex-row px-2 py-1">
+                        <Image
+                            source={
+                                voteType === system.VOTE_TYPE.DOWNVOTE
+                                    ? icons.downFilled
+                                    : icons.downOutlined
+                            }
+                            className="w-6 h-6"
+                            tintColor={
+                                voteType === system.VOTE_TYPE.DOWNVOTE
+                                    ? "#F73334"
+                                    : "gray"
+                            }
+                        />
+                    </View>
+                </TouchableNativeFeedback>
+            </View>
+            <View className="rounded-2xl overflow-hidden">
+                <TouchableNativeFeedback onPress={handleCommentPress}>
+                    <View
+                        className={`flex flex-row justify-center items-center border-[1px]  rounded-2xl px-2 py-1 border-gray-300`}
+                    >
+                        <View className="mr-1 w-6 h-6">
+                            <FontAwesome
+                                name="commenting-o"
+                                size={22}
+                                color="gray"
+                            />
+                        </View>
+                        <Text className="text-sm font-rregular text-gray-500 mr-2">
+                            {commentCount} {t("comments")}
+                        </Text>
+                    </View>
+                </TouchableNativeFeedback>
+            </View>
+        </View>
+    );
+};
+
 const Post = ({
     item,
     isFullView,
@@ -74,18 +198,6 @@ const Post = ({
     const menuRef = useRef(null);
 
     const [isMapModalVisible, setIsMapModalVisible] = useState(false);
-    const [voteType, setVoteType] = useState(
-        initVoteType || system.VOTE_TYPE.NONE
-    );
-    const [voteCount, setVoteCount] = useState(initVoteCount);
-
-    useEffect(() => {
-        setVoteCount(initVoteCount);
-    }, [initVoteCount]);
-
-    useEffect(() => {
-        setVoteType(initVoteType || system.VOTE_TYPE.NONE);
-    }, [initVoteType]);
 
     const openMenu = useCallback(() => {
         menuRef.current?.present();
@@ -137,12 +249,6 @@ const Post = ({
         });
     };
 
-    const handleCommentPress = () => {
-        if (onCommentPress) {
-            onCommentPress();
-        }
-    };
-
     const handleFinishRequestPress = () => {
         handleClose();
         Alert.alert(t("finish request"), t("finish request description"), [
@@ -156,32 +262,6 @@ const Post = ({
                 onPress: () => finishRequest(item?.id),
             },
         ]);
-    };
-
-    const vote = async (voteType) => {
-        const response = await axiosInstance.post(`requests/${item?.id}/vote`, {
-            voteType,
-        });
-        if (response.status === 200) {
-            setVoteCount(response.data.voteCount);
-            setVoteType(voteType);
-        }
-    }
-
-    const handleUpvotePress = async () => {
-        if (voteType === system.VOTE_TYPE.UPVOTE) {
-            vote(system.VOTE_TYPE.NONE);
-        } else {
-            vote(system.VOTE_TYPE.UPVOTE);
-        }
-    };
-
-    const handleDownvotePress = () => {
-        if (voteType === system.VOTE_TYPE.DOWNVOTE) {
-            vote(system.VOTE_TYPE.NONE);
-        } else {
-            vote(system.VOTE_TYPE.DOWNVOTE);
-        }
     };
 
     const PostContent = useMemo(() => {
@@ -251,72 +331,13 @@ const Post = ({
                     </View>
                 ) : null}
 
-                <View className="flex flex-row justify-between items-center w-full mt-3 px-4">
-                    <View
-                        className={`flex flex-row justify-center items-center border-[1px] border-gray-300 rounded-2xl overflow-hidden`}
-                    >
-                        <TouchableNativeFeedback onPress={handleUpvotePress}>
-                            <View className="flex flex-row px-2 py-1">
-                                <Image
-                                    source={
-                                        voteType === system.VOTE_TYPE.UPVOTE
-                                            ? icons.upFilled
-                                            : icons.upOutlined
-                                    }
-                                    className="w-6 h-6 mr-3 "
-                                    tintColor={
-                                        voteType === system.VOTE_TYPE.UPVOTE
-                                            ? "#F73334"
-                                            : "gray"
-                                    }
-                                />
-                                <Text className="text-sm font-rregular text-gray-500">
-                                    {voteCount}
-                                </Text>
-                            </View>
-                        </TouchableNativeFeedback>
-                        <Image
-                            source={icons.line}
-                            className="w-[1px] h-4"
-                            tintColor={"#DDDDDD"}
-                        />
-                        <TouchableNativeFeedback onPress={handleDownvotePress}>
-                            <View className="flex flex-row px-2 py-1">
-                                <Image
-                                    source={
-                                        voteType === system.VOTE_TYPE.DOWNVOTE
-                                            ? icons.downFilled
-                                            : icons.downOutlined
-                                    }
-                                    className="w-6 h-6"
-                                    tintColor={
-                                        voteType === system.VOTE_TYPE.DOWNVOTE
-                                            ? "#F73334"
-                                            : "gray"
-                                    }
-                                />
-                            </View>
-                        </TouchableNativeFeedback>
-                    </View>
-                    <View className="rounded-2xl overflow-hidden">
-                        <TouchableNativeFeedback onPress={handleCommentPress}>
-                            <View
-                                className={`flex flex-row justify-center items-center border-[1px]  rounded-2xl px-2 py-1 border-gray-300`}
-                            >
-                                <View className="mr-1 w-6 h-6">
-                                    <FontAwesome
-                                        name="commenting-o"
-                                        size={22}
-                                        color="gray"
-                                    />
-                                </View>
-                                <Text className="text-sm font-rregular text-gray-500 mr-2">
-                                    {commentCount} {t("comments")}
-                                </Text>
-                            </View>
-                        </TouchableNativeFeedback>
-                    </View>
-                </View>
+                <Footer
+                    item={item}
+                    initVoteCount={initVoteCount}
+                    commentCount={commentCount}
+                    initVoteType={initVoteType}
+                    onCommentPress={onCommentPress}
+                />
             </View>
         );
     });

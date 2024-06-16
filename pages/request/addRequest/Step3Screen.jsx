@@ -216,6 +216,7 @@ const Step3Screen = () => {
                 type: image.mimeType,
             });
         });
+        console.log("formData", formData);
         const response = await axiosInstance.post("/upload", formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
