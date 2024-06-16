@@ -157,7 +157,7 @@ const SignUpScreen = () => {
                         <Text className='text-4xl font-archivobold text-primary'>RES<Text className="text-secondary-200">Q</Text></Text>
                     </View>
 
-                    <Text className="text-2xl font-smibold mt-5 mb-3 font-psemibold">{t('signup header')}</Text>
+                    <Text className="text-2xl mt-5 mb-3 font-rbold">{t('signup header')}</Text>
 
                     <FormField
                         title={t('email')}

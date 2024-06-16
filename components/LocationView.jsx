@@ -172,7 +172,7 @@ const LocationView = ({ item, handleCloseModal, isEmergency, visible }) => {
     }, [currentLocation]);
 
     const showSelectedLocation = () => {
-        if (selectedLocation) {
+        if (selectedLocation && selectedLocation.latitude && selectedLocation.longitude) {
             return (
                 <Marker
                     coordinate={selectedLocation}
