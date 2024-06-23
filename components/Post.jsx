@@ -239,6 +239,8 @@ const RequestTypeBadge = ({ type }) => {
     );
 };
 
+
+
 const Post = ({
     item,
     isFullView,
@@ -249,13 +251,19 @@ const Post = ({
     initVoteType,
 }) => {
     const requester = item.users;
-    const { user } = useGlobalContext();
+    const rescuerId = item.rescuerId;
+    const { user, setToast } = useGlobalContext();
     const navigation = useNavigation();
     const media = item.requestMedia;
     const { t } = useTranslation();
     const menuRef = useRef(null);
 
     const [isMapModalVisible, setIsMapModalVisible] = useState(false);
+
+    const isRequester = requester?.id === user?.id;
+    const isRescuer = user?.role === system.USER_ROLE.RESCUER;
+    const isNotRequester = requester?.id !== user?.id;
+    const isRescuerSelf = rescuerId === user?.id;
 
     const openMenu = useCallback(() => {
         menuRef.current?.present();
@@ -278,6 +286,52 @@ const Post = ({
 
                 navigation.navigate("request", {
                     triggerRefresh: true,
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const acceptRequest = async (requestId) => {
+        try {
+            const status = system.REQUEST_STATUS.RESCUING;
+            const response = await axiosInstance.put(
+                `/requests/${requestId}?status=${status}`
+            );
+            if (response.status === 200) {
+                if (refreshList) {
+                    refreshList();
+                }
+
+                setToast({
+                    type: "success",
+                    text1: t("success"),
+                    text2: t("request accepted"),
+                });
+
+                handlePostPress();
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const rejectRequest = async (requestId) => {
+        try {
+            const status = system.REQUEST_STATUS.PENDING;
+            const response = await axiosInstance.put(
+                `/requests/${requestId}?status=${status}`
+            );
+            if (response.status === 200) {
+                if (refreshList) {
+                    refreshList();
+                }
+
+                setToast({
+                    type: "success",
+                    text1: t("success"),
+                    text2: t("request rejected"),
                 });
             }
         } catch (error) {
@@ -321,6 +375,63 @@ const Post = ({
             },
         ]);
     };
+
+    const handleAcceptRequestPress = async () => {
+        handleClose();
+        Alert.alert(t("accept request"), t("accept request confirmation"), [
+            {
+                text: t("cancel"),
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+            },
+            {
+                text: t("accept"),
+                onPress: () => acceptRequest(item?.id),
+            },
+        ]);
+    };
+
+    const handleCreateDangerZonePress = () => {
+        handleClose();
+        navigation.navigate(`stack`, {
+            screen: `dangerZone`,
+            params: {
+                request: item,
+            },
+        });
+    }
+
+    const handleRejectRequestPress = async () => {
+        handleClose();
+        Alert.alert(t("reject request"), t("reject request confirmation"), [
+            {
+                text: t("cancel"),
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+            },
+            {
+                text: t("reject"),
+                onPress: () => rejectRequest(item?.id),
+            },
+        ]);
+    };
+
+    const ImageRender = useMemo(() => {
+        if (media && media.length > 0) {
+            return (
+                <View
+                    className="mt-2"
+                    pointerEvents={isFullView ? "auto" : "none"}
+                >
+                    <ImageCollage
+                        images={media.map((image) => image.url)}
+                    />
+                </View>
+            );
+        } else {
+            return null;
+        }
+    }, [media])
 
     const PostContent = useMemo(() => {
         return (
@@ -385,16 +496,7 @@ const Post = ({
                     )}
                 </View>
                 <RequestTypeBadge type={item?.requestTypes} />
-                {media && media.length > 0 ? (
-                    <View
-                        className="mt-2"
-                        pointerEvents={isFullView ? "auto" : "none"}
-                    >
-                        <ImageCollage
-                            images={media.map((image) => image.url)}
-                        />
-                    </View>
-                ) : null}
+                {ImageRender}
 
                 <Footer
                     item={item}
@@ -446,7 +548,7 @@ const Post = ({
                         description={t("view location")}
                         onPress={handleLocationPress}
                     />
-                    {requester?.id === user?.id ? (
+                    {isRequester ? (
                         <MenuItem
                             title={t("finish request")}
                             description={t("finish request description")}
@@ -472,6 +574,51 @@ const Post = ({
                             }
                             onPress={handlePress}
                         />
+                    )}
+                    {isRescuer && !rescuerId && isNotRequester && (
+                        <MenuItem
+                            title={t("accept request")}
+                            description={t("accept request description")}
+                            icon={
+                                <FontAwesome
+                                    name="check"
+                                    size={24}
+                                    color="gray"
+                                />
+                            }
+                            onPress={handleAcceptRequestPress}
+                        />
+                    )}
+                    {rescuerId && isRescuerSelf && isNotRequester && (
+                        <>
+                            <MenuItem
+                                title={t("create danger zone")}
+                                description={t(
+                                    "create danger zone description"
+                                )}
+                                icon={
+                                    <FontAwesome
+                                        name="exclamation-triangle"
+                                        size={24}
+                                        color="gray"
+                                    />
+                                }
+                                onPress={handleCreateDangerZonePress}
+                            />
+
+                            <MenuItem
+                                title={t("reject request")}
+                                description={t("reject request description")}
+                                icon={
+                                    <MaterialIcons
+                                        name="cancel"
+                                        size={24}
+                                        color="gray"
+                                    />
+                                }
+                                onPress={handleRejectRequestPress}
+                            />
+                        </>
                     )}
                 </BottomSheetView>
             </BottomSheetModal>

@@ -9,11 +9,15 @@ import SettingScreen from "../pages/setting/SettingScreen";
 import BackButtonHeader from "../components/BackButtonHeader";
 import { useTranslation } from "react-i18next";
 import SettingNavigator from "./SettingNavigator";
+import { useGlobalContext } from "../context/GlobalProvider";
+import { system } from "../constants";
+import RescueManagementScreen from "../pages/rescueManagement/RescueManagementScreen";
 
 const UserDrawer = createDrawerNavigator();
 
 const DrawerNavigator = () => {
     const { t } = useTranslation();
+    const { user } = useGlobalContext();
 
     return (
         <UserDrawer.Navigator
@@ -55,6 +59,21 @@ const DrawerNavigator = () => {
                     },
                 }}
             />
+            {user?.role === system.USER_ROLE.RESCUER && (
+                <UserDrawer.Screen
+                    name="rescueManagement"
+                    component={RescueManagementScreen}
+                    options={{
+                        headerShown: true,
+                        title: t("rescue management"),
+                        header: (props) => <BackButtonHeader {...props} />,
+                        headerRight: () => null,
+                        headerStyle: {
+                            backgroundColor: "white",
+                        },
+                    }}
+                />
+            )}
             <UserDrawer.Screen
                 name="setting"
                 component={SettingNavigator}

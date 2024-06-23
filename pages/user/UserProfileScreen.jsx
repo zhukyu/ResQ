@@ -190,7 +190,9 @@ const About = ({ user }) => {
                     <Text className="text-sm font-rregular text-gray-500 w-1/3">
                         {t("address")}
                     </Text>
-                    <Text className="text-sm font-rregular text-gray-900">
+                    <Text
+                        className="text-sm font-rregular text-gray-900 max-w-[70%] text-right"
+                    >
                         {user?.address}
                     </Text>
                 </View>

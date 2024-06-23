@@ -6,7 +6,12 @@ import {
     StyleSheet,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import MapView, { Geojson, Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, {
+    Circle,
+    Geojson,
+    Marker,
+    PROVIDER_GOOGLE,
+} from "react-native-maps";
 import * as Location from "expo-location";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
@@ -114,6 +119,26 @@ const MapScreen = ({ route }) => {
         }
     };
 
+    const showDangerZones = () => {
+        if (
+            currentLocation &&
+            currentLocation.latitude &&
+            currentLocation.longitude
+        ) {
+            return (
+                <Circle
+                    center={{
+                        latitude: currentLocation?.latitude + 0.01,
+                        longitude: currentLocation?.longitude,
+                    }}
+                    radius={200}
+                    fillColor="rgba(255, 0, 0, 0.2)"
+                    strokeColor="red"
+                />
+            );
+        }
+    };
+
     const handleRegionChange = (region) => {};
 
     const handleCustomLocationButton = () => {
@@ -182,6 +207,7 @@ const MapScreen = ({ route }) => {
                 >
                     {/* {showLocationsOfInterest()} */}
                     {showSelectedLocation()}
+                    {showDangerZones()}
                 </MapView>
                 <View className="absolute z-50 flex flex-row mx-4 my-[6]">
                     <View

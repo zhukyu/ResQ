@@ -13,10 +13,11 @@ const OutlinedFormField = ({
     setShowPassword,
     required = false,
     error,
+    multiline = false,
     ...props
 }) => {
     return (
-        <View className="mb-4">
+        <View className={error ? "" : "mb-4"}>
             <TextInput
                 theme={{
                     colors: {
@@ -29,6 +30,7 @@ const OutlinedFormField = ({
                 value={value}
                 onChangeText={handeChangeText}
                 placeholder={placeholder}
+                multiline={true}
                 {...props}
             />
             {error && (

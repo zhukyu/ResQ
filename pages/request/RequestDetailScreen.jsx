@@ -11,6 +11,7 @@ import {
     Keyboard,
     TouchableOpacity,
     FlatList,
+    RefreshControl,
 } from "react-native";
 import React, { useCallback, useEffect, useRef, useState, memo } from "react";
 import axiosInstance from "../../lib/AxiosInstance";
@@ -37,13 +38,16 @@ const RequestDetailScreen = ({ route }) => {
     const [comments, setComments] = useState([]);
     const [commentCount, setCommentCount] = useState(0);
     const [voteCount, setVoteCount] = useState(0);
+    const [refreshing, setRefreshing] = useState(false);
 
     const fetchData = async () => {
+        setRefreshing(true);
         const response = await axiosInstance.get(`/requests/${id}`);
         const result = await response.data;
         setRequest(result);
         setVoteCount(result.voteCount);
         setCommentCount(result.commentCount);
+        setRefreshing(false);
     };
 
     const openKeyboard = () => {
@@ -99,7 +103,7 @@ const RequestDetailScreen = ({ route }) => {
         } else {
             return <LoadingSkeleton />;
         }
-    }, [request, voteCount, commentCount]);
+    }, [request, commentCount, voteCount]);
 
     return (
         <KeyboardAvoidingView
@@ -110,9 +114,20 @@ const RequestDetailScreen = ({ route }) => {
         >
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <>
-                    <ScrollView className="flex">
+                    <ScrollView
+                        className="flex"
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={fetchData}
+                            />
+                        }
+                    >
                         {renderPost()}
-                        <CommentSection requestId={id} setCommentCount={setCommentCount}/>
+                        <CommentSection
+                            requestId={id}
+                            setCommentCount={setCommentCount}
+                        />
                     </ScrollView>
                     <CommentInput requestId={id} />
                 </>

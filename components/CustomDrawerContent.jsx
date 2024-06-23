@@ -5,10 +5,11 @@ import { useTranslation } from "react-i18next";
 import axiosInstance from "../lib/AxiosInstance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
-import { Feather, FontAwesome } from "@expo/vector-icons";
+import { Feather, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import CustomButton from "./CustomButton";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 import { disconnectSocket } from "../lib/socketInstance";
+import { system } from "../constants";
 
 const CustomDrawerContent = (props) => {
     const { user, setUser, setIsLoggedIn, setToast, setIsLoading } =
@@ -102,6 +103,24 @@ const CustomDrawerContent = (props) => {
                 }}
                 onPress={() => navigation.navigate("profile")}
             />
+            {user?.role === system.USER_ROLE.RESCUER && (
+                <DrawerItem
+                    icon={({ color, size }) => (
+                        <FontAwesome5 name="tasks" size={size} color="gray" />
+                    )}
+                    label={t("rescue management")}
+                    labelStyle={{
+                        marginLeft: -20,
+                        fontSize: 16,
+                        color: "gray",
+                    }}
+                    style={{
+                        backgroundColor: "transparent",
+                        borderRadius: 10,
+                    }}
+                    onPress={() => navigation.navigate("rescueManagement")}
+                />
+            )}
             <DrawerItem
                 icon={({ color, size }) => (
                     <Feather name="settings" size={size} color="gray" />
