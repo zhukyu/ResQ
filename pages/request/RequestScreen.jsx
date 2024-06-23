@@ -4,6 +4,7 @@ import {
     ScrollView,
     ActivityIndicator,
     FlatList,
+    RefreshControl,
 } from "react-native";
 import Post from "../../components/Post";
 import axiosInstance from "../../lib/AxiosInstance";
@@ -157,6 +158,14 @@ const RequestScreen = ({ route, navigation }) => {
             onEndReachedThreshold={0.5}
             ListFooterComponent={renderFooter}
             keyExtractor={(item) => item.id}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={handleRefresh}
+                    colors={["#F73334"]}
+                    tintColor="#F73334"
+                />
+            }
         />
     );
 };

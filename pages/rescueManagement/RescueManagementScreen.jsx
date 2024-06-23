@@ -8,8 +8,8 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { SceneMap, TabBar, TabView } from "react-native-tab-view";
-import DangerZoneTab from "./tabs/dangerZoneTab";
 import RequestListTab from "./tabs/RequestListTab";
+import DangerZoneTab from "./tabs/DangerZoneTab";
 import { useTranslation } from "react-i18next";
 
 const renderScene = SceneMap({
@@ -36,7 +36,7 @@ const RescueManagementScreen = () => {
                 activeColor="#F73334"
                 inactiveColor="gray"
                 renderLabel={({ route, focused, color }) => (
-                    <Animated.Text className="text-base font-rregular" style={{ color }}>
+                    <Animated.Text className="text-base font-rmedium" style={{ color }}>
                         {route.title}
                     </Animated.Text>
                 )}

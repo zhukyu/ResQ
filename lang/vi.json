@@ -102,5 +102,8 @@
     "create danger zone confirmation" : "Bạn có chắc chắn muốn tạo vùng nguy hiểm này?",
     "radius must be greater than 0": "Bán kính phải lớn hơn 0",
     "rescue management": "Quản lý cứu hộ",
-    "danger zone": "Vùng nguy hiểm"
+    "danger zone": "Vùng nguy hiểm",
+    "active": "Hoạt động",
+    "deleted": "Đã xóa",
+    "all": "Tất cả"
 }

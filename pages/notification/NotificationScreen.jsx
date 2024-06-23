@@ -1,4 +1,4 @@
-import { View, Text, Button, FlatList, TouchableOpacity } from "react-native";
+import { View, Text, Button, FlatList, TouchableOpacity, RefreshControl } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { emitWithToken, socket } from "../../lib/socketInstance";
@@ -76,6 +76,14 @@ const NotificationScreen = () => {
                     renderItem={({ item }) => <NotificationItem item={item} />}
                     onRefresh={handleRefresh}
                     refreshing={isRefreshing}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={isRefreshing}
+                            onRefresh={handleRefresh}
+                            colors={["#F73334"]}
+                            tintColor="#F73334"
+                        />
+                    }
                 />
             ) : null}
         </View>

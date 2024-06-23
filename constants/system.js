@@ -22,6 +22,11 @@ const USER_ROLE = {
     RESCUER: "rescuer",
 };
 
+const DANGER_AREA_STATUS = {
+    ACTIVE: "active",
+    DELETED: "deleted"
+};
+
 const system = {
     refreshTime: 9 * 60 * 1000,
     END_POINT_URL: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT,
@@ -31,6 +36,7 @@ const system = {
     REQUEST_STATUS,
     VOTE_TYPE,
     USER_ROLE,
+    DANGER_AREA_STATUS,
 };
 
 export default system;

@@ -13,6 +13,7 @@
     "@gorhom/bottom-sheet": "^4.6.3",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/datetimepicker": "7.7.0",
+    "@react-native-segmented-control/segmented-control": "^2.5.2",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/drawer": "^6.6.15",
     "@react-navigation/native": "^6.1.17",
@@ -22,11 +23,13 @@
     "expo-blur": "~13.0.2",
     "expo-build-properties": "~0.12.1",
     "expo-constants": "~16.0.2",
+    "expo-device": "~6.0.2",
     "expo-image-picker": "~15.0.5",
     "expo-linear-gradient": "~13.0.2",
     "expo-linking": "~6.3.1",
     "expo-location": "~17.0.1",
     "expo-navigation-bar": "~3.0.4",
+    "expo-notifications": "~0.28.9",
     "expo-router": "~3.5.11",
     "expo-status-bar": "~1.12.1",
     "geolib": "^3.3.4",
@@ -59,9 +62,7 @@
     "react-native-toast-message": "^2.2.0",
     "react-native-web": "~0.19.6",
     "react-native-zoom-image-view": "^1.0.6",
-    "socket.io-client": "^4.7.5",
-    "expo-notifications": "~0.28.9",
-    "expo-device": "~6.0.2"
+    "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

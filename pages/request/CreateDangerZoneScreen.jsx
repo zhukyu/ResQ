@@ -58,7 +58,7 @@ const CreateDangerZoneScreen = ({ route }) => {
 
     const createDangerZone = async () => {
         try {
-            emitWithToken("createDangerZone", {
+            emitWithToken("createDangerArea", {
                 ...dangerZone
             });
             setToast({
@@ -102,6 +102,8 @@ const CreateDangerZoneScreen = ({ route }) => {
             ...dangerZone,
             requestId: request?.id,
             address: request?.address,
+            latitude: request?.latitude,
+            longitude: request?.longitude,
         });
     }, [request]);
 

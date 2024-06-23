@@ -102,5 +102,8 @@
     "create danger zone confirmation" : "Are you sure you want to create this danger zone?",
     "radius must be greater than 0": "Radius must be greater than 0",
     "rescue management": "Rescue Management",
-    "danger zone": "Danger Zone"
+    "danger zone": "Danger Zone",
+    "active": "Active",
+    "deleted": "Deleted",
+    "all": "All"
 }
