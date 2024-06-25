@@ -98,8 +98,12 @@ const UpdateUserProfileScreen = () => {
                 dob: profile.dob,
                 phoneNumber: profile.phoneNumber,
                 address: profile.address,
-                avatar: _avatarUrl,
             };
+
+            if (_avatarUrl) {
+                data.avatar = _avatarUrl;
+            }
+
             const response = await axiosInstance.put("/user/update", data);
             if (response?.status === 200) {
                 setToast({

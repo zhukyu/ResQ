@@ -19,6 +19,7 @@ import axiosInstance from "../../lib/AxiosInstance";
 import { emitWithToken, socket } from "../../lib/socketInstance";
 import { useGlobalContext } from "../../context/GlobalProvider";
 import { useIsFocused } from "@react-navigation/native";
+import { formatTime } from "../../lib/helpers";
 
 const ChatScreen = ({ navigation, route }) => {
     const { opponentId } = route.params;
@@ -106,24 +107,42 @@ const ChatScreen = ({ navigation, route }) => {
         setGroupedMessages(groupMessagesBySender(messages));
     }, [messages]);
 
-    const groupMessagesBySender = (messages) => {
+    const groupMessagesBySender = (messages, timeGapInMinutes = 5) => {
         const groupedMessages = [];
         let currentGroup = [];
+        let lastTimestamp = null;
 
         messages.forEach((message) => {
-            if (
+            const messageTimestamp = new Date(message.timestamp);
+            const isNewSender =
                 currentGroup.length === 0 ||
-                message.sender === currentGroup[currentGroup.length - 1].sender
-            ) {
-                currentGroup.push(message);
-            } else {
-                groupedMessages.push(currentGroup);
+                message.sender !== currentGroup[currentGroup.length - 1].sender;
+            const isNewGroup =
+                lastTimestamp &&
+                (messageTimestamp - lastTimestamp) / 60000 > timeGapInMinutes;
+
+            if (isNewSender || isNewGroup) {
+                if (currentGroup.length > 0) {
+                    groupedMessages.push({
+                        type: "group",
+                        messages: currentGroup,
+                    });
+                }
+                if (isNewGroup) {
+                    groupedMessages.push({
+                        type: "timestamp",
+                        timestamp: message.timestamp,
+                    });
+                }
                 currentGroup = [message];
+            } else {
+                currentGroup.push(message);
             }
+            lastTimestamp = messageTimestamp;
         });
 
         if (currentGroup.length > 0) {
-            groupedMessages.push(currentGroup);
+            groupedMessages.push({ type: "group", messages: currentGroup });
         }
 
         return groupedMessages;
@@ -186,88 +205,108 @@ const ChatScreen = ({ navigation, route }) => {
         return (
             <>
                 {groupedMessages.length > 0 &&
-                    groupedMessages.map((group, index) => (
-                        <View
-                            key={index}
-                            className={`flex flex-col px-4 py-2 ${
-                                group[0].sender === user?.id
-                                    ? "justify-end"
-                                    : "justify-start"
-                            }`}
-                        >
-                            <View className="flex flex-row items-end">
-                                {group[0].sender !== user?.id && (
-                                    <View className="flex justify-end items-center mr-2 -ml-2 ">
-                                        {opponent && opponent?.avatar ? (
-                                            <Image
-                                                source={{
-                                                    uri: opponent?.avatar,
-                                                }}
-                                                className="w-9 h-9 rounded-full"
-                                            />
-                                        ) : (
-                                            <View className="w-9 h-9 rounded-full bg-[#CCCCCC] flex items-center justify-center">
-                                                <FontAwesome
-                                                    name="user"
-                                                    size={22}
-                                                    color="white"
+                    groupedMessages.map((group, index) =>
+                        group.type === "timestamp" ? (
+                            <View
+                                key={index}
+                                className="flex items-center my-2"
+                            >
+                                <Text className="text-gray-500 font-rregular text-sm">
+                                    {formatTime(group.timestamp, "format")}
+                                </Text>
+                            </View>
+                        ) : (
+                            <View
+                                key={index}
+                                className={`flex flex-col px-4 py-2 ${
+                                    group.messages[0].sender === user?.id
+                                        ? "justify-end"
+                                        : "justify-start"
+                                }`}
+                            >
+                                <View className="flex flex-row items-end">
+                                    {group.messages[0].sender !== user?.id && (
+                                        <View className="flex justify-end items-center mr-2 -ml-2 ">
+                                            {opponent && opponent?.avatar ? (
+                                                <Image
+                                                    source={{
+                                                        uri: opponent?.avatar,
+                                                    }}
+                                                    className="w-9 h-9 rounded-full"
                                                 />
-                                            </View>
-                                        )}
-                                    </View>
-                                )}
-                                <View className="flex flex-col flex-grow">
-                                    {group.map((item, itemIndex) => {
-                                        const isFirst = itemIndex === 0;
-                                        const isLast =
-                                            itemIndex === group.length - 1;
-                                        const senderIsUser =
-                                            item.sender === user?.id;
-                                        return (
-                                            <View
-                                                key={itemIndex}
-                                                className={`flex flex-row ${
-                                                    senderIsUser
-                                                        ? "justify-end"
-                                                        : "justify-start"
-                                                }`}
-                                            >
-                                                <View
-                                                    className={`rounded-2xl p-3 max-w-[70%] ${
-                                                        senderIsUser
-                                                            ? "bg-primary rounded-r-md"
-                                                            : "bg-gray-200 rounded-l-md"
-                                                    } ${
-                                                        isFirst && !isLast // first message in group
-                                                            ? senderIsUser
-                                                                ? "rounded-tr-2xl"
-                                                                : "rounded-tl-2xl"
-                                                            : !isFirst && isLast // last message in group
-                                                            ? senderIsUser
-                                                                ? "rounded-br-2xl"
-                                                                : "rounded-bl-2xl"
-                                                            : isFirst && isLast // single message
-                                                            ? "rounded-2xl"
-                                                            : ""
-                                                    } ${!isFirst && "mt-[2]"}`}
-                                                >
-                                                    <Text
-                                                        className={`font-rregular ${
+                                            ) : (
+                                                <View className="w-9 h-9 rounded-full bg-[#CCCCCC] flex items-center justify-center">
+                                                    <FontAwesome
+                                                        name="user"
+                                                        size={22}
+                                                        color="white"
+                                                    />
+                                                </View>
+                                            )}
+                                        </View>
+                                    )}
+                                    <View className="flex flex-col flex-grow">
+                                        {group.messages.map(
+                                            (item, itemIndex) => {
+                                                const isFirst = itemIndex === 0;
+                                                const isLast =
+                                                    itemIndex ===
+                                                    group.messages.length - 1;
+                                                const senderIsUser =
+                                                    item.sender === user?.id;
+                                                return (
+                                                    <View
+                                                        key={itemIndex}
+                                                        className={`flex flex-row ${
                                                             senderIsUser
-                                                                ? "text-white"
-                                                                : "text-gray-900"
+                                                                ? "justify-end"
+                                                                : "justify-start"
                                                         }`}
                                                     >
-                                                        {item.message}
-                                                    </Text>
-                                                </View>
-                                            </View>
-                                        );
-                                    })}
+                                                        <View
+                                                            className={`rounded-2xl p-3 max-w-[70%] ${
+                                                                senderIsUser
+                                                                    ? "bg-primary rounded-r-md"
+                                                                    : "bg-gray-200 rounded-l-md"
+                                                            } ${
+                                                                isFirst &&
+                                                                !isLast // first message in group
+                                                                    ? senderIsUser
+                                                                        ? "rounded-tr-2xl"
+                                                                        : "rounded-tl-2xl"
+                                                                    : !isFirst &&
+                                                                      isLast // last message in group
+                                                                    ? senderIsUser
+                                                                        ? "rounded-br-2xl"
+                                                                        : "rounded-bl-2xl"
+                                                                    : isFirst &&
+                                                                      isLast // single message
+                                                                    ? "rounded-2xl"
+                                                                    : ""
+                                                            } ${
+                                                                !isFirst &&
+                                                                "mt-[2]"
+                                                            }`}
+                                                        >
+                                                            <Text
+                                                                className={`font-rregular ${
+                                                                    senderIsUser
+                                                                        ? "text-white"
+                                                                        : "text-gray-900"
+                                                                }`}
+                                                            >
+                                                                {item.message}
+                                                            </Text>
+                                                        </View>
+                                                    </View>
+                                                );
+                                            }
+                                        )}
+                                    </View>
                                 </View>
                             </View>
-                        </View>
-                    ))}
+                        )
+                    )}
             </>
         );
     };

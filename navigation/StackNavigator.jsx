@@ -14,6 +14,8 @@ import ChatSearchScreen from "../pages/chat/ChatSearchScreen";
 import ChatScreen from "../pages/chat/ChatScreen";
 import UpdateUserProfileScreen from "../pages/user/UpdateUserProfileScreen";
 import { useTranslation } from "react-i18next";
+import CreateDangerZoneScreen from "../pages/dangerZone/CreateDangerZoneScreen";
+import EditDangerZoneScreen from "../pages/dangerZone/EditDangerZoneScreen";
 
 const Stack = createStackNavigator();
 
@@ -67,6 +69,30 @@ const StackNavigator = () => {
                     cardStyle: {
                         backgroundColor: "white",
                     },
+                }}
+            />
+            <Stack.Screen
+                name="dangerZone"
+                component={CreateDangerZoneScreen}
+                options={{
+                    title: t("create danger zone"),
+                    cardStyleInterpolator:
+                        CardStyleInterpolators.forHorizontalIOS,
+                    header: (props) => (
+                        <BackButtonHeader {...props} close={true} />
+                    ),
+                }}
+            />
+            <Stack.Screen
+                name="editDangerZone"
+                component={EditDangerZoneScreen}
+                options={{
+                    title: t("edit danger zone"),
+                    cardStyleInterpolator:
+                        CardStyleInterpolators.forHorizontalIOS,
+                    header: (props) => (
+                        <BackButtonHeader {...props} close={true} />
+                    ),
                 }}
             />
             <Stack.Screen

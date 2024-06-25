@@ -412,7 +412,7 @@ const LocationView = ({ item, handleCloseModal, isEmergency, visible }) => {
                         </View>
                         {!showDirectionEnabled ? (
                             <CustomButton
-                                title={t("Show Direction")}
+                                title={t("show direction")}
                                 handlePress={handleShowDirection}
                                 containerStyles="bg-primary"
                                 textStyles="text-white"

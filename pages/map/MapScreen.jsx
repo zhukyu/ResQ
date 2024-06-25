@@ -4,14 +4,24 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
+    Pressable,
+    Image,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import MapView, { Geojson, Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import MapView, {
+    Circle,
+    Geojson,
+    Marker,
+    PROVIDER_GOOGLE,
+} from "react-native-maps";
 import * as Location from "expo-location";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FontAwesome, FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import AvatarMenu from "../../components/AvatarMenu";
 import Geocoding from "react-native-geocoding";
+import { useIsFocused } from "@react-navigation/native";
+import axiosInstance from "../../lib/AxiosInstance";
+import { icons } from "../../constants";
 
 const styles = StyleSheet.create({
     shadow: {
@@ -40,6 +50,9 @@ const MapScreen = ({ route }) => {
     const [selectedLocation, setSelectedLocation] = useState(null);
     const mapRef = useRef(null);
     const timeoutId = useRef(null);
+    const isFocused = useIsFocused();
+
+    const [dangerZones, setDangerZones] = useState([]);
 
     const handleSearchChange = (text) => {
         setSearchTerm(text);
@@ -90,6 +103,22 @@ const MapScreen = ({ route }) => {
         })();
     }, []);
 
+    useEffect(() => {
+        const fetchDangerZones = async () => {
+            try {
+                const response = await axiosInstance.get("/danger");
+                const result = await response.data;
+                setDangerZones(result);
+            } catch (error) {
+                console.error("fetchDangerZones Error:", error);
+            }
+        };
+
+        if (isFocused) {
+            fetchDangerZones();
+        }
+    }, [isFocused]);
+
     const showLocationsOfInterest = () => {
         return places.map((place, index) => {
             return (
@@ -112,6 +141,46 @@ const MapScreen = ({ route }) => {
                 />
             );
         }
+    };
+
+    const showDangerZones = () => {
+        return dangerZones.map((dangerZone, index) => {
+            const longitude = dangerZone?.location?.coordinates[0];
+            const latitude = dangerZone?.location?.coordinates[1];
+
+            console.log("Longitude:", longitude, "Latitude:", latitude);
+
+            if (!longitude || !latitude) {
+                return null;
+            }
+
+            return (
+                <View key={index}>
+                    <Marker
+                        coordinate={{
+                            latitude: latitude,
+                            longitude: longitude,
+                        }}
+                        title={dangerZone?.message}
+                    >
+                        <Image
+                            source={icons.marker}
+                            style={{ width: 40, height: 40 }}
+                        />
+                    </Marker>
+                    <Circle
+                        key={index}
+                        center={{
+                            latitude: latitude,
+                            longitude: longitude,
+                        }}
+                        radius={dangerZone?.radius}
+                        fillColor="rgba(255, 0, 0, 0.2)"
+                        strokeColor="red"
+                    />
+                </View>
+            );
+        });
     };
 
     const handleRegionChange = (region) => {};
@@ -182,6 +251,7 @@ const MapScreen = ({ route }) => {
                 >
                     {/* {showLocationsOfInterest()} */}
                     {showSelectedLocation()}
+                    {showDangerZones()}
                 </MapView>
                 <View className="absolute z-50 flex flex-row mx-4 my-[6]">
                     <View
