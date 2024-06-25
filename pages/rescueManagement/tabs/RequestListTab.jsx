@@ -190,6 +190,8 @@ const RequestListTab = ({ route }) => {
                     onRefresh={handleRefresh}
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0.5}
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
                     ListHeaderComponent={renderHeader}
                     ListFooterComponent={renderFooter}
                     keyExtractor={(item) => item.id}

@@ -105,5 +105,22 @@
     "danger zone": "Vùng nguy hiểm",
     "active": "Hoạt động",
     "deleted": "Đã xóa",
-    "all": "Tất cả"
+    "all": "Tất cả",
+    "delete": "Xóa",
+    "delete danger zone confirmation": "Bạn có chắc chắn muốn xóa vùng nguy hiểm này?",
+    "danger zone deleted": "Vùng nguy hiểm đã được xóa",
+    "delete danger zone": "Xóa vùng nguy hiểm",
+    "reopen": "Mở lại",
+    "reopen danger zone confirmation": "Bạn có chắc chắn muốn mở lại vùng nguy hiểm này?",
+    "danger zone reopened": "Vùng nguy hiểm đã được mở lại",
+    "reopen danger zone": "Mở lại vùng nguy hiểm",
+    "cancel emergency request": "Hủy yêu cầu khẩn cấp",
+    "cancel emergency request confirmation": "Bạn có chắc chắn muốn hủy yêu cầu khẩn cấp này?",
+    "edit": "Chỉnh sửa",
+    "edit danger zone": "Chỉnh sửa vùng nguy hiểm",
+    "danger zone updated": "Vùng nguy hiểm đã được cập nhật",
+    "update danger zone": "Cập nhật vùng nguy hiểm",
+    "update danger zone confirmation": "Bạn có chắc chắn muốn cập nhật vùng nguy hiểm này?",
+    "delete danger zone description": "Xóa cảnh báo nguy hiểm đối với yêu cầu này",
+    "view request detail": "Xem chi tiết yêu cầu"
 }

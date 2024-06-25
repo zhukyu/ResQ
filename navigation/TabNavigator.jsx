@@ -119,8 +119,8 @@ const TabNavigator = ({ navigation }) => {
             emitWithToken("getUnviewedCounts");
 
             socket.on("unviewedCountUpdated", (data) => {
-                setChatUnviewedCount(data.unviewedMessages);
-                setNotificationUnviewedCount(data.unviewedNotifications);
+                setChatUnviewedCount(data?.unviewedMessages);
+                setNotificationUnviewedCount(data?.unviewedNotifications);
             });
         }
 

@@ -96,6 +96,7 @@ const RequestDetailScreen = ({ route }) => {
                     isFullView={true}
                     initVoteCount={voteCount}
                     commentCount={commentCount}
+                    refreshList={fetchData}
                     onCommentPress={() => openKeyboard()}
                     initVoteType={request.votes?.[0]?.voteType}
                 />

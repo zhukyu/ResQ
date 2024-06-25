@@ -50,9 +50,16 @@ const DangerZoneTab = ({ route }) => {
 
     const fetchData = async () => {
         if (refreshing) return;
+        
+        setRefreshing(true);
+
+        let url = `/danger/rescuer`;
+        if (status) {
+            url += `?status=${status}`;
+        }
 
         try {
-            const response = await axiosInstance.get(`/danger`);
+            const response = await axiosInstance.get(url);
             const result = await response.data;
 
             if (result.length > 0) {
@@ -128,9 +135,16 @@ const DangerZoneTab = ({ route }) => {
                 <Animated.FlatList
                     ref={flatListRef}
                     data={dangerZones}
-                    renderItem={({ item }) => <DangerZoneItem item={item} />}
+                    renderItem={({ item }) => (
+                        <DangerZoneItem
+                            item={item}
+                            triggerRefresh={fetchData}
+                        />
+                    )}
                     refreshing={refreshing}
                     onRefresh={handleRefresh}
+                    showsVerticalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={false}
                     onEndReachedThreshold={0.5}
                     ListHeaderComponent={renderHeader}
                     ListFooterComponent={renderFooter}

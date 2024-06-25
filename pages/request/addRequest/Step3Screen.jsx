@@ -76,6 +76,7 @@ const Step3Screen = () => {
     const timeoutId = useRef(null);
     const fadeAnim = useRef(new Animated.Value(FADE_BEGIN)).current;
     const scaleYAnim = useRef(new Animated.Value(SCALE_BEGIN)).current;
+    
 
     const handleSearchChange = (text) => {
         setSearchTerm(text);

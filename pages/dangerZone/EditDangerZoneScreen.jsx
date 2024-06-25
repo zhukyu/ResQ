@@ -13,11 +13,11 @@ import OutlinedFormField from "../../components/OutlinedFormField";
 import CustomButton from "../../components/CustomButton";
 import axiosInstance from "../../lib/AxiosInstance";
 import { useGlobalContext } from "../../context/GlobalProvider";
-import { emitWithToken } from "../../lib/socketInstance";
+import { emitWithToken, socket } from "../../lib/socketInstance";
 
-const CreateDangerZoneScreen = ({ route }) => {
+const EditDangerZoneScreen = ({ route }) => {
     const { t } = useTranslation();
-    const { request } = route.params;
+    const { requestId } = route.params;
     const { setToast } = useGlobalContext();
     const [dangerZone, setDangerZone] = useState(null);
     const [errors, setErrors] = useState({
@@ -56,24 +56,22 @@ const CreateDangerZoneScreen = ({ route }) => {
         return valid;
     };
 
-    const createDangerZone = async () => {
+    const updateDangerZone = async () => {
         try {
-            emitWithToken("createDangerArea", {
-                ...dangerZone
+            emitWithToken("updateDangerArea", {
+                ...dangerZone,
             });
-            setToast({
-                type: "success",
-                text1: t("success"),
-                text2: t("danger zone created"),
+            socket.on("dangerAreaUpdated", (data) => {
+                setToast({
+                    type: "success",
+                    text1: t("success"),
+                    text2: t("danger zone updated"),
+                });
+                socket.off("dangerAreaUpdated");
+                navigation.goBack();
             });
-
-            // navigation.navigate(`stack`, {
-            //     screen: `requestDetail`,
-            //     params: { id: request?.id },
-            // });
-            navigation.goBack();
         } catch (error) {
-            console.log("createDangerZone error", error);
+            console.log("updateDangerZone error", error);
         }
     };
 
@@ -81,8 +79,8 @@ const CreateDangerZoneScreen = ({ route }) => {
         if (!validation()) return;
 
         Alert.alert(
-            t("create danger zone"),
-            t("create danger zone confirmation"),
+            t("update danger zone"),
+            t("update danger zone confirmation"),
             [
                 {
                     text: t("cancel"),
@@ -90,22 +88,39 @@ const CreateDangerZoneScreen = ({ route }) => {
                     style: "cancel",
                 },
                 {
-                    text: t("create"),
-                    onPress: () => createDangerZone(),
+                    text: t("update"),
+                    onPress: () => updateDangerZone(),
                 },
             ]
         );
     };
 
     useEffect(() => {
-        setDangerZone({
-            ...dangerZone,
-            requestId: request?.id,
-            address: request?.address,
-            latitude: request?.latitude,
-            longitude: request?.longitude,
-        });
-    }, [request]);
+        const fetchData = async () => {
+            try {
+                const response = await axiosInstance.get(
+                    `/danger/${requestId}`
+                );
+                const result = await response.data;
+
+                setDangerZone({
+                    requestId: result?.requestId,
+                    radius: result?.radius?.toString(),
+                    message: result?.message,
+                    longitude: result?.location?.coordinates[0],
+                    latitude: result?.location?.coordinates[1],
+                });
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchData();
+    }, [requestId]);
+
+    useEffect(() => {
+        console.log(route);
+    }, [route])
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -117,6 +132,7 @@ const CreateDangerZoneScreen = ({ route }) => {
                         placeholder={`${t("radius")} (m)`}
                         keyboardType="numeric"
                         error={errors.radius}
+                        value={dangerZone?.radius}
                         onChangeText={(text) =>
                             setDangerZone({ ...dangerZone, radius: text })
                         }
@@ -125,6 +141,7 @@ const CreateDangerZoneScreen = ({ route }) => {
                         label={`${t("message")}`}
                         placeholder={t("message")}
                         error={errors.message}
+                        value={dangerZone?.message}
                         onChangeText={(text) =>
                             setDangerZone({ ...dangerZone, message: text })
                         }
@@ -132,7 +149,7 @@ const CreateDangerZoneScreen = ({ route }) => {
 
                     <View className="mt-4">
                         <CustomButton
-                            title={t("create")}
+                            title={t("update")}
                             handlePress={handleSubmit}
                         />
                     </View>
@@ -142,4 +159,4 @@ const CreateDangerZoneScreen = ({ route }) => {
     );
 };
 
-export default CreateDangerZoneScreen;
+export default EditDangerZoneScreen;

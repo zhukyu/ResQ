@@ -22,7 +22,7 @@ const NotificationItem = ({ item }) => {
     };
 
     return (
-        <TouchableOpacity className={`p-4 border-b border-gray-200 ${read ? "bg-white" : "bg-red-100"}`} onPress={handlePress}>
+        <TouchableOpacity className={`p-4 border-b border-gray-200 ${read ? "bg-white" : "bg-red-50"}`} onPress={handlePress}>
             <Text className="text-base font-rmedium text-gray-800 mb-2">
                 {message}
             </Text>

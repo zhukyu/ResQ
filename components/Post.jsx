@@ -37,7 +37,7 @@ import {
 import LocationView from "./LocationView";
 import { formatTime } from "../lib/helpers";
 import axiosInstance from "../lib/AxiosInstance";
-import { socket } from "../lib/socketInstance";
+import { emitWithToken, socket } from "../lib/socketInstance";
 
 const MenuItem = ({ icon, title, description, onPress }) => (
     <TouchableNativeFeedback onPress={onPress}>
@@ -239,8 +239,6 @@ const RequestTypeBadge = ({ type }) => {
     );
 };
 
-
-
 const Post = ({
     item,
     isFullView,
@@ -252,6 +250,7 @@ const Post = ({
 }) => {
     const requester = item.users;
     const rescuerId = item.rescuerId;
+    const dangerStatus = item.dangerStatus;
     const { user, setToast } = useGlobalContext();
     const navigation = useNavigation();
     const media = item.requestMedia;
@@ -259,11 +258,14 @@ const Post = ({
     const menuRef = useRef(null);
 
     const [isMapModalVisible, setIsMapModalVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const isRequester = requester?.id === user?.id;
     const isRescuer = user?.role === system.USER_ROLE.RESCUER;
     const isNotRequester = requester?.id !== user?.id;
     const isRescuerSelf = rescuerId === user?.id;
+    const isDangerZoneCreated =
+        dangerStatus === system.DANGER_AREA_STATUS.ACTIVE;
 
     const openMenu = useCallback(() => {
         menuRef.current?.present();
@@ -399,6 +401,59 @@ const Post = ({
                 request: item,
             },
         });
+    };
+
+    const deleteDangerZone = async (requestId) => {
+        try {
+            setLoading(true);
+            emitWithToken("deleteDangerArea", { requestId: requestId });
+
+            const timeout = setTimeout(() => {
+                setLoading(false);
+                socket.off("dangerAreaDeleted");
+                setToast({
+                    type: "error",
+                    text1: t("error"),
+                    text2: t("danger zone deletion timeout"),
+                });
+            }, 10000);
+
+            socket.on("dangerAreaDeleted", (data) => {
+                clearTimeout(timeout);
+                setToast({
+                    type: "success",
+                    text1: t("success"),
+                    text2: t("danger zone deleted"),
+                });
+                setLoading(false);
+                socket.off("dangerAreaDeleted");
+
+                if (refreshList) {
+                    refreshList();
+                }
+            });
+        } catch (error) {
+            console.log("error in deleting danger zone", error);
+        }
+    };
+
+    const handleDeleteDangerZonePress = () => {
+        handleClose();
+        Alert.alert(
+            t("delete danger zone"),
+            t("delete danger zone confirmation"),
+            [
+                {
+                    text: t("cancel"),
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel",
+                },
+                {
+                    text: t("delete"),
+                    onPress: () => deleteDangerZone(item?.id),
+                },
+            ]
+        );
     }
 
     const handleRejectRequestPress = async () => {
@@ -423,15 +478,13 @@ const Post = ({
                     className="mt-2"
                     pointerEvents={isFullView ? "auto" : "none"}
                 >
-                    <ImageCollage
-                        images={media.map((image) => image.url)}
-                    />
+                    <ImageCollage images={media.map((image) => image.url)} />
                 </View>
             );
         } else {
             return null;
         }
-    }, [media])
+    }, [media]);
 
     const PostContent = useMemo(() => {
         return (
@@ -591,20 +644,37 @@ const Post = ({
                     )}
                     {rescuerId && isRescuerSelf && isNotRequester && (
                         <>
-                            <MenuItem
-                                title={t("create danger zone")}
-                                description={t(
-                                    "create danger zone description"
-                                )}
-                                icon={
-                                    <FontAwesome
-                                        name="exclamation-triangle"
-                                        size={24}
-                                        color="gray"
-                                    />
-                                }
-                                onPress={handleCreateDangerZonePress}
-                            />
+                            {isDangerZoneCreated ? (
+                                <MenuItem
+                                    title={t("delete danger zone")}
+                                    description={t(
+                                        "delete danger zone description"
+                                    )}
+                                    icon={
+                                        <FontAwesome
+                                            name="exclamation-triangle"
+                                            size={24}
+                                            color="gray"
+                                        />
+                                    }
+                                    onPress={handleDeleteDangerZonePress}
+                                />
+                            ) : (
+                                <MenuItem
+                                    title={t("create danger zone")}
+                                    description={t(
+                                        "create danger zone description"
+                                    )}
+                                    icon={
+                                        <FontAwesome
+                                            name="exclamation-triangle"
+                                            size={24}
+                                            color="gray"
+                                        />
+                                    }
+                                    onPress={handleCreateDangerZonePress}
+                                />
+                            )}
 
                             <MenuItem
                                 title={t("reject request")}
