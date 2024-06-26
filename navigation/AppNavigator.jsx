@@ -22,36 +22,39 @@ import AuthNavigator from "./AuthNavigator";
 import DrawerNavigator from "./DrawerNavigator";
 import SplashScreen from "../pages/splash/SplashScreen";
 import StackNavigator from "./StackNavigator";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const AppStack = createStackNavigator();
 
 const AppNavigator = () => {
     return (
-        <AppStack.Navigator
-            screenOptions={{
-                headerShown: false,
-                animationEnabled: true,
-            }}
-        >
-            <AppStack.Screen name="splash" component={SplashScreen} />
-            <AppStack.Screen name="auth" component={AuthNavigator} />
-            <AppStack.Screen
-                name="drawer"
-                component={DrawerNavigator}
-                options={{
-                    cardStyleInterpolator:
-                        CardStyleInterpolators.forFadeFromBottomAndroid,
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <AppStack.Navigator
+                screenOptions={{
+                    headerShown: false,
+                    animationEnabled: true,
                 }}
-            />
-            <AppStack.Screen
-                name="stack"
-                component={StackNavigator}
-                options={{
-                    cardStyleInterpolator:
-                        CardStyleInterpolators.forFadeFromBottomAndroid,
-                }}
-            />
-        </AppStack.Navigator>
+            >
+                <AppStack.Screen name="splash" component={SplashScreen} />
+                <AppStack.Screen name="auth" component={AuthNavigator} />
+                <AppStack.Screen
+                    name="drawer"
+                    component={DrawerNavigator}
+                    options={{
+                        cardStyleInterpolator:
+                            CardStyleInterpolators.forFadeFromBottomAndroid,
+                    }}
+                />
+                <AppStack.Screen
+                    name="stack"
+                    component={StackNavigator}
+                    options={{
+                        cardStyleInterpolator:
+                            CardStyleInterpolators.forFadeFromBottomAndroid,
+                    }}
+                />
+            </AppStack.Navigator>
+        </GestureHandlerRootView>
     );
 };
 
