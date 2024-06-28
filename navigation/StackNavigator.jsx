@@ -16,6 +16,7 @@ import UpdateUserProfileScreen from "../pages/user/UpdateUserProfileScreen";
 import { useTranslation } from "react-i18next";
 import CreateDangerZoneScreen from "../pages/dangerZone/CreateDangerZoneScreen";
 import EditDangerZoneScreen from "../pages/dangerZone/EditDangerZoneScreen";
+import BotChatScreen from "../pages/chat/BotChatScreen";
 
 const Stack = createStackNavigator();
 
@@ -51,6 +52,15 @@ const StackNavigator = () => {
             <Stack.Screen
                 name="chat"
                 component={ChatScreen}
+                options={{
+                    title: t("chat"),
+                    cardStyleInterpolator:
+                        CardStyleInterpolators.forVerticalIOS,
+                }}
+            />
+            <Stack.Screen
+                name="botChat"
+                component={BotChatScreen}
                 options={{
                     title: t("chat"),
                     cardStyleInterpolator:

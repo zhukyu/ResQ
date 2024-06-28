@@ -1,11 +1,11 @@
 import { View, Text, Image, TouchableNativeFeedback } from "react-native";
 import React, { useEffect } from "react";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { formatTime } from "../lib/helpers";
 import { useTranslation } from "react-i18next";
 
-const ChatListCard = ({ item }) => {
+const ChatListCard = ({ item, isBotChat }) => {
     const opponent = item?.opponent;
     const lastMessage = item?.lastMessage;
     const navigation = useNavigation();
@@ -14,6 +14,12 @@ const ChatListCard = ({ item }) => {
     useEffect(() => {}, [opponent]);
 
     const handlePress = () => {
+        if (isBotChat) {
+            return navigation.navigate(`stack`, {
+                screen: `botChat`,
+            });
+        }
+
         navigation.navigate(`stack`, {
             screen: `chat`,
             params: {
@@ -33,9 +39,14 @@ const ChatListCard = ({ item }) => {
                         className="w-14 h-14 rounded-full"
                     />
                 ) : (
-                    <View className="w-14 h-14 rounded-full bg-[#CCCCCC] flex items-center justify-center">
+                    isBotChat ? (
+                        <View className="w-14 h-14 rounded-full bg-[#CCCCCC] flex items-center justify-center">
+                            <FontAwesome5 name="robot" size={30} color="white" />
+                        </View>
+                    ) :
+                    (<View className="w-14 h-14 rounded-full bg-[#CCCCCC] flex items-center justify-center">
                         <FontAwesome name="user" size={30} color="white" />
-                    </View>
+                    </View>)
                 )}
                 <View className="flex flex-col ml-3 flex-grow">
                     <View className="flex flex-row items-center justify-between">
@@ -44,7 +55,7 @@ const ChatListCard = ({ item }) => {
                             numberOfLines={1}
                             ellipsizeMode="tail"
                         >
-                            {opponent?.name}
+                            {isBotChat ? t("bot") : opponent?.name}
                         </Text>
                         {item?.unreadCount > 0 && (
                             <View className="w-5 h-5 bg-primary rounded-full flex justify-center items-center">
@@ -54,24 +65,36 @@ const ChatListCard = ({ item }) => {
                             </View>
                         )}
                     </View>
-                    <View className="flex flex-row items-center justify-start">
-                        <Text
-                            className="text-sm font-normal text-gray-500  max-w-[70%]"
-                            numberOfLines={1}
-                            ellipsizeMode="tail"
-                        >
-                            {lastMessage?.sender !== opponent?.id
-                                ? `${t("you")}: `
-                                : ""}
-                            {lastMessage?.message}
-                        </Text>
-                        <Text className="text-sm font-rregular text-gray-500 mx-1">
-                            ·
-                        </Text>
-                        <Text className="text-sm font-rregular text-gray-500">
-                            {formatTime(lastMessage?.timestamp, "format")}
-                        </Text>
-                    </View>
+                    {isBotChat ? (
+                        <View className="flex flex-row items-center justify-start">
+                            <Text
+                                className="text-sm font-normal text-gray-500  max-w-[70%]"
+                                numberOfLines={1}
+                                ellipsizeMode="tail"
+                            >
+                                {t("chat with bot")}
+                            </Text>
+                        </View>
+                    ) : (
+                        <View className="flex flex-row items-center justify-start">
+                            <Text
+                                className="text-sm font-normal text-gray-500  max-w-[70%]"
+                                numberOfLines={1}
+                                ellipsizeMode="tail"
+                            >
+                                {lastMessage?.sender !== opponent?.id
+                                    ? `${t("you")}: `
+                                    : ""}
+                                {lastMessage?.message}
+                            </Text>
+                            <Text className="text-sm font-rregular text-gray-500 mx-1">
+                                ·
+                            </Text>
+                            <Text className="text-sm font-rregular text-gray-500">
+                                {formatTime(lastMessage?.timestamp, "format")}
+                            </Text>
+                        </View>
+                    )}
                 </View>
             </View>
         </TouchableNativeFeedback>

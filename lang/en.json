@@ -1,5 +1,5 @@
 {
-    "login header": "Log in to ResQ",
+    "login header": "Welcome back to ResQ",
     "signup header": "Sign up for ResQ",
     "email": "Email",
     "password": "Password",
@@ -122,5 +122,11 @@
     "update danger zone": "Update Danger Zone",
     "update danger zone confirmation": "Are you sure you want to update this danger zone?",
     "delete danger zone description": "Delete danger zone for this request",
-    "view request detail": "View Request Detail"
+    "view request detail": "View Request Detail",
+    "chatbot greeting": "Hello! How can I help you today?",
+    "bot": "ChatBot",
+    "chat with bot": "Chat with ChatBot",
+    "want to be a rescuer": "Want to be a rescuer?",
+    "signup rescuer": "Sign up as a rescuer",
+    "signup rescuer header": "Sign up as a rescuer"
 }

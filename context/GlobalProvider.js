@@ -73,7 +73,7 @@ const GlobalProvider = ({ children }) => {
                 latitude,
                 longitude,
             });
-            const data = await response.data;
+            const data = await response?.data;
             if (data) {
                 // console.log(data);
             }

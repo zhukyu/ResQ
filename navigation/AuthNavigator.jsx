@@ -6,6 +6,7 @@ import {
 } from "@react-navigation/stack";
 import SignInScreen from "../pages/auth/SignInScreen";
 import SignUpScreen from "../pages/auth/SignUpScreen";
+import SignUpRescuerScreen from "../pages/auth/SignUpRescuerScreen";
 
 const AuthStack = createStackNavigator();
 
@@ -27,6 +28,14 @@ const AuthNavigator = () => {
             <AuthStack.Screen
                 name="Sign Up"
                 component={SignUpScreen}
+                options={{
+                    cardStyleInterpolator:
+                        CardStyleInterpolators.forHorizontalIOS,
+                }}
+            />
+            <AuthStack.Screen
+                name="Sign Up Rescuer"
+                component={SignUpRescuerScreen}
                 options={{
                     cardStyleInterpolator:
                         CardStyleInterpolators.forHorizontalIOS,

@@ -1,5 +1,5 @@
 {
-    "login header": "Đăng nhập vào ResQ",
+    "login header": "Chào mừng bạn trở lại",
     "signup header": "Đăng ký tài khoản ResQ",
     "email": "Email",
     "password": "Mật khẩu",
@@ -122,5 +122,11 @@
     "update danger zone": "Cập nhật vùng nguy hiểm",
     "update danger zone confirmation": "Bạn có chắc chắn muốn cập nhật vùng nguy hiểm này?",
     "delete danger zone description": "Xóa cảnh báo nguy hiểm đối với yêu cầu này",
-    "view request detail": "Xem chi tiết yêu cầu"
+    "view request detail": "Xem chi tiết yêu cầu",
+    "chatbot greeting": "Xin chào! Tôi có thể giúp gì cho bạn?",
+    "bot": "ChatBot",
+    "chat with bot": "Nhắn tin với ChatBot",
+    "want to be a rescuer": "Muốn trở thành người cứu hộ?",
+    "signup rescuer": "Đăng ký cứu hộ",
+    "signup rescuer header": "Đăng ký cứu hộ"
 }

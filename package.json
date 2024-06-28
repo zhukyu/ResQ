@@ -60,6 +60,7 @@
     "react-native-svg": "15.2.0",
     "react-native-tab-view": "^3.5.2",
     "react-native-toast-message": "^2.2.0",
+    "react-native-typing-animation": "^0.1.7",
     "react-native-web": "~0.19.6",
     "react-native-zoom-image-view": "^1.0.6",
     "socket.io-client": "^4.7.5"

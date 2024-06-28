@@ -146,8 +146,8 @@ const LocationView = ({ item, handleCloseModal, isEmergency, visible }) => {
             if (startNavigation && mapRef.current && currentLocation) {
                 await mapRef.current.animateToRegion(
                     {
-                        latitude: currentLocation.latitude,
-                        longitude: currentLocation.longitude,
+                        latitude: currentLocation?.latitude,
+                        longitude: currentLocation?.longitude,
                         longitudeDelta: 0.005,
                         latitudeDelta: 0.005,
                     },
@@ -259,34 +259,10 @@ const LocationView = ({ item, handleCloseModal, isEmergency, visible }) => {
         setStartNavigation(true);
     };
 
-    const performReverseGeocoding = async (latitude, longitude) => {
-        try {
-            // let addresses = await Geocoding.from(latitude, longitude)
-            // const addressComponent = addresses.results[0]; // Use the first address
-            // console.log(addressComponent.formatted_address);
-            try {
-                let addresses = await Location.reverseGeocodeAsync({
-                    latitude,
-                    longitude,
-                });
-                const addressComponent = addresses[0]; // Use the first address
-                setSelectedLocation({
-                    latitude,
-                    longitude,
-                    address: addressComponent?.formattedAddress,
-                });
-            } catch (error) {
-                console.error("Reverse Geocoding Error:", error);
-            }
-        } catch (error) {
-            console.error("Reverse Geocoding Error:", error);
-        }
-    };
-
     useEffect(() => {
         setInitialRegion({
-            latitude: selectedLocation?.latitude,
-            longitude: selectedLocation?.longitude,
+            latitude: selectedLocation?.latitude || currentLocation?.latitude,
+            longitude: selectedLocation?.longitude || currentLocation?.longitude,
             ...delta,
         });
         // if (!showDirectionEnabled && !startNavigation) {

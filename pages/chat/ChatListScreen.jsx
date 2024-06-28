@@ -54,9 +54,12 @@ const ChatListScreen = ({ navigation }) => {
             </View> */}
             <FlatList
                 ListHeaderComponent={
-                    <View className="p-4 pt-2">
-                        <SearchBox onPress={handleSearchBoxPress} />
-                    </View>
+                    <>
+                        <View className="p-4 pt-2">
+                            <SearchBox onPress={handleSearchBoxPress} />
+                        </View>
+                        <ChatListCard isBotChat />
+                    </>
                 }
                 data={conversations}
                 renderItem={({ item }) => <ChatListCard item={item} />}

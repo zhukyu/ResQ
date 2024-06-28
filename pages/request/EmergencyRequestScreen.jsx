@@ -78,8 +78,8 @@ const EmergencyRequestScreen = () => {
         );
 
         return () => {
-            keyboardDidHideListener.remove();
-            keyboardDidShowListener.remove();
+            keyboardDidHideListener?.remove();
+            keyboardDidShowListener?.remove();
         };
     }, [initialSnapPoints]);
 

@@ -83,9 +83,9 @@ const SignInScreen = () => {
                 email: email,
                 password: password,
             })
-            .then((res) => {
-                AsyncStorage.setItem("accessToken", res.data.accessToken);
-                AsyncStorage.setItem("refreshToken", res.data.refreshToken);
+            .then(async (res) => {
+                await AsyncStorage.setItem("accessToken", res.data.accessToken);
+                await AsyncStorage.setItem("refreshToken", res.data.refreshToken);
 
                 setUser(res.data.user);
                 setIsLoggedIn(true);
@@ -172,7 +172,7 @@ const SignInScreen = () => {
                                 </Text>
                             </View>
 
-                            <Text className="text-2xl font-smibold mt-7 font-bold">
+                            <Text className="text-2xl font-rbold mt-7 text-primary">
                                 {t("login header")}
                             </Text>
 

@@ -2,7 +2,7 @@ import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } fr
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import { images } from '../../constants'
+import { images, system } from '../../constants'
 import FormField from '../../components/FormField'
 import CustomButton from '../../components/CustomButton'
 import { Link, router } from 'expo-router'
@@ -12,7 +12,7 @@ import { useGlobalContext } from '../../context/GlobalProvider'
 import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@react-navigation/native'
 
-const SignUpScreen = () => {
+const SignUpRescuerScreen = () => {
     const { setToast } = useGlobalContext()
     const [form, setForm] = useState({
         email: '',
@@ -114,6 +114,7 @@ const SignUpScreen = () => {
         setIsSubbmitting(true)
 
         axiosInstance.post("/auth/register", {
+            role: system.USER_ROLE.RESCUER,
             email: form.email.toLowerCase(),
             password: form.password,
             repeatPassword: form.repeatPassword,
@@ -157,7 +158,7 @@ const SignUpScreen = () => {
                         <Text className='text-4xl font-archivobold text-primary'>RES<Text className="text-secondary-200">Q</Text></Text>
                     </View>
 
-                    <Text className="text-2xl mt-5 mb-3 font-rbold">{t('signup header')}</Text>
+                    <Text className="text-2xl mt-5 mb-3 font-rbold">{t('signup rescuer header')}</Text>
 
                     <FormField
                         title={t('email')}
@@ -240,12 +241,6 @@ const SignUpScreen = () => {
                     />
 
                     <View className="justify-center pt-5 flex-row gap-2">
-                        <Text className="text-light font-medium text-gray-700">{t('want to be a rescuer')}</Text>
-                        <TouchableOpacity onPress={() => navigation.navigate('Sign Up Rescuer')}>
-                            <Text className="text-primary font-semibold">{t('signup rescuer')}</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View className="justify-center pt-2 flex-row gap-2">
                         <Text className="text-light font-medium text-gray-700">{t('have account')}</Text>
                         <TouchableOpacity onPress={() => navigation.navigate('Sign In')}>
                             <Text className="text-primary font-semibold">{t('login')}</Text>
@@ -260,6 +255,6 @@ const SignUpScreen = () => {
     )
 }
 
-export default SignUpScreen
+export default SignUpRescuerScreen
 
 const styles = StyleSheet.create({})
